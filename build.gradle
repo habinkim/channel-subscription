@@ -1,0 +1,141 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.3.2'
+    id 'io.spring.dependency-management' version '1.1.6'
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
+    id 'com.epages.restdocs-api-spec' version '0.19.2'
+}
+
+group = 'com.artinus'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+configurations {
+    asciidoctorExt
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    set('snippetsDir', file("build/generated-snippets"))
+    set('generated', file("src/main/generated"))
+    set('docsDir', "src/main/resources/static/docs")
+    set('mapstructVersion', "1.5.5.Final")
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.statemachine:spring-statemachine-starter:4.0.0'
+    implementation 'org.springframework.statemachine:spring-statemachine-data-redis:4.0.0'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+    implementation "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+
+    compileOnly 'org.projectlombok:lombok'
+
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
+    runtimeOnly 'org.postgresql:postgresql'
+
+    implementation 'com.epages:restdocs-api-spec-mockmvc:0.19.2'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.projectlombok:lombok'
+
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:postgresql'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+sourceSets {
+    main.java.srcDirs += [generated]
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << '-parameters'
+    options.annotationProcessorGeneratedSourcesDirectory(file(generated))
+}
+
+compileJava.doFirst {
+    delete file(generated)
+}
+
+openapi3 { // Swagger OAS Generate
+    server = "http://localhost:8080"
+    title = "Channel Subscription REST API V1 Documentation"
+    description = "Spring REST Docs with SwaggerUI."
+    version = "${version}"
+    outputFileNamePrefix = "${group}-open-api-3.0.1"
+    format = 'json'
+
+    outputDirectory = "${docsDir}"
+}
+
+postman { // Postman API Collection
+    baseUrl = 'http://localhost:8080'
+    title = 'Channel Subscription REST API V1 Documentation'
+    version = "${version}"
+    outputFileNamePrefix = "${group}-postman-collection"
+
+    outputDirectory = "${docsDir}"
+}
+
+asciidoctor {
+    dependsOn test
+    inputs.dir snippetsDir
+    configurations 'asciidoctorExt'
+
+    sources {
+        include("**/index.adoc")
+    }
+
+    baseDirFollowsSourceFile()
+
+    doFirst {
+        delete {
+            file("${docsDir}")
+        }
+    }
+
+    doLast {
+        copy {
+            from(file("build/docs/asciidoc"))
+            into(file("${docsDir}"))
+        }
+    }
+}
+
+
+jar {
+    enabled = false
+}
+
+bootJar {
+    dependsOn 'asciidoctor'
+    dependsOn 'openapi3'
+    dependsOn 'postman'
+    from("${docsDir}") {
+        into "static/docs"
+    }
+}
+
