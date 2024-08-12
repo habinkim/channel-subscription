@@ -23,7 +23,8 @@ public enum MessageCode {
     TOO_MANY_REQUESTS(HttpStatus.TOO_MANY_REQUESTS, "9996"),
     NOT_OWNER(UNAUTHORIZED, "9997"),
     NOT_FOUND_DATA(BAD_REQUEST, "9998"),
-    ERROR(INTERNAL_SERVER_ERROR, "9999");
+    ERROR(INTERNAL_SERVER_ERROR, "9999"),
+    EXCEPTION_ILLEGAL_ARGUMENT(BAD_REQUEST, "9100");
 
     private final HttpStatus httpStatus;
     private final String code;

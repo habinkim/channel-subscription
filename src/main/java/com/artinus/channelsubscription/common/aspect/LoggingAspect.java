@@ -3,7 +3,6 @@ package com.artinus.channelsubscription.common.aspect;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
@@ -18,17 +17,6 @@ public class LoggingAspect {
 
     private Logger logger(JoinPoint joinPoint) {
         return LoggerFactory.getLogger(joinPoint.getSignature().getDeclaringTypeName());
-    }
-
-    @AfterThrowing(pointcut = "com.artinus.channelsubscription.common.aspect.CustomPointCuts.springBeanPointcut()", throwing = "e")
-    public void logAfterThrowing(JoinPoint joinPoint, Exception e) {
-        logger(joinPoint)
-                .error(
-                        "Exception in {}() with cause = '{}' and exception = '{}'",
-                        joinPoint.getSignature().getName(),
-                        e.getCause() != null ? e.getCause() : "NULL",
-                        e.getMessage(), e
-                );
     }
 
     @Around("com.artinus.channelsubscription.common.aspect.CustomPointCuts.restApi() " +
