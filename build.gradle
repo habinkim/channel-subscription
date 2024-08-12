@@ -43,6 +43,9 @@ dependencies {
 
     implementation "org.mapstruct:mapstruct:${mapstructVersion}"
     implementation "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.1'
+    implementation 'org.zalando:logbook-spring-boot-starter:3.9.0'
+    implementation 'com.github.f4b6a3:ulid-creator:5.2.3'
 
     compileOnly 'org.projectlombok:lombok'
 
