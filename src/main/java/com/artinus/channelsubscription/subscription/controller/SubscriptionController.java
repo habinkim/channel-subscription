@@ -4,20 +4,22 @@ import com.artinus.channelsubscription.common.response.ResponseMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/subscriptions")
 @RequiredArgsConstructor
 public class SubscriptionController {
 
     private final ResponseMapper responseMapper;
 
-    @PostMapping("/channels/subscribe")
+    @PostMapping("/subscribe")
     public void subscribeChannel() {
 
     }
 
-    @PostMapping("/channels/unsubscribe")
+    @PostMapping("/unsubscribe")
     public void unsubscribeChannel() {
 
     }
