@@ -9,7 +9,8 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Comment;
 
 /**
- * Append성 데이터이다.
+ * 구독하거나, 구독 해제한 이력이다.<p>
+ * Append성 History 데이터이다.
  */
 @SuperBuilder(toBuilder = true)
 @NoArgsConstructor
@@ -21,6 +22,7 @@ public class Subscription extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false)
+    @Comment("구독한 계정 ID")
     private Account account;
 
     @ManyToOne(fetch = FetchType.LAZY)

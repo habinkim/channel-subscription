@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Comment;
 
+/**
+ * 서비스를 구독하거나 구독해제하기위한 진입점이다.
+ */
 @SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
