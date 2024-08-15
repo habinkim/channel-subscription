@@ -3,6 +3,7 @@ package com.artinus.channelsubscription.subscription.controller;
 import com.artinus.channelsubscription.common.response.Response;
 import com.artinus.channelsubscription.common.response.ResponseMapper;
 import com.artinus.channelsubscription.subscription.domain.SubscribeRequest;
+import com.artinus.channelsubscription.subscription.service.SubscriptionService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +17,11 @@ public class SubscriptionController {
 
     private final ResponseMapper responseMapper;
 
+    private final SubscriptionService subscriptionService;
+
     @PostMapping("/subscribe")
     public ResponseEntity<Response<?>> subscribeChannel(@Valid @RequestBody SubscribeRequest request) {
+        subscriptionService.subscribe(request);
         return responseMapper.ok();
     }
 
