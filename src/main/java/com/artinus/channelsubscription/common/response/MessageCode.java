@@ -27,7 +27,8 @@ public enum MessageCode {
     EXCEPTION_ILLEGAL_ARGUMENT(BAD_REQUEST, "9100"),
 
     // Channel
-    CHANNEL_ALREADY_EXISTS(BAD_REQUEST, "1101");
+    CHANNEL_ALREADY_EXISTS(BAD_REQUEST, "1101"),
+    CHANNEL_NOT_FOUND(BAD_REQUEST, "1102");
 
     private final HttpStatus httpStatus;
     private final String code;

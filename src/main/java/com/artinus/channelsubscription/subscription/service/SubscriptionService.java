@@ -1,8 +1,10 @@
 package com.artinus.channelsubscription.subscription.service;
 
+import com.artinus.channelsubscription.channel.entity.Channel;
+import com.artinus.channelsubscription.channel.repository.ChannelRepository;
+import com.artinus.channelsubscription.common.exception.CommonApplicationException;
 import com.artinus.channelsubscription.subscription.domain.SubscribeRequest;
 import com.artinus.channelsubscription.subscription.repository.AccountRepository;
-import com.artinus.channelsubscription.channel.repository.ChannelRepository;
 import com.artinus.channelsubscription.subscription.repository.SubscriptionRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +21,8 @@ public class SubscriptionService {
 
     @Transactional
     public void subscribe(@Valid SubscribeRequest request) {
-
-
+        Channel channel = channelRepository.findByIdAndAvailableTrue(request.channelId())
+                .orElseThrow(CommonApplicationException.CHANNEL_NOT_FOUND);
 
     }
 }
