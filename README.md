@@ -22,15 +22,25 @@
 
 ## 2. 구현
 
-### 2.1. 유한 상태 기계 (Finite State Machine)
+### 2.1. 다중화 환경에서의 R-DB 기본키 전략
 
 
 
 
 
-### 2.2. 다중화 환경에서 동시성 이슈 고려
+### 2.2. 유한 상태 기계 (Finite State Machine)
 
-#### 2.2.1. JPA Persistence Layer (영속성 계층) 에서의 선택지
+
+
+### 2.3. 채널(외부 서비스)의 실제 구독 행위 처리
+
+
+
+
+
+### 2.4. 다중화 환경에서 동시성 이슈 고려
+
+#### 2.4.1. JPA Persistence Layer (영속성 계층) 에서의 선택지
 
 
 
@@ -73,12 +83,14 @@ Spring의 @Transactional 애노테이션을 사용하여 트랜잭션의 격리 
 
 
 
-#### 2.2.2. State Machine
+#### 2.4.2. State Machine
 
 
 
 - **다중화 환경에서 동시성 이슈 고려** : Redis를 이용한 State Machine Persist를 통해 다중화 환경에서 상태를 일관성 있게 관리할 수 있다. 이는 여러 인스턴스에서 동일한 사용자의 상태를 변경할 때 발생할 수 있는 동시성 문제를 해결한다.
 - **StateMachine Runtime Persist**: Redis를 사용하여 StateMachine의 상태를 영속화함으로써, 상태 전이 중에 시스템이 재시작되거나 인스턴스가 변경되는 상황에서도 상태를 안전하게 복구할 수 있다.
+
+
 
 
 

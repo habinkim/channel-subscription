@@ -1,0 +1,111 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "Channel Subscription REST API V1 Documentation",
+    "description" : "Spring REST Docs with SwaggerUI.",
+    "version" : "1.0.0"
+  },
+  "servers" : [ {
+    "url" : "http://localhost:8080"
+  } ],
+  "tags" : [ ],
+  "paths" : {
+    "/channels" : {
+      "post" : {
+        "tags" : [ "channels" ],
+        "summary" : "채널 등록",
+        "description" : "채널 등록",
+        "operationId" : "register-channel-success",
+        "requestBody" : {
+          "content" : {
+            "application/json;charset=UTF-8" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/channels-725802209"
+              },
+              "examples" : {
+                "register-channel-success" : {
+                  "value" : "{\n  \"name\" : \"KT 통신사\",\n  \"type\" : \"SUBSCRIBE_UNSUBSCRIBE\"\n}"
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "201",
+            "content" : {
+              "application/json;charset=UTF-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/channels1868085020"
+                },
+                "examples" : {
+                  "register-channel-success" : {
+                    "value" : "{\n  \"message\" : \"생성이 완료되었습니다.\",\n  \"code\" : \"0001\",\n  \"data\" : {\n    \"id\" : 611892360666353695,\n    \"name\" : \"KT 통신사\",\n    \"type\" : \"SUBSCRIBE_UNSUBSCRIBE\",\n    \"created_at\" : \"2024-08-15 21:01:47\",\n    \"updated_at\" : \"2024-08-15 21:01:47\"\n  }\n}"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "channels-725802209" : {
+        "required" : [ "name", "type" ],
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string",
+            "description" : "채널명"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "채널 유형 [SUBSCRIBE_UNSUBSCRIBE, SUBSCRIBE_ONLY, UNSUBSCRIBE_ONLY]"
+          }
+        }
+      },
+      "channels1868085020" : {
+        "required" : [ "code", "message" ],
+        "type" : "object",
+        "properties" : {
+          "code" : {
+            "type" : "string",
+            "description" : "시스템 코드"
+          },
+          "data" : {
+            "required" : [ "created_at", "id", "name", "type", "updated_at" ],
+            "type" : "object",
+            "properties" : {
+              "updated_at" : {
+                "type" : "string",
+                "description" : "수정일시"
+              },
+              "name" : {
+                "type" : "string",
+                "description" : "채널명"
+              },
+              "created_at" : {
+                "type" : "string",
+                "description" : "생성일시"
+              },
+              "id" : {
+                "type" : "number",
+                "description" : "채널 ID"
+              },
+              "type" : {
+                "type" : "string",
+                "description" : "채널 유형 [SUBSCRIBE_UNSUBSCRIBE, SUBSCRIBE_ONLY, UNSUBSCRIBE_ONLY]"
+              }
+            }
+          },
+          "message" : {
+            "type" : "string",
+            "description" : "시스템 메시지"
+          }
+        }
+      }
+    }
+  }
+}

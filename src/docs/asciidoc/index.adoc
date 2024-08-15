@@ -1,0 +1,11 @@
+= Channel Description REST API Documentation
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+:docinfo: shared-head
+
+include::channel-api.adoc[]

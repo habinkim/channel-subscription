@@ -1,5 +1,6 @@
-package com.artinus.channelsubscription;
+package com.artinus.channelsubscription.base;
 
+import com.artinus.channelsubscription.ChannelSubscriptionApplication;
 import org.springframework.boot.SpringApplication;
 
 public class TestChannelSubscriptionApplication {
