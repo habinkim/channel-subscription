@@ -28,7 +28,10 @@ public enum MessageCode {
 
     // Channel
     CHANNEL_ALREADY_EXISTS(BAD_REQUEST, "1101"),
-    CHANNEL_NOT_FOUND(BAD_REQUEST, "1102");
+    CHANNEL_NOT_FOUND(BAD_REQUEST, "1102"),
+
+    // Account
+    ACCOUNT_NOT_FOUND(BAD_REQUEST, "1201");
 
     private final HttpStatus httpStatus;
     private final String code;
