@@ -1,5 +1,6 @@
 package com.artinus.channelsubscription.subscription.repository;
 
+import com.artinus.channelsubscription.channel.repository.Channel;
 import com.artinus.channelsubscription.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

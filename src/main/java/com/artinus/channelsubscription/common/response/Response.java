@@ -6,8 +6,8 @@ import jakarta.validation.constraints.NotNull;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
-public record Response<T extends BasePayload>(@NotNull String message, @NotNull String code,
-                                              @JsonInclude(NON_NULL) @Nullable T data) implements AbstractResponse {
+public record Response<T>(@NotNull String message, @NotNull String code,
+                          @JsonInclude(NON_NULL) @Nullable T data) implements AbstractResponse {
 
     @Override
     public String getMessage() {

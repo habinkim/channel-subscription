@@ -24,7 +24,7 @@ public class CommonApplicationException extends RuntimeException implements Supp
     public static final CommonApplicationException NOT_FOUND_DATA = new CommonApplicationException(MessageCode.NOT_FOUND_DATA);
     public static final CommonApplicationException ERROR = new CommonApplicationException(MessageCode.ERROR);
 
-
+    public static final CommonApplicationException CHANNEL_ALREADY_EXISTS = new CommonApplicationException(MessageCode.CHANNEL_ALREADY_EXISTS);
 
     @Override
     public synchronized Throwable fillInStackTrace() {
