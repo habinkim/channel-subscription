@@ -1,0 +1,6 @@
+[[Channel-API]]
+== Channel-API
+=== 채널 등록 API
+
+==== 성공
+operation::register-channel-success[snippets='http-request,http-response,request-fields,response-fields']

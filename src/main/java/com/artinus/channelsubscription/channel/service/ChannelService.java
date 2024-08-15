@@ -3,7 +3,7 @@ package com.artinus.channelsubscription.channel.service;
 import com.artinus.channelsubscription.channel.domain.RegisterChannelRequest;
 import com.artinus.channelsubscription.channel.domain.RegisteredChannel;
 import com.artinus.channelsubscription.channel.mapper.ChannelMapper;
-import com.artinus.channelsubscription.channel.repository.Channel;
+import com.artinus.channelsubscription.channel.entity.Channel;
 import com.artinus.channelsubscription.channel.repository.ChannelRepository;
 import com.artinus.channelsubscription.common.exception.CommonApplicationException;
 import jakarta.validation.Valid;

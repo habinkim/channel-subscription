@@ -1,7 +1,7 @@
 package com.artinus.channelsubscription.channel.mapper;
 
 import com.artinus.channelsubscription.channel.domain.RegisteredChannel;
-import com.artinus.channelsubscription.channel.repository.Channel;
+import com.artinus.channelsubscription.channel.entity.Channel;
 import com.artinus.channelsubscription.common.config.BaseMapperConfig;
 import org.mapstruct.Mapper;
 

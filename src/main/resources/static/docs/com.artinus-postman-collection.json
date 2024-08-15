@@ -1,0 +1,66 @@
+{
+  "info" : {
+    "name" : "Channel Subscription REST API V1 Documentation",
+    "version" : "1.0.0",
+    "schema" : "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item" : [ {
+    "id" : "register-channel-success",
+    "name" : "/channels",
+    "description" : "채널 등록",
+    "variable" : [ ],
+    "event" : [ ],
+    "request" : {
+      "url" : {
+        "protocol" : "http",
+        "host" : "localhost",
+        "path" : "/channels",
+        "port" : "8080"
+      },
+      "method" : "POST",
+      "header" : [ {
+        "key" : "Content-Type",
+        "value" : "application/json;charset=UTF-8",
+        "disabled" : false
+      } ],
+      "body" : {
+        "mode" : "raw",
+        "raw" : "{\n  \"name\" : \"KT 통신사\",\n  \"type\" : \"SUBSCRIBE_UNSUBSCRIBE\"\n}",
+        "urlencoded" : [ ]
+      }
+    },
+    "response" : [ {
+      "id" : "register-channel-success",
+      "name" : "register-channel-success",
+      "originalRequest" : {
+        "url" : {
+          "protocol" : "http",
+          "host" : "localhost",
+          "path" : "/channels",
+          "port" : "8080"
+        },
+        "method" : "POST",
+        "header" : [ {
+          "key" : "Content-Type",
+          "value" : "application/json;charset=UTF-8",
+          "disabled" : false
+        } ],
+        "body" : {
+          "mode" : "raw",
+          "raw" : "{\n  \"name\" : \"KT 통신사\",\n  \"type\" : \"SUBSCRIBE_UNSUBSCRIBE\"\n}",
+          "urlencoded" : [ ]
+        }
+      },
+      "header" : [ {
+        "key" : "Content-Type",
+        "value" : "application/json;charset=UTF-8",
+        "disabled" : false
+      } ],
+      "cookie" : [ ],
+      "body" : "{\n  \"message\" : \"생성이 완료되었습니다.\",\n  \"code\" : \"0001\",\n  \"data\" : {\n    \"id\" : 611892360666353695,\n    \"name\" : \"KT 통신사\",\n    \"type\" : \"SUBSCRIBE_UNSUBSCRIBE\",\n    \"created_at\" : \"2024-08-15 21:01:47\",\n    \"updated_at\" : \"2024-08-15 21:01:47\"\n  }\n}",
+      "code" : 201
+    } ]
+  } ],
+  "event" : [ ],
+  "variable" : [ ]
+}

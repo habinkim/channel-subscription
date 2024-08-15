@@ -1,4 +1,4 @@
-package com.artinus.channelsubscription.channel.repository;
+package com.artinus.channelsubscription.channel.entity;
 
 import com.artinus.channelsubscription.common.entity.BaseEntity;
 import jakarta.persistence.*;
