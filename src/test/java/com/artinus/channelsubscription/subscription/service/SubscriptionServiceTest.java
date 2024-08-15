@@ -2,8 +2,8 @@ package com.artinus.channelsubscription.subscription.service;
 
 import com.artinus.channelsubscription.channel.repository.ChannelRepository;
 import com.artinus.channelsubscription.common.exception.CommonApplicationException;
-import com.artinus.channelsubscription.subscription.domain.SubscribeOperation;
 import com.artinus.channelsubscription.subscription.domain.SubscribeRequest;
+import com.artinus.channelsubscription.subscription.entity.SubscriptionStatus;
 import com.artinus.channelsubscription.subscription.repository.AccountRepository;
 import com.artinus.channelsubscription.subscription.repository.SubscriptionRepository;
 import org.junit.jupiter.api.*;
@@ -38,7 +38,7 @@ class SubscriptionServiceTest {
     @DisplayName("존재하지 않는 채널로 구독할 수 없다.")
     void subscribe_channelNotFound_throwsException() {
         // given
-        SubscribeRequest request = new SubscribeRequest("010-0000-0000", 1L, SubscribeOperation.REGULAR);
+        SubscribeRequest request = new SubscribeRequest("010-0000-0000", 1L, SubscriptionStatus.REGULAR);
 
         when(channelRepository.findByIdAndAvailableTrue(request.channelId())).thenReturn(Optional.empty());
 
