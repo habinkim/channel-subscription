@@ -59,8 +59,12 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
     asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
 
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor(
+            'org.springframework.boot:spring-boot-configuration-processor',
+            'org.projectlombok:lombok',
+            "org.mapstruct:mapstruct-processor:${mapstructVersion}",
+            'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+    )
 
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -83,6 +87,11 @@ tasks.withType(JavaCompile).configureEach {
 
 compileJava.doFirst {
     delete file(generated)
+}
+
+test {
+    outputs.dir snippetsDir
+    useJUnitPlatform()
 }
 
 openapi3 { // Swagger OAS Generate
