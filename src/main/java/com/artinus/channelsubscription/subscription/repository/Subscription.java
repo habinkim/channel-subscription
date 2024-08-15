@@ -22,13 +22,18 @@ public class Subscription extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false)
-    @Comment("구독한 계정 ID")
+    @Comment("계정 ID")
     private Account account;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "channel_id", nullable = false)
     @Comment("채널 ID")
     private Channel channel;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "previous_subscription_status", nullable = false)
+    @Comment("이전 구독 상태")
+    private SubscriptionStatus previousSubscriptionStatus;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "subscription_status", nullable = false)

@@ -1,9 +1,7 @@
 package com.artinus.channelsubscription.subscription.repository;
 
 import com.artinus.channelsubscription.common.entity.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,5 +22,10 @@ public class Account extends BaseEntity {
     @Column(name = "phone_number", unique = true, nullable = false)
     @Comment("전화번호")
     private String phoneNumber;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "current_subscription_status", nullable = false)
+    @Comment("현재 구독 상태")
+    private SubscriptionStatus currentSubscriptionStatus;
 
 }
