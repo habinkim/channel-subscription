@@ -452,6 +452,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_채널_등록_api">채널 등록 API</a></li>
 </ul>
 </li>
+<li><a href="#Subscription-API">Subscription-API</a>
+<ul class="sectlevel2">
+<li><a href="#_구독하기_api">구독하기 API</a></li>
+<li><a href="#_구독해제_api">구독해제 API</a></li>
+<li><a href="#_구독_이력_조회_api">구독 이력 조회 API</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -491,11 +498,11 @@ Content-Length: 270
   "message" : "생성이 완료되었습니다.",
   "code" : "0001",
   "data" : {
-    "id" : 612162791386685652,
+    "id" : 612197070090137815,
     "name" : "KT 통신사",
     "type" : "SUBSCRIBE_UNSUBSCRIBE",
-    "created_at" : "2024-08-16 14:56:22",
-    "updated_at" : "2024-08-16 14:56:22"
+    "created_at" : "2024-08-16 17:12:35",
+    "updated_at" : "2024-08-16 17:12:35"
   }
 }</code></pre>
 </div>
@@ -588,11 +595,822 @@ Content-Length: 270
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="Subscription-API"><a class="link" href="#Subscription-API">Subscription-API</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_구독하기_api"><a class="link" href="#_구독하기_api">구독하기 API</a></h3>
+<div class="sect3">
+<h4 id="_성공_2"><a class="link" href="#_성공_2">성공</a></h4>
+<div class="sect4">
+<h5 id="_성공_2_http_request"><a class="link" href="#_성공_2_http_request">HTTP request</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /subscriptions/subscribe HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 102
+Host: localhost:8080
+
+{
+  "phone_number" : "010-1234-5678",
+  "channel_id" : 612197089966944510,
+  "operation" : "REGULAR"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_성공_2_http_response"><a class="link" href="#_성공_2_http_response">HTTP response</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
+Content-Type: application/json;charset=UTF-8
+Content-Length: 356
+
+{
+  "message" : "생성이 완료되었습니다.",
+  "code" : "0001",
+  "data" : {
+    "subscription_id" : 612197090034053333,
+    "phone_number" : "010-1234-5678",
+    "channel_id" : 612197089966944510,
+    "channel_name" : "홈쇼핑 고객센터",
+    "previous_status" : "NONE",
+    "status" : "REGULAR",
+    "created_at" : "2024-08-16 17:12:40"
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_성공_2_request_fields"><a class="link" href="#_성공_2_request_fields">Request fields</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>phone_number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전화번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>channel_id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">채널 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>operation</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">변경할 구독 상태 [NONE, REGULAR, PREMIUM]</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_성공_2_response_fields"><a class="link" href="#_성공_2_response_fields">Response fields</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">시스템 메시지</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">시스템 코드</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.subscription_id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">구독 이력 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.phone_number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">휴대폰 번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.channel_id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">채널 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.channel_name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">채널명</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.previous_status</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이전 구독 상태 [NONE, REGULAR, PREMIUM]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.status</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">현재 구독 상태 [NONE, REGULAR, PREMIUM]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.created_at</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">생성일시</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_실패"><a class="link" href="#_실패">실패</a></h4>
+<div class="sect4">
+<h5 id="_실패_http_response"><a class="link" href="#_실패_http_response">HTTP response</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+Content-Length: 89
+
+{
+  "message" : "올바르지 않은 구독 상태 변경입니다.",
+  "code" : "1301"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_실패_response_fields"><a class="link" href="#_실패_response_fields">Response fields</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">시스템 메시지</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">시스템 코드</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_구독해제_api"><a class="link" href="#_구독해제_api">구독해제 API</a></h3>
+<div class="sect3">
+<h4 id="_성공_3"><a class="link" href="#_성공_3">성공</a></h4>
+<div class="sect4">
+<h5 id="_성공_3_http_request"><a class="link" href="#_성공_3_http_request">HTTP request</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /subscriptions/unsubscribe HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 99
+Host: localhost:8080
+
+{
+  "phone_number" : "010-1234-5678",
+  "channel_id" : 612197091523031190,
+  "operation" : "NONE"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_성공_3_http_response"><a class="link" href="#_성공_3_http_response">HTTP response</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+Content-Length: 372
+
+{
+  "message" : "요청이 성공적으로 처리되었습니다.",
+  "code" : "0000",
+  "data" : {
+    "subscription_id" : 612197091661443322,
+    "phone_number" : "010-1234-5678",
+    "channel_id" : 612197091523031190,
+    "channel_name" : "홈쇼핑 고객센터",
+    "previous_status" : "REGULAR",
+    "status" : "NONE",
+    "created_at" : "2024-08-16 17:12:40"
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_성공_3_request_fields"><a class="link" href="#_성공_3_request_fields">Request fields</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>phone_number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전화번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>channel_id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">채널 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>operation</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">변경할 구독 상태 [NONE, REGULAR, PREMIUM]</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_성공_3_response_fields"><a class="link" href="#_성공_3_response_fields">Response fields</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">시스템 메시지</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">시스템 코드</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.subscription_id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">구독 이력 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.phone_number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">휴대폰 번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.channel_id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">채널 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.channel_name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">채널명</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.previous_status</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이전 구독 상태 [NONE, REGULAR, PREMIUM]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.status</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">현재 구독 상태 [NONE, REGULAR, PREMIUM]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.created_at</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">생성일시</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_실패_2"><a class="link" href="#_실패_2">실패</a></h4>
+<div class="sect4">
+<h5 id="_실패_2_http_response"><a class="link" href="#_실패_2_http_response">HTTP response</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+Content-Length: 89
+
+{
+  "message" : "올바르지 않은 구독 상태 변경입니다.",
+  "code" : "1301"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_실패_2_response_fields"><a class="link" href="#_실패_2_response_fields">Response fields</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">시스템 메시지</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">시스템 코드</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_구독_이력_조회_api"><a class="link" href="#_구독_이력_조회_api">구독 이력 조회 API</a></h3>
+<div class="sect3">
+<h4 id="_성공_4"><a class="link" href="#_성공_4">성공</a></h4>
+<div class="sect4">
+<h5 id="_성공_4_http_request"><a class="link" href="#_성공_4_http_request">HTTP request</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /subscriptions?phoneNumber=010-1234-5678 HTTP/1.1
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_성공_4_http_response"><a class="link" href="#_성공_4_http_response">HTTP response</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+Content-Length: 11189
+
+{
+  "message" : "요청이 성공적으로 처리되었습니다.",
+  "code" : "0000",
+  "data" : {
+    "2024-08-16" : [ {
+      "subscription_id" : 612197093775372444,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197093678903325,
+      "channel_name" : "Channel20",
+      "previous_status" : "REGULAR",
+      "status" : "NONE",
+      "created_at" : "2024-08-16 17:12:41"
+    }, {
+      "subscription_id" : 612197093712457877,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197093678903325,
+      "channel_name" : "Channel20",
+      "previous_status" : "NONE",
+      "status" : "REGULAR",
+      "created_at" : "2024-08-16 17:12:41"
+    }, {
+      "subscription_id" : 612197093670514809,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197093595017237,
+      "channel_name" : "Channel19",
+      "previous_status" : "REGULAR",
+      "status" : "NONE",
+      "created_at" : "2024-08-16 17:12:41"
+    }, {
+      "subscription_id" : 612197093636960319,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197093595017237,
+      "channel_name" : "Channel19",
+      "previous_status" : "NONE",
+      "status" : "REGULAR",
+      "created_at" : "2024-08-16 17:12:41"
+    }, {
+      "subscription_id" : 612197093586628787,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197093477576895,
+      "channel_name" : "Channel18",
+      "previous_status" : "REGULAR",
+      "status" : "NONE",
+      "created_at" : "2024-08-16 17:12:41"
+    }, {
+      "subscription_id" : 612197093540491518,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197093477576895,
+      "channel_name" : "Channel18",
+      "previous_status" : "NONE",
+      "status" : "REGULAR",
+      "created_at" : "2024-08-16 17:12:41"
+    }, {
+      "subscription_id" : 612197093469188221,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197093397885073,
+      "channel_name" : "Channel17",
+      "previous_status" : "REGULAR",
+      "status" : "NONE",
+      "created_at" : "2024-08-16 17:12:41"
+    }, {
+      "subscription_id" : 612197093431439420,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197093397885073,
+      "channel_name" : "Channel17",
+      "previous_status" : "NONE",
+      "status" : "REGULAR",
+      "created_at" : "2024-08-16 17:12:41"
+    }, {
+      "subscription_id" : 612197093393690837,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197093309804631,
+      "channel_name" : "Channel16",
+      "previous_status" : "REGULAR",
+      "status" : "NONE",
+      "created_at" : "2024-08-16 17:12:41"
+    }, {
+      "subscription_id" : 612197093343359102,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197093309804631,
+      "channel_name" : "Channel16",
+      "previous_status" : "NONE",
+      "status" : "REGULAR",
+      "created_at" : "2024-08-16 17:12:41"
+    }, {
+      "subscription_id" : 612197093301416149,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197093230112824,
+      "channel_name" : "Channel15",
+      "previous_status" : "REGULAR",
+      "status" : "NONE",
+      "created_at" : "2024-08-16 17:12:41"
+    }, {
+      "subscription_id" : 612197093263667285,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197093230112824,
+      "channel_name" : "Channel15",
+      "previous_status" : "NONE",
+      "status" : "REGULAR",
+      "created_at" : "2024-08-16 17:12:41"
+    }, {
+      "subscription_id" : 612197093221724241,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197093154615543,
+      "channel_name" : "Channel14",
+      "previous_status" : "REGULAR",
+      "status" : "NONE",
+      "created_at" : "2024-08-16 17:12:41"
+    }, {
+      "subscription_id" : 612197093188169983,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197093154615543,
+      "channel_name" : "Channel14",
+      "previous_status" : "NONE",
+      "status" : "REGULAR",
+      "created_at" : "2024-08-16 17:12:41"
+    }, {
+      "subscription_id" : 612197093146226909,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197093074923639,
+      "channel_name" : "Channel13",
+      "previous_status" : "REGULAR",
+      "status" : "NONE",
+      "created_at" : "2024-08-16 17:12:41"
+    }, {
+      "subscription_id" : 612197093112672340,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197093074923639,
+      "channel_name" : "Channel13",
+      "previous_status" : "NONE",
+      "status" : "REGULAR",
+      "created_at" : "2024-08-16 17:12:41"
+    }, {
+      "subscription_id" : 612197093066535031,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197092978454587,
+      "channel_name" : "Channel12",
+      "previous_status" : "REGULAR",
+      "status" : "NONE",
+      "created_at" : "2024-08-16 17:12:41"
+    }, {
+      "subscription_id" : 612197093024592127,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197092978454587,
+      "channel_name" : "Channel12",
+      "previous_status" : "NONE",
+      "status" : "REGULAR",
+      "created_at" : "2024-08-16 17:12:41"
+    }, {
+      "subscription_id" : 612197092970066171,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197092890374259,
+      "channel_name" : "Channel11",
+      "previous_status" : "REGULAR",
+      "status" : "NONE",
+      "created_at" : "2024-08-16 17:12:41"
+    }, {
+      "subscription_id" : 612197092928122908,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197092890374259,
+      "channel_name" : "Channel11",
+      "previous_status" : "NONE",
+      "status" : "REGULAR",
+      "created_at" : "2024-08-16 17:12:41"
+    }, {
+      "subscription_id" : 612197092881985625,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197092806488319,
+      "channel_name" : "Channel10",
+      "previous_status" : "REGULAR",
+      "status" : "NONE",
+      "created_at" : "2024-08-16 17:12:41"
+    }, {
+      "subscription_id" : 612197092848431326,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197092806488319,
+      "channel_name" : "Channel10",
+      "previous_status" : "NONE",
+      "status" : "REGULAR",
+      "created_at" : "2024-08-16 17:12:41"
+    }, {
+      "subscription_id" : 612197092802293808,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197092718407762,
+      "channel_name" : "Channel9",
+      "previous_status" : "REGULAR",
+      "status" : "NONE",
+      "created_at" : "2024-08-16 17:12:40"
+    }, {
+      "subscription_id" : 612197092756156533,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197092718407762,
+      "channel_name" : "Channel9",
+      "previous_status" : "NONE",
+      "status" : "REGULAR",
+      "created_at" : "2024-08-16 17:12:40"
+    }, {
+      "subscription_id" : 612197092710019254,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197092630327449,
+      "channel_name" : "Channel8",
+      "previous_status" : "REGULAR",
+      "status" : "NONE",
+      "created_at" : "2024-08-16 17:12:40"
+    }, {
+      "subscription_id" : 612197092668076215,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197092630327449,
+      "channel_name" : "Channel8",
+      "previous_status" : "NONE",
+      "status" : "REGULAR",
+      "created_at" : "2024-08-16 17:12:40"
+    }, {
+      "subscription_id" : 612197092621938710,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197092525469784,
+      "channel_name" : "Channel7",
+      "previous_status" : "REGULAR",
+      "status" : "NONE",
+      "created_at" : "2024-08-16 17:12:40"
+    }, {
+      "subscription_id" : 612197092563218513,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197092525469784,
+      "channel_name" : "Channel7",
+      "previous_status" : "NONE",
+      "status" : "REGULAR",
+      "created_at" : "2024-08-16 17:12:40"
+    }, {
+      "subscription_id" : 612197092517081206,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197092441583734,
+      "channel_name" : "Channel6",
+      "previous_status" : "REGULAR",
+      "status" : "NONE",
+      "created_at" : "2024-08-16 17:12:40"
+    }, {
+      "subscription_id" : 612197092483526687,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197092441583734,
+      "channel_name" : "Channel6",
+      "previous_status" : "NONE",
+      "status" : "REGULAR",
+      "created_at" : "2024-08-16 17:12:40"
+    }, {
+      "subscription_id" : 612197092429000826,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197092349308959,
+      "channel_name" : "Channel5",
+      "previous_status" : "REGULAR",
+      "status" : "NONE",
+      "created_at" : "2024-08-16 17:12:40"
+    }, {
+      "subscription_id" : 612197092395446321,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197092349308959,
+      "channel_name" : "Channel5",
+      "previous_status" : "NONE",
+      "status" : "REGULAR",
+      "created_at" : "2024-08-16 17:12:40"
+    }, {
+      "subscription_id" : 612197092340920441,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197092236062845,
+      "channel_name" : "Channel4",
+      "previous_status" : "REGULAR",
+      "status" : "NONE",
+      "created_at" : "2024-08-16 17:12:40"
+    }, {
+      "subscription_id" : 612197092303171669,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197092236062845,
+      "channel_name" : "Channel4",
+      "previous_status" : "NONE",
+      "status" : "REGULAR",
+      "created_at" : "2024-08-16 17:12:40"
+    }, {
+      "subscription_id" : 612197092227674137,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197092122816574,
+      "channel_name" : "Channel3",
+      "previous_status" : "REGULAR",
+      "status" : "NONE",
+      "created_at" : "2024-08-16 17:12:40"
+    }, {
+      "subscription_id" : 612197092189925457,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197092122816574,
+      "channel_name" : "Channel3",
+      "previous_status" : "NONE",
+      "status" : "REGULAR",
+      "created_at" : "2024-08-16 17:12:40"
+    }, {
+      "subscription_id" : 612197092114427997,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197092030542010,
+      "channel_name" : "Channel2",
+      "previous_status" : "REGULAR",
+      "status" : "NONE",
+      "created_at" : "2024-08-16 17:12:40"
+    }, {
+      "subscription_id" : 612197092072484946,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197092030542010,
+      "channel_name" : "Channel2",
+      "previous_status" : "NONE",
+      "status" : "REGULAR",
+      "created_at" : "2024-08-16 17:12:40"
+    }, {
+      "subscription_id" : 612197092009570391,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197091887935544,
+      "channel_name" : "Channel1",
+      "previous_status" : "REGULAR",
+      "status" : "NONE",
+      "created_at" : "2024-08-16 17:12:40"
+    }, {
+      "subscription_id" : 612197091950850111,
+      "phone_number" : "010-1234-5678",
+      "channel_id" : 612197091887935544,
+      "channel_name" : "Channel1",
+      "previous_status" : "NONE",
+      "status" : "REGULAR",
+      "created_at" : "2024-08-16 17:12:40"
+    } ]
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_성공_4_response_fields"><a class="link" href="#_성공_4_response_fields">Response fields</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">시스템 메시지</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">시스템 코드</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.2024-08-16[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2024-08-16일자 구독 이력 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.2024-08-16[].subscription_id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">구독 이력 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.2024-08-16[].phone_number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">휴대폰 번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.2024-08-16[].channel_id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">채널 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.2024-08-16[].channel_name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">채널명</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.2024-08-16[].previous_status</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이전 구독 상태 [NONE, REGULAR, PREMIUM]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.2024-08-16[].status</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">현재 구독 상태 [NONE, REGULAR, PREMIUM]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.2024-08-16[].created_at</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">생성일시</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-08-15 23:05:35 +0900
+Last updated 2024-08-16 14:57:20 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>

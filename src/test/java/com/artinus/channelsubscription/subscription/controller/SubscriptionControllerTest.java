@@ -9,7 +9,6 @@ import com.artinus.channelsubscription.common.response.MessageCode;
 import com.artinus.channelsubscription.subscription.domain.SubscribeRequest;
 import com.artinus.channelsubscription.subscription.domain.SubscriptionStatus;
 import com.artinus.channelsubscription.subscription.service.SubscriptionService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
@@ -19,12 +18,19 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
+
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static com.epages.restdocs.apispec.ResourceSnippetParameters.builder;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 class SubscriptionControllerTest extends ControllerBaseTest {
@@ -398,6 +404,67 @@ class SubscriptionControllerTest extends ControllerBaseTest {
                                 )
                         )
                 );
+    }
+
+    @Transactional
+    @Test
+    @Order(12)
+    @DisplayName("구독 이력 조회, 성공")
+    void getSubscriptionHistorySuccess() throws Exception {
+        final String phoneNumber = "010-1234-5678";
+
+        AtomicInteger count = new AtomicInteger(0);
+
+        IntStream.rangeClosed(1, 20).forEach(i -> {
+            RegisterChannelRequest registerChannelRequest = new RegisterChannelRequest("Channel" + i, ChannelType.SUBSCRIBE_UNSUBSCRIBE);
+            RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelRequest);
+
+            SubscribeRequest subscribeRequest = new SubscribeRequest(phoneNumber, registeredChannel.id(), SubscriptionStatus.REGULAR);
+            subscriptionService.subscribe(subscribeRequest);
+            count.addAndGet(1);
+
+            SubscribeRequest unsubscribeRequest = new SubscribeRequest(phoneNumber, registeredChannel.id(), SubscriptionStatus.NONE);
+            subscriptionService.unsubscribe(unsubscribeRequest);
+            count.addAndGet(1);
+        });
+
+        String legend = LocalDate.now().toString();
+
+        FieldDescriptor[] responseDescriptors = ArrayUtils.addAll(baseResponseFields,
+                fieldWithPath("data." + legend + "[]").description(legend + "일자 구독 이력 목록"),
+                fieldWithPath("data." + legend + "[].subscription_id").description("구독 이력 ID"),
+                fieldWithPath("data." + legend + "[].phone_number").description("휴대폰 번호"),
+                fieldWithPath("data." + legend + "[].channel_id").description("채널 ID"),
+                fieldWithPath("data." + legend + "[].channel_name").description("채널명"),
+                fieldWithPath("data." + legend + "[].previous_status").description("이전 구독 상태 [NONE, REGULAR, PREMIUM]"),
+                fieldWithPath("data." + legend + "[].status").description("현재 구독 상태 [NONE, REGULAR, PREMIUM]"),
+                fieldWithPath("data." + legend + "[].created_at").description("생성일시")
+        );
+
+
+        mockMvc.perform(
+                        get("/subscriptions")
+                                .param("phoneNumber", phoneNumber)
+                )
+                .andExpectAll(baseAssertion(MessageCode.SUCCESS))
+                .andExpect(jsonPath("$.data", notNullValue()))
+                .andExpect(jsonPath("$.data." + legend, notNullValue()))
+                .andExpect(jsonPath("$.data." + legend + ".length()", is(count.get())))
+                .andExpect(jsonPath("$.data." + legend + "[*].subscription", notNullValue()))
+                .andExpect(jsonPath("$.data." + legend + "[*].phone_number", notNullValue()))
+                .andExpect(jsonPath("$.data." + legend + "[*].channel_id", notNullValue()))
+                .andExpect(jsonPath("$.data." + legend + "[*].channel_name", notNullValue()))
+                .andExpect(jsonPath("$.data." + legend + "[*].previous_status", notNullValue()))
+                .andExpect(jsonPath("$.data." + legend + "[*].status", notNullValue()))
+                .andExpect(jsonPath("$.data." + legend + "[*].created_at", notNullValue()))
+                .andDo(
+                        restDocs.document(
+                                queryParameters(parameterWithName("phoneNumber").description("전화번호")),
+                                responseFields(responseDescriptors)
+                        )
+                );
+
+
     }
 
 }
