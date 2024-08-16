@@ -28,8 +28,9 @@ public class SubscriptionController {
     }
 
     @PostMapping("/unsubscribe")
-    public ResponseEntity<Response<?>> unsubscribeChannel() {
-        return responseMapper.ok();
+    public ResponseEntity<Response<RegisteredSubscription>> unsubscribeChannel(@Valid @RequestBody SubscribeRequest request) {
+        RegisteredSubscription registeredSubscription = subscriptionService.unsubscribe(request);
+        return responseMapper.ok(MessageCode.SUCCESS, registeredSubscription);
     }
 
     @GetMapping
