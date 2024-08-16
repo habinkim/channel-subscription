@@ -21,7 +21,7 @@ public class ChannelService {
     @Transactional
     public RegisteredChannel registerChannel(@Valid RegisterChannelRequest request) {
         channelRepository.findByNameAndAvailableTrue(request.name())
-                .ifPresent(channel -> CommonApplicationException.CHANNEL_ALREADY_EXISTS.get());
+                .ifPresent(channel -> CommonApplicationException.CHANNEL_ALREADY_EXISTS.run());
 
         Channel channel = Channel.builder().name(request.name()).type(request.type()).build();
         Channel savedChannel = channelRepository.save(channel);

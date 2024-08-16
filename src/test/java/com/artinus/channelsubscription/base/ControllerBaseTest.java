@@ -1,5 +1,6 @@
 package com.artinus.channelsubscription.base;
 
+import com.artinus.channelsubscription.common.filter.MDCLoggingFilter;
 import com.artinus.channelsubscription.common.response.MessageCode;
 import com.artinus.channelsubscription.common.util.i18n.MessageSourceUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -56,7 +57,7 @@ public abstract class ControllerBaseTest {
                 .apply(documentationConfiguration(provider))
                 .alwaysDo(print())
                 .alwaysDo(restDocs)
-                .addFilters(new CharacterEncodingFilter(UTF_8.name(), true))
+                .addFilters(new CharacterEncodingFilter(UTF_8.name(), true), new MDCLoggingFilter())
                 .build();
     }
 

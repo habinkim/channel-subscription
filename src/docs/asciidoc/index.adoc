@@ -9,3 +9,4 @@
 :docinfo: shared-head
 
 include::channel-api.adoc[]
+include::subscription-api.adoc[]

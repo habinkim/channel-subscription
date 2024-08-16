@@ -99,6 +99,43 @@ class SubscriptionControllerTest extends ControllerBaseTest {
 
     }
 
+    @Transactional
+    @Test
+    @Order(5)
+    @DisplayName("구독하기, 실패 (올바르지 않은 채널 타입)")
+    void subscribeFailure_invalidChannelType() throws Exception {
+        RegisterChannelRequest registerChannelRequest = new RegisterChannelRequest("홈쇼핑 고객센터", ChannelType.UNSUBSCRIBE_ONLY);
+        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelRequest);
+
+        SubscribeRequest subscribeRequest = new SubscribeRequest("010-1234-5678", registeredChannel.id(), SubscriptionStatus.REGULAR);
+
+        FieldDescriptor[] requestDescriptors = new FieldDescriptor[]{
+                fieldWithPath("phone_number").description("전화번호"),
+                fieldWithPath("channel_id").description("채널 ID"),
+                fieldWithPath("operation").description("변경할 구독 상태 [NONE, REGULAR, PREMIUM]")
+        };
+
+        mockMvc.perform(
+                        post("/subscriptions/subscribe")
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .content(toJson(subscribeRequest))
+                )
+                .andExpectAll(baseAssertion(MessageCode.INVALID_STATUS_TRANSITION))
+                .andDo(
+                        restDocs.document(
+                                requestFields(requestDescriptors),
+                                responseFields(baseResponseFields),
+                                resource(
+                                        builder().
+                                                description("구독하기").
+                                                requestFields(requestDescriptors).
+                                                responseFields(baseResponseFields)
+                                                .build()
+                                )
+                        )
+                );
+    }
+
     public void performSubscribeApi(SubscribeRequest subscribeRequest, RegisteredChannel registeredChannel, SubscriptionStatus previousStatus) throws Exception {
         FieldDescriptor[] requestDescriptors = new FieldDescriptor[]{
                 fieldWithPath("phone_number").description("전화번호"),
