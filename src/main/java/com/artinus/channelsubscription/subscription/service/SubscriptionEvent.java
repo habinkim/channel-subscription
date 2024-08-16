@@ -1,11 +1,14 @@
 package com.artinus.channelsubscription.subscription.service;
 
+import com.artinus.channelsubscription.channel.entity.ChannelType;
+import com.artinus.channelsubscription.common.exception.CommonApplicationException;
 import com.artinus.channelsubscription.subscription.entity.SubscriptionStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.Set;
 
+import static com.artinus.channelsubscription.channel.entity.ChannelType.*;
 import static com.artinus.channelsubscription.subscription.entity.SubscriptionStatus.*;
 import static java.util.Set.of;
 
@@ -13,21 +16,24 @@ import static java.util.Set.of;
 @AllArgsConstructor
 public enum SubscriptionEvent {
 
-    SUBSCRIBE_REGULAR(of(NONE), REGULAR),
-    SUBSCRIBE_PREMIUM(of(NONE), PREMIUM),
-    UPGRADE_TO_PREMIUM(of(REGULAR), PREMIUM),
-    DOWNGRADE_TO_REGULAR(of(PREMIUM), REGULAR),
-    CANCEL_SUBSCRIPTION(of(PREMIUM, REGULAR), NONE);
+    SUBSCRIBE_REGULAR(of(NONE), REGULAR, of(SUBSCRIBE_UNSUBSCRIBE, SUBSCRIBE_ONLY)),
+    SUBSCRIBE_PREMIUM(of(NONE), PREMIUM, of(SUBSCRIBE_UNSUBSCRIBE, SUBSCRIBE_ONLY)),
+    UPGRADE_TO_PREMIUM(of(REGULAR), PREMIUM, of(SUBSCRIBE_UNSUBSCRIBE, SUBSCRIBE_ONLY)),
+    DOWNGRADE_TO_REGULAR(of(PREMIUM), REGULAR, of(SUBSCRIBE_UNSUBSCRIBE, UNSUBSCRIBE_ONLY)),
+    CANCEL_SUBSCRIPTION(of(PREMIUM, REGULAR), NONE, of(SUBSCRIBE_UNSUBSCRIBE, UNSUBSCRIBE_ONLY));
 
     private final Set<SubscriptionStatus> previousStatuses;
     private final SubscriptionStatus nextStatus;
+    private final Set<ChannelType> availableChannelTypes;
 
-    public static SubscriptionEvent from(SubscriptionStatus previousStatus, SubscriptionStatus nextStatus) {
+    public static SubscriptionEvent from(SubscriptionStatus previousStatus, SubscriptionStatus nextStatus, ChannelType channelType) {
         for (SubscriptionEvent event : values())
-            if (event.getPreviousStatuses().contains(previousStatus) && event.getNextStatus() == nextStatus)
+            if (event.getPreviousStatuses().contains(previousStatus) &&
+                    event.getNextStatus().equals(nextStatus) &&
+                    event.getAvailableChannelTypes().contains(channelType))
                 return event;
 
-        throw new IllegalArgumentException("Invalid status transition");
+        throw CommonApplicationException.INVALID_STATUS_TRANSITION;
     }
 
 }

@@ -1,6 +1,7 @@
 package com.artinus.channelsubscription.subscription.service;
 
 import com.artinus.channelsubscription.channel.entity.Channel;
+import com.artinus.channelsubscription.channel.entity.ChannelType;
 import com.artinus.channelsubscription.channel.repository.ChannelRepository;
 import com.artinus.channelsubscription.common.exception.CommonApplicationException;
 import com.artinus.channelsubscription.subscription.domain.RegisteredSubscription;
@@ -45,25 +46,22 @@ public class SubscriptionService {
 
         Account account = accountRepository.findByPhoneNumber(request.phoneNumber()).orElse(createNewAccount(request));
 
+        SubscriptionEvent subscriptionEvent = getEvent(account, request, channel.getType());
+
         StateMachine<SubscriptionStatus, SubscriptionEvent> acquiredStateMachine =
                 stateMachineService.acquireStateMachine(String.valueOf(account.getId()));
 
         StateMachineEventResult<SubscriptionStatus, SubscriptionEvent> stateMachineEventResult = acquiredStateMachine
-                .sendEvent(buildMessage(getEvent(account, request), channel.getId(), account.getPhoneNumber()))
+                .sendEvent(buildMessage(subscriptionEvent, channel.getId(), account.getPhoneNumber()))
                 .blockFirst();
 
         assert stateMachineEventResult != null;
         StateMachineEventResult.ResultType resultType = stateMachineEventResult.getResultType();
 
         if (StateMachineEventResult.ResultType.DENIED.equals(resultType))
-            throw CommonApplicationException.SUBSCRIPTION_DENIED;
+            throw CommonApplicationException.SUBSCRIPTION_TRANSITION_DENIED;
 
-        Subscription build = Subscription.builder()
-                .account(account)
-                .channel(channel)
-                .previousSubscriptionStatus(account.getCurrentSubscriptionStatus())
-                .subscriptionStatus(request.operation())
-                .build();
+        Subscription build = subscriptionMapper.toEntity(request, account, channel);
 
         Subscription savedSubscription = subscriptionRepository.save(build);
 
@@ -79,8 +77,8 @@ public class SubscriptionService {
         return accountRepository.save(build);
     }
 
-    private static SubscriptionEvent getEvent(Account account, SubscribeRequest request) {
-        return SubscriptionEvent.from(account.getCurrentSubscriptionStatus(), request.operation());
+    private static SubscriptionEvent getEvent(Account account, SubscribeRequest request, ChannelType channelType) {
+        return SubscriptionEvent.from(account.getCurrentSubscriptionStatus(), request.operation(), channelType);
     }
 
     private static Mono<Message<SubscriptionEvent>> buildMessage(SubscriptionEvent event, Long channelId, String phoneNumber) {

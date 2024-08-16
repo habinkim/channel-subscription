@@ -34,7 +34,8 @@ public enum MessageCode {
     ACCOUNT_NOT_FOUND(BAD_REQUEST, "1201"),
 
     // Subscription
-    SUBSCRIPTION_DENIED(BAD_REQUEST, "1301");
+    INVALID_STATUS_TRANSITION(BAD_REQUEST, "1301"),
+    SUBSCRIPTION_TRANSITION_DENIED(BAD_REQUEST, "1302");
 
     private final HttpStatus httpStatus;
     private final String code;
