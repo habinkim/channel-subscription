@@ -28,6 +28,7 @@ public class SubscriptionStateMachineConfig extends StateMachineConfigurerAdapte
 
     private final StateMachineListener<SubscriptionStatus, SubscriptionEvent> stateMachineListener;
     private final StateMachineRuntimePersister<SubscriptionStatus, SubscriptionEvent, String> stateMachineRuntimePersister;
+    private final OperationGuard operationGuard;
 
     @Override
     public void configure(StateMachineStateConfigurer<SubscriptionStatus, SubscriptionEvent> states) throws Exception {
@@ -42,25 +43,25 @@ public class SubscriptionStateMachineConfig extends StateMachineConfigurerAdapte
     public void configure(StateMachineTransitionConfigurer<SubscriptionStatus, SubscriptionEvent> transitions) throws Exception {
         transitions
                 .withInternal()
-                .source(NONE).event(INITIALIZE)
+                .source(NONE).event(INITIALIZE).guard(operationGuard)
                 .and()
                 .withExternal()
-                .source(NONE).target(REGULAR).event(SUBSCRIBE_REGULAR)
+                .source(NONE).target(REGULAR).event(SUBSCRIBE_REGULAR).guard(operationGuard)
                 .and()
                 .withExternal()
-                .source(NONE).target(PREMIUM).event(SUBSCRIBE_PREMIUM)
+                .source(NONE).target(PREMIUM).event(SUBSCRIBE_PREMIUM).guard(operationGuard)
                 .and()
                 .withExternal()
-                .source(REGULAR).target(PREMIUM).event(UPGRADE_TO_PREMIUM)
+                .source(REGULAR).target(PREMIUM).event(UPGRADE_TO_PREMIUM).guard(operationGuard)
                 .and()
                 .withExternal()
-                .source(PREMIUM).target(REGULAR).event(DOWNGRADE_TO_REGULAR)
+                .source(PREMIUM).target(REGULAR).event(DOWNGRADE_TO_REGULAR).guard(operationGuard)
                 .and()
                 .withExternal()
-                .source(PREMIUM).target(NONE).event(CANCEL_SUBSCRIPTION)
+                .source(PREMIUM).target(NONE).event(CANCEL_SUBSCRIPTION).guard(operationGuard)
                 .and()
                 .withExternal()
-                .source(REGULAR).target(NONE).event(CANCEL_SUBSCRIPTION);
+                .source(REGULAR).target(NONE).event(CANCEL_SUBSCRIPTION).guard(operationGuard);
     }
 
     @Override

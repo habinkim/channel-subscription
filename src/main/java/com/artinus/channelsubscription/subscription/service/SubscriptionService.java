@@ -4,15 +4,13 @@ import com.artinus.channelsubscription.channel.domain.ChannelType;
 import com.artinus.channelsubscription.channel.entity.Channel;
 import com.artinus.channelsubscription.channel.repository.ChannelRepository;
 import com.artinus.channelsubscription.common.exception.CommonApplicationException;
-import com.artinus.channelsubscription.subscription.domain.RegisteredSubscription;
-import com.artinus.channelsubscription.subscription.domain.SubscribeRequest;
-import com.artinus.channelsubscription.subscription.domain.SubscriptionEvent;
-import com.artinus.channelsubscription.subscription.domain.SubscriptionStatus;
+import com.artinus.channelsubscription.subscription.domain.*;
 import com.artinus.channelsubscription.subscription.entity.Account;
 import com.artinus.channelsubscription.subscription.entity.Subscription;
 import com.artinus.channelsubscription.subscription.mapper.SubscriptionMapper;
 import com.artinus.channelsubscription.subscription.repository.AccountRepository;
 import com.artinus.channelsubscription.subscription.repository.SubscriptionRepository;
+import com.google.common.eventbus.Subscribe;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -102,7 +100,7 @@ public class SubscriptionService {
 
         // State Machine에 이벤트 전달 및 결과 리턴
         StateMachineEventResult<SubscriptionStatus, SubscriptionEvent> stateMachineEventResult = acquiredStateMachine
-                .sendEvent(buildMessage(subscriptionEvent, channel.getId(), account.getPhoneNumber()))
+                .sendEvent(buildMessage(subscriptionEvent, channel.getType(), SubscribeOperation.SUBSCRIBE))
                 .blockFirst();
 
         assert stateMachineEventResult != null;
@@ -113,11 +111,11 @@ public class SubscriptionService {
             throw CommonApplicationException.SUBSCRIPTION_TRANSITION_DENIED;
     }
 
-    private static Mono<Message<SubscriptionEvent>> buildMessage(final SubscriptionEvent event, final Long channelId, final String phoneNumber) {
+    private static Mono<Message<SubscriptionEvent>> buildMessage(final SubscriptionEvent event, final ChannelType channelType, final SubscribeOperation operation) {
         return Mono.just(
                 MessageBuilder.withPayload(event)
-                        .setHeader("channelId", channelId)
-                        .setHeader("phoneNumber", phoneNumber)
+                        .setHeader("channelType", channelType)
+                        .setHeader("operation", operation)
                         .build()
         );
     }
