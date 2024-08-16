@@ -25,6 +25,12 @@ public class CommonApplicationException extends RuntimeException implements Supp
     public static final CommonApplicationException ERROR = new CommonApplicationException(MessageCode.ERROR);
 
     public static final CommonApplicationException CHANNEL_ALREADY_EXISTS = new CommonApplicationException(MessageCode.CHANNEL_ALREADY_EXISTS);
+    public static final CommonApplicationException CHANNEL_NOT_FOUND = new CommonApplicationException(MessageCode.CHANNEL_NOT_FOUND);
+
+    public static final CommonApplicationException ACCOUNT_NOT_FOUND = new CommonApplicationException(MessageCode.ACCOUNT_NOT_FOUND);
+
+    public static final CommonApplicationException SUBSCRIPTION_TRANSITION_DENIED = new CommonApplicationException(MessageCode.SUBSCRIPTION_TRANSITION_DENIED);
+    public static final CommonApplicationException INVALID_STATUS_TRANSITION = new CommonApplicationException(MessageCode.INVALID_STATUS_TRANSITION);
 
     @Override
     public synchronized Throwable fillInStackTrace() {

@@ -6,5 +6,5 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public record SubscribeRequest(@NotBlank String phoneNumber, @NotNull Long channelId, @NotNull SubscribeOperation operation) {
+public record SubscribeRequest(@NotBlank String phoneNumber, @NotNull Long channelId, @NotNull SubscriptionStatus operation) {
 }

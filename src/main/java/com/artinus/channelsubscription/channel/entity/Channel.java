@@ -1,5 +1,6 @@
 package com.artinus.channelsubscription.channel.entity;
 
+import com.artinus.channelsubscription.channel.domain.ChannelType;
 import com.artinus.channelsubscription.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -33,10 +34,5 @@ public class Channel extends BaseEntity {
     @Column(name = "available", nullable = false)
     @Comment("사용 가능 여부")
     private boolean available = true;
-
-    public Channel(String name, ChannelType type) {
-        this.name = name;
-        this.type = type;
-    }
 
 }

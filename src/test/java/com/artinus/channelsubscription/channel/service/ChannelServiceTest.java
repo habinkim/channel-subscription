@@ -2,7 +2,7 @@ package com.artinus.channelsubscription.channel.service;
 
 import com.artinus.channelsubscription.channel.domain.RegisterChannelRequest;
 import com.artinus.channelsubscription.channel.entity.Channel;
-import com.artinus.channelsubscription.channel.entity.ChannelType;
+import com.artinus.channelsubscription.channel.domain.ChannelType;
 import com.artinus.channelsubscription.channel.mapper.ChannelMapper;
 import com.artinus.channelsubscription.channel.repository.ChannelRepository;
 import com.artinus.channelsubscription.common.exception.CommonApplicationException;

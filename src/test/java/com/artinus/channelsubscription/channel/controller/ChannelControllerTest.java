@@ -2,7 +2,7 @@ package com.artinus.channelsubscription.channel.controller;
 
 import com.artinus.channelsubscription.base.ControllerBaseTest;
 import com.artinus.channelsubscription.channel.domain.RegisterChannelRequest;
-import com.artinus.channelsubscription.channel.entity.ChannelType;
+import com.artinus.channelsubscription.channel.domain.ChannelType;
 import com.artinus.channelsubscription.common.response.MessageCode;
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.DisplayName;

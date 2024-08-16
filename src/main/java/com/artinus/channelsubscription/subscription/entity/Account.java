@@ -1,8 +1,10 @@
 package com.artinus.channelsubscription.subscription.entity;
 
 import com.artinus.channelsubscription.common.entity.BaseEntity;
+import com.artinus.channelsubscription.subscription.domain.SubscriptionStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -23,9 +25,10 @@ public class Account extends BaseEntity {
     @Comment("전화번호")
     private String phoneNumber;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "current_subscription_status", nullable = false)
     @Comment("현재 구독 상태")
-    private SubscriptionStatus currentSubscriptionStatus;
+    private SubscriptionStatus currentSubscriptionStatus = SubscriptionStatus.NONE;
 
 }
