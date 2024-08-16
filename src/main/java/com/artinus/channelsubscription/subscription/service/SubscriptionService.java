@@ -10,11 +10,9 @@ import com.artinus.channelsubscription.subscription.entity.Subscription;
 import com.artinus.channelsubscription.subscription.mapper.SubscriptionMapper;
 import com.artinus.channelsubscription.subscription.repository.AccountRepository;
 import com.artinus.channelsubscription.subscription.repository.SubscriptionRepository;
-import com.google.common.eventbus.Subscribe;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.Current;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.StateMachine;
@@ -69,19 +67,42 @@ public class SubscriptionService {
         // State Machine에서 사용할 이벤트 생성
         SubscriptionEvent subscriptionEvent = getEvent(account.getCurrentSubscriptionStatus(), request.operation(), channel.getType());
 
-        transitionSubscriptionStatus(account, subscriptionEvent, channel);
+        transitionSubscriptionStatus(account, channel, subscriptionEvent, SubscribeOperation.SUBSCRIBE);
 
         // State Machine에서 성공하면 DB에 구독 정보 저장
-        Subscription build = subscriptionMapper.toEntity(request, account, channel);
-
-        Subscription savedSubscription = subscriptionRepository.save(build);
+        Subscription savedSubscription = createNewSubscription(request, account, channel);
 
         // 회원의 현재 구독 상태 업데이트
-        Account updatedAccount = account.toBuilder().currentSubscriptionStatus(request.operation()).build();
-        accountRepository.save(updatedAccount);
+        Account updatedAccount = updateCurrentSubscriptionStatus(request, account);
 
         return subscriptionMapper.registeredSubscription(savedSubscription, updatedAccount, channel);
     }
+
+    @Transactional
+    public RegisteredSubscription unsubscribe(@Valid SubscribeRequest request) {
+        // Channel 조회
+        Channel channel = channelRepository.findByIdAndAvailableTrue(request.channelId())
+                .orElseThrow(CommonApplicationException.CHANNEL_NOT_FOUND);
+
+        // 휴대폰 번호에 해당하는 회원 조회 및 없으면 예외 발생
+        Account account = accountRepository.findByPhoneNumber(request.phoneNumber())
+                .orElseThrow(CommonApplicationException.ACCOUNT_NOT_FOUND);
+
+        // State Machine에서 사용할 이벤트 생성
+        SubscriptionEvent subscriptionEvent = getEvent(account.getCurrentSubscriptionStatus(), request.operation(), channel.getType());
+
+        transitionSubscriptionStatus(account, channel, subscriptionEvent, SubscribeOperation.UNSUBSCRIBE);
+
+        // State Machine에서 성공하면 DB에 구독 정보 저장
+        Subscription savedSubscription = createNewSubscription(request, account, channel);
+
+        // 회원의 현재 구독 상태 업데이트
+        Account updatedAccount = updateCurrentSubscriptionStatus(request, account);
+
+        return subscriptionMapper.registeredSubscription(savedSubscription, updatedAccount, channel);
+    }
+
+
 
     @Transactional
     public Account createNewAccount(SubscribeRequest request) {
@@ -89,18 +110,31 @@ public class SubscriptionService {
         return accountRepository.save(build);
     }
 
+    @Transactional
+    public Subscription createNewSubscription(SubscribeRequest request, Account account, Channel channel) {
+        Subscription build = subscriptionMapper.toEntity(request, account, channel);
+        return subscriptionRepository.save(build);
+    }
+
+    @Transactional
+    public Account updateCurrentSubscriptionStatus(SubscribeRequest request, Account account) {
+        Account updatedAccount = account.toBuilder().currentSubscriptionStatus(request.operation()).build();
+        accountRepository.save(updatedAccount);
+        return updatedAccount;
+    }
+
     private static SubscriptionEvent getEvent(final SubscriptionStatus previousStatus, final SubscriptionStatus nextStatus, final ChannelType channelType) {
         return SubscriptionEvent.from(previousStatus, nextStatus, channelType);
     }
 
-    private void transitionSubscriptionStatus(Account account, SubscriptionEvent subscriptionEvent, Channel channel) {
+    private void transitionSubscriptionStatus(Account account, Channel channel,  SubscriptionEvent subscriptionEvent, SubscribeOperation operation) {
         // 회원에 해당하는 State Machine을 Redis에서 가져옴 (없으면 신규 생성)
         StateMachine<SubscriptionStatus, SubscriptionEvent> acquiredStateMachine =
                 stateMachineService.acquireStateMachine(String.valueOf(account.getId()));
 
         // State Machine에 이벤트 전달 및 결과 리턴
         StateMachineEventResult<SubscriptionStatus, SubscriptionEvent> stateMachineEventResult = acquiredStateMachine
-                .sendEvent(buildMessage(subscriptionEvent, channel.getType(), SubscribeOperation.SUBSCRIBE))
+                .sendEvent(buildMessage(subscriptionEvent, channel.getType(), operation))
                 .blockFirst();
 
         assert stateMachineEventResult != null;

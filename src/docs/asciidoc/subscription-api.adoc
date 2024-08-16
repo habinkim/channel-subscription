@@ -9,3 +9,12 @@ operation::subscribe-regular-initialize-success[snippets='http-request,http-resp
 
 ==== 실패
 operation::subscribe-failure_invalid-channel-type[snippets='http-response,response-fields']
+
+
+=== 구독해제 API
+
+==== 성공
+operation::unsubscribe-regular-to-none-success[snippets='http-request,http-response,request-fields,response-fields']
+
+==== 실패
+operation::unsubscribe-failure_invalid-channel-type[snippets='http-response,response-fields']
