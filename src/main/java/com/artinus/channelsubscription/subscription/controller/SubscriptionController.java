@@ -1,7 +1,9 @@
 package com.artinus.channelsubscription.subscription.controller;
 
+import com.artinus.channelsubscription.common.response.MessageCode;
 import com.artinus.channelsubscription.common.response.Response;
 import com.artinus.channelsubscription.common.response.ResponseMapper;
+import com.artinus.channelsubscription.subscription.domain.RegisteredSubscription;
 import com.artinus.channelsubscription.subscription.domain.SubscribeRequest;
 import com.artinus.channelsubscription.subscription.service.SubscriptionService;
 import jakarta.validation.Valid;
@@ -20,9 +22,9 @@ public class SubscriptionController {
     private final SubscriptionService subscriptionService;
 
     @PostMapping("/subscribe")
-    public ResponseEntity<Response<?>> subscribeChannel(@Valid @RequestBody SubscribeRequest request) {
-        subscriptionService.subscribe(request);
-        return responseMapper.ok();
+    public ResponseEntity<Response<RegisteredSubscription>> subscribeChannel(@Valid @RequestBody SubscribeRequest request) {
+        RegisteredSubscription registeredSubscription = subscriptionService.subscribe(request);
+        return responseMapper.ok(MessageCode.CREATED, registeredSubscription);
     }
 
     @PostMapping("/unsubscribe")

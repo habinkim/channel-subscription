@@ -1,6 +1,5 @@
 package com.artinus.channelsubscription.common.config.state;
 
-import com.artinus.channelsubscription.common.exception.CommonApplicationException;
 import com.artinus.channelsubscription.subscription.entity.SubscriptionStatus;
 import com.artinus.channelsubscription.subscription.service.SubscriptionEvent;
 import lombok.extern.slf4j.Slf4j;

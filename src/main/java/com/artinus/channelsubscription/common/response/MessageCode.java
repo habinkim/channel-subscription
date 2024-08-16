@@ -31,7 +31,10 @@ public enum MessageCode {
     CHANNEL_NOT_FOUND(BAD_REQUEST, "1102"),
 
     // Account
-    ACCOUNT_NOT_FOUND(BAD_REQUEST, "1201");
+    ACCOUNT_NOT_FOUND(BAD_REQUEST, "1201"),
+
+    // Subscription
+    SUBSCRIPTION_DENIED(BAD_REQUEST, "1301");
 
     private final HttpStatus httpStatus;
     private final String code;

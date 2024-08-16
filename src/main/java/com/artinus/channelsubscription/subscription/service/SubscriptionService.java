@@ -3,9 +3,12 @@ package com.artinus.channelsubscription.subscription.service;
 import com.artinus.channelsubscription.channel.entity.Channel;
 import com.artinus.channelsubscription.channel.repository.ChannelRepository;
 import com.artinus.channelsubscription.common.exception.CommonApplicationException;
+import com.artinus.channelsubscription.subscription.domain.RegisteredSubscription;
 import com.artinus.channelsubscription.subscription.domain.SubscribeRequest;
 import com.artinus.channelsubscription.subscription.entity.Account;
+import com.artinus.channelsubscription.subscription.entity.Subscription;
 import com.artinus.channelsubscription.subscription.entity.SubscriptionStatus;
+import com.artinus.channelsubscription.subscription.mapper.SubscriptionMapper;
 import com.artinus.channelsubscription.subscription.repository.AccountRepository;
 import com.artinus.channelsubscription.subscription.repository.SubscriptionRepository;
 import jakarta.validation.Valid;
@@ -33,27 +36,47 @@ public class SubscriptionService {
 
     private final StateMachineService<SubscriptionStatus, SubscriptionEvent> stateMachineService;
 
+    private final SubscriptionMapper subscriptionMapper;
+
     @Transactional
-    public void subscribe(@Valid SubscribeRequest request) {
+    public RegisteredSubscription subscribe(@Valid SubscribeRequest request) {
         Channel channel = channelRepository.findByIdAndAvailableTrue(request.channelId())
                 .orElseThrow(CommonApplicationException.CHANNEL_NOT_FOUND);
 
-        Account account = accountRepository.findByPhoneNumber(request.phoneNumber())
-                .orElseThrow(CommonApplicationException.ACCOUNT_NOT_FOUND);
+        Account account = accountRepository.findByPhoneNumber(request.phoneNumber()).orElse(createNewAccount(request));
 
         StateMachine<SubscriptionStatus, SubscriptionEvent> acquiredStateMachine =
                 stateMachineService.acquireStateMachine(String.valueOf(account.getId()));
 
-        acquiredStateMachine.getExtendedState();
-
-        StateMachineEventResult<SubscriptionStatus, SubscriptionEvent> result = acquiredStateMachine
+        StateMachineEventResult<SubscriptionStatus, SubscriptionEvent> stateMachineEventResult = acquiredStateMachine
                 .sendEvent(buildMessage(getEvent(account, request), channel.getId(), account.getPhoneNumber()))
                 .blockFirst();
 
-        StateMachineEventResult.ResultType resultType = result.getResultType();
+        assert stateMachineEventResult != null;
+        StateMachineEventResult.ResultType resultType = stateMachineEventResult.getResultType();
 
+        if (StateMachineEventResult.ResultType.DENIED.equals(resultType))
+            throw CommonApplicationException.SUBSCRIPTION_DENIED;
 
+        Subscription build = Subscription.builder()
+                .account(account)
+                .channel(channel)
+                .previousSubscriptionStatus(account.getCurrentSubscriptionStatus())
+                .subscriptionStatus(request.operation())
+                .build();
 
+        Subscription savedSubscription = subscriptionRepository.save(build);
+
+        Account updatedAccount = account.toBuilder().currentSubscriptionStatus(request.operation()).build();
+        accountRepository.save(updatedAccount);
+
+        return subscriptionMapper.registeredSubscription(savedSubscription, updatedAccount, channel);
+    }
+
+    @Transactional
+    public Account createNewAccount(SubscribeRequest request) {
+        Account build = Account.builder().phoneNumber(request.phoneNumber()).build();
+        return accountRepository.save(build);
     }
 
     private static SubscriptionEvent getEvent(Account account, SubscribeRequest request) {

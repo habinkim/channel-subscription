@@ -17,3 +17,6 @@ springdoc:
   default-produces-media-type: application/json;charset=UTF-8
   swagger-ui:
     url: /docs/com.artinus-open-api-3.0.1.json
+logging:
+  level:
+    org.springframework.statemachine.persist: debug

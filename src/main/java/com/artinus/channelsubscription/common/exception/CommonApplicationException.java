@@ -29,6 +29,8 @@ public class CommonApplicationException extends RuntimeException implements Supp
 
     public static final CommonApplicationException ACCOUNT_NOT_FOUND = new CommonApplicationException(MessageCode.ACCOUNT_NOT_FOUND);
 
+    public static final CommonApplicationException SUBSCRIPTION_DENIED = new CommonApplicationException(MessageCode.SUBSCRIPTION_DENIED);
+
     @Override
     public synchronized Throwable fillInStackTrace() {
         return MessageCode.ERROR.equals(messageCode) ? super.fillInStackTrace() : this;
