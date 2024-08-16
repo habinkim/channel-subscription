@@ -1,7 +1,7 @@
 package com.artinus.channelsubscription.common.config.state;
 
-import com.artinus.channelsubscription.subscription.entity.SubscriptionStatus;
-import com.artinus.channelsubscription.subscription.service.SubscriptionEvent;
+import com.artinus.channelsubscription.subscription.domain.SubscriptionEvent;
+import com.artinus.channelsubscription.subscription.domain.SubscriptionStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +17,9 @@ import org.springframework.statemachine.persist.StateMachineRuntimePersister;
 import org.springframework.statemachine.service.DefaultStateMachineService;
 import org.springframework.statemachine.service.StateMachineService;
 
+import static com.artinus.channelsubscription.subscription.domain.SubscriptionEvent.*;
+import static com.artinus.channelsubscription.subscription.domain.SubscriptionStatus.*;
+
 @Configuration
 @EnableStateMachineFactory
 @RequiredArgsConstructor
@@ -30,31 +33,34 @@ public class SubscriptionStateMachineConfig extends StateMachineConfigurerAdapte
     public void configure(StateMachineStateConfigurer<SubscriptionStatus, SubscriptionEvent> states) throws Exception {
         states
                 .withStates()
-                .initial(SubscriptionStatus.NONE)
-                .state(SubscriptionStatus.REGULAR)
-                .state(SubscriptionStatus.PREMIUM);
+                .initial(NONE)
+                .state(REGULAR)
+                .state(PREMIUM);
     }
 
     @Override
     public void configure(StateMachineTransitionConfigurer<SubscriptionStatus, SubscriptionEvent> transitions) throws Exception {
         transitions
-                .withExternal()
-                .source(SubscriptionStatus.NONE).target(SubscriptionStatus.REGULAR).event(SubscriptionEvent.SUBSCRIBE_REGULAR)
+                .withInternal()
+                .source(NONE).event(INITIALIZE)
                 .and()
                 .withExternal()
-                .source(SubscriptionStatus.NONE).target(SubscriptionStatus.PREMIUM).event(SubscriptionEvent.SUBSCRIBE_PREMIUM)
+                .source(NONE).target(REGULAR).event(SUBSCRIBE_REGULAR)
                 .and()
                 .withExternal()
-                .source(SubscriptionStatus.REGULAR).target(SubscriptionStatus.PREMIUM).event(SubscriptionEvent.UPGRADE_TO_PREMIUM)
+                .source(NONE).target(PREMIUM).event(SUBSCRIBE_PREMIUM)
                 .and()
                 .withExternal()
-                .source(SubscriptionStatus.PREMIUM).target(SubscriptionStatus.REGULAR).event(SubscriptionEvent.DOWNGRADE_TO_REGULAR)
+                .source(REGULAR).target(PREMIUM).event(UPGRADE_TO_PREMIUM)
                 .and()
                 .withExternal()
-                .source(SubscriptionStatus.PREMIUM).target(SubscriptionStatus.NONE).event(SubscriptionEvent.CANCEL_SUBSCRIPTION)
+                .source(PREMIUM).target(REGULAR).event(DOWNGRADE_TO_REGULAR)
                 .and()
                 .withExternal()
-                .source(SubscriptionStatus.REGULAR).target(SubscriptionStatus.NONE).event(SubscriptionEvent.CANCEL_SUBSCRIPTION);
+                .source(PREMIUM).target(NONE).event(CANCEL_SUBSCRIPTION)
+                .and()
+                .withExternal()
+                .source(REGULAR).target(NONE).event(CANCEL_SUBSCRIPTION);
     }
 
     @Override
@@ -69,11 +75,11 @@ public class SubscriptionStateMachineConfig extends StateMachineConfigurerAdapte
     }
 
     /**
-     * @see <a href="https://stackoverflow.com/questions/69506161/spring-statemachinefactory-getstatemachine-returns-currents-state-as-initial-sta">Spring StateMachineFactory getStateMachine returns currents state as initial state</a>
-     * @see <a href="https://stackoverflow.com/questions/63984734/spring-state-machine-with-jpa-persistence-repository-usage/63998307#63998307">Spring state machine with JPA persistence- Repository usage</a>
-     * @param stateMachineFactory State Machine 생성자
+     * @param stateMachineFactory          State Machine 생성자
      * @param stateMachineRuntimePersister State Machine 영속성 관리자
      * @return
+     * @see <a href="https://stackoverflow.com/questions/69506161/spring-statemachinefactory-getstatemachine-returns-currents-state-as-initial-sta">Spring StateMachineFactory getStateMachine returns currents state as initial state</a>
+     * @see <a href="https://stackoverflow.com/questions/63984734/spring-state-machine-with-jpa-persistence-repository-usage/63998307#63998307">Spring state machine with JPA persistence- Repository usage</a>
      */
     @Bean
     public StateMachineService<SubscriptionStatus, SubscriptionEvent> stateMachineService(

@@ -1,6 +1,5 @@
 package com.artinus.channelsubscription.subscription.domain;
 
-import com.artinus.channelsubscription.subscription.entity.SubscriptionStatus;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.validation.constraints.NotBlank;

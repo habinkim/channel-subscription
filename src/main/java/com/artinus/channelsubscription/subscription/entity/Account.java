@@ -1,6 +1,7 @@
 package com.artinus.channelsubscription.subscription.entity;
 
 import com.artinus.channelsubscription.common.entity.BaseEntity;
+import com.artinus.channelsubscription.subscription.domain.SubscriptionStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

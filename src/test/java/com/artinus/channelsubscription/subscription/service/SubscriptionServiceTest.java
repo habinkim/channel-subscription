@@ -3,7 +3,7 @@ package com.artinus.channelsubscription.subscription.service;
 import com.artinus.channelsubscription.channel.repository.ChannelRepository;
 import com.artinus.channelsubscription.common.exception.CommonApplicationException;
 import com.artinus.channelsubscription.subscription.domain.SubscribeRequest;
-import com.artinus.channelsubscription.subscription.entity.SubscriptionStatus;
+import com.artinus.channelsubscription.subscription.domain.SubscriptionStatus;
 import com.artinus.channelsubscription.subscription.repository.AccountRepository;
 import com.artinus.channelsubscription.subscription.repository.SubscriptionRepository;
 import org.junit.jupiter.api.*;

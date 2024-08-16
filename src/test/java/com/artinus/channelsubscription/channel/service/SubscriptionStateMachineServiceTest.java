@@ -1,14 +1,16 @@
 package com.artinus.channelsubscription.channel.service;
 
 import com.artinus.channelsubscription.base.IntegrationTest;
-import com.artinus.channelsubscription.subscription.entity.SubscriptionStatus;
-import com.artinus.channelsubscription.subscription.service.SubscriptionEvent;
+import com.artinus.channelsubscription.subscription.domain.SubscriptionStatus;
+import com.artinus.channelsubscription.subscription.domain.SubscriptionEvent;
 import com.github.f4b6a3.ulid.UlidCreator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.service.StateMachineService;
 import org.springframework.statemachine.test.StateMachineTestPlan;
@@ -28,6 +30,11 @@ public class SubscriptionStateMachineServiceTest {
     void setUp() {
         stateMachine = stateMachineService.acquireStateMachine(UlidCreator.getMonotonicUlid().toString());
     }
+
+//    private static Message<SubscriptionEvent> buildMessage(SubscriptionEvent event) {
+//        return MessageBuilder.withPayload(event)
+//                .build();
+//    }
 
     @Test
     @Order(1)
@@ -179,7 +186,7 @@ public class SubscriptionStateMachineServiceTest {
 
     @Test
     @Order(8)
-    @DisplayName("Transition Failed - NONE -> NONE")
+    @DisplayName("Transition Success - NONE -> NONE")
     void subscribeNoneToNone() throws Exception {
         StateMachineTestPlan<SubscriptionStatus, SubscriptionEvent> plan =
                 StateMachineTestPlanBuilder.<SubscriptionStatus, SubscriptionEvent>builder()
@@ -188,7 +195,8 @@ public class SubscriptionStateMachineServiceTest {
                         .expectState(SubscriptionStatus.NONE)
                         .and()
                         .step()
-                        .sendEvent(SubscriptionEvent.CANCEL_SUBSCRIPTION)
+                        .sendEvent(SubscriptionEvent.INITIALIZE)
+                        .expectState(SubscriptionStatus.NONE)
                         .expectStateChanged(0)
                         .and()
                         .build();

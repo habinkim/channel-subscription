@@ -23,7 +23,7 @@ public class ChannelService {
         channelRepository.findByNameAndAvailableTrue(request.name())
                 .ifPresent(channel -> CommonApplicationException.CHANNEL_ALREADY_EXISTS.get());
 
-        Channel channel = new Channel(request.name(), request.type());
+        Channel channel = Channel.builder().name(request.name()).type(request.type()).build();
         Channel savedChannel = channelRepository.save(channel);
 
         return channelMapper.registeredChannel(savedChannel);

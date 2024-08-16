@@ -1,7 +1,7 @@
 package com.artinus.channelsubscription.common.config.state;
 
-import com.artinus.channelsubscription.subscription.entity.SubscriptionStatus;
-import com.artinus.channelsubscription.subscription.service.SubscriptionEvent;
+import com.artinus.channelsubscription.subscription.domain.SubscriptionStatus;
+import com.artinus.channelsubscription.subscription.domain.SubscriptionEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

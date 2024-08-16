@@ -12,6 +12,9 @@ import org.mapstruct.Mapping;
 @Mapper(config = BaseMapperConfig.class)
 public abstract  class SubscriptionMapper {
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "account", source = "account")
     @Mapping(target = "channel", source = "channel")
     @Mapping(target = "previousSubscriptionStatus", source = "account.currentSubscriptionStatus")
@@ -22,8 +25,9 @@ public abstract  class SubscriptionMapper {
     @Mapping(target = "phoneNumber", source = "account.phoneNumber")
     @Mapping(target = "channelId", source = "channel.id")
     @Mapping(target = "channelName", source = "channel.name")
-    @Mapping(target = "previousSubscriptionStatus", source = "subscription.previousSubscriptionStatus")
-    @Mapping(target = "subscriptionStatus", source = "subscription.subscriptionStatus")
+    @Mapping(target = "previousStatus", source = "subscription.previousSubscriptionStatus")
+    @Mapping(target = "status", source = "subscription.subscriptionStatus")
+    @Mapping(target = "createdAt", source = "subscription.createdAt")
     public abstract RegisteredSubscription registeredSubscription(Subscription subscription, Account account, Channel channel);
 
 }

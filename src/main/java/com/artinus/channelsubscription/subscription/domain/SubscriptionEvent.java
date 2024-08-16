@@ -1,21 +1,21 @@
-package com.artinus.channelsubscription.subscription.service;
+package com.artinus.channelsubscription.subscription.domain;
 
-import com.artinus.channelsubscription.channel.entity.ChannelType;
+import com.artinus.channelsubscription.channel.domain.ChannelType;
 import com.artinus.channelsubscription.common.exception.CommonApplicationException;
-import com.artinus.channelsubscription.subscription.entity.SubscriptionStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.Set;
 
-import static com.artinus.channelsubscription.channel.entity.ChannelType.*;
-import static com.artinus.channelsubscription.subscription.entity.SubscriptionStatus.*;
+import static com.artinus.channelsubscription.channel.domain.ChannelType.*;
+import static com.artinus.channelsubscription.subscription.domain.SubscriptionStatus.*;
 import static java.util.Set.of;
 
 @Getter
 @AllArgsConstructor
 public enum SubscriptionEvent {
 
+    INITIALIZE(of(NONE), NONE, of(SUBSCRIBE_UNSUBSCRIBE, SUBSCRIBE_ONLY)),
     SUBSCRIBE_REGULAR(of(NONE), REGULAR, of(SUBSCRIBE_UNSUBSCRIBE, SUBSCRIBE_ONLY)),
     SUBSCRIBE_PREMIUM(of(NONE), PREMIUM, of(SUBSCRIBE_UNSUBSCRIBE, SUBSCRIBE_ONLY)),
     UPGRADE_TO_PREMIUM(of(REGULAR), PREMIUM, of(SUBSCRIBE_UNSUBSCRIBE, SUBSCRIBE_ONLY)),
