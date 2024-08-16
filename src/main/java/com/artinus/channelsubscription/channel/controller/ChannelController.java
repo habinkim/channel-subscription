@@ -6,13 +6,16 @@ import com.artinus.channelsubscription.channel.service.ChannelService;
 import com.artinus.channelsubscription.common.response.MessageCode;
 import com.artinus.channelsubscription.common.response.Response;
 import com.artinus.channelsubscription.common.response.ResponseMapper;
+import com.artinus.channelsubscription.subscription.domain.SubscriptionHistory;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/channels")
@@ -30,10 +33,11 @@ public class ChannelController {
     }
 
     @GetMapping("/{channelId}/subscriptions")
-    public ResponseEntity<Response<?>> getChannelSubscriptionHistory(
+    public ResponseEntity<Response<List<SubscriptionHistory>>> getChannelSubscriptionHistory(
             @PathVariable(name = "channelId") @NotNull Long channelId,
-            @RequestParam(name = "date") LocalDate date) {
-        return responseMapper.ok();
+            @RequestParam(name = "date") @DateTimeFormat(pattern = "yyyyMMdd") LocalDate date) {
+        List<SubscriptionHistory> histories = channelService.getChannelSubscriptionHistory(channelId, date);
+        return responseMapper.ok(MessageCode.SUCCESS, histories);
     }
 
 }

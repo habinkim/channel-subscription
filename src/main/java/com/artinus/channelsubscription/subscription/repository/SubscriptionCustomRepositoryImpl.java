@@ -9,6 +9,9 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 
@@ -51,5 +54,29 @@ public class SubscriptionCustomRepositoryImpl implements SubscriptionCustomRepos
                         ))
                 );
 
+    }
+
+    @Override
+    public List<SubscriptionHistory> findAllByChannelIdAndDate(Long channelId, LocalDate date) {
+        LocalDateTime startDate = LocalDateTime.of(date, LocalTime.MIN);
+        LocalDateTime endDate = LocalDateTime.of(date, LocalTime.MAX);
+
+        return queryFactory.select(
+                        fields(SubscriptionHistory.class,
+                                SUBSCRIPTION.id.as("subscriptionId"),
+                                ACCOUNT.phoneNumber,
+                                CHANNEL.id.as("channelId"),
+                                CHANNEL.name.as("channelName"),
+                                SUBSCRIPTION.previousSubscriptionStatus.as("previousStatus"),
+                                SUBSCRIPTION.subscriptionStatus.as("status"),
+                                SUBSCRIPTION.createdAt.as("createdAt")
+                        )
+                )
+                .from(SUBSCRIPTION)
+                .join(SUBSCRIPTION.channel, CHANNEL)
+                .join(SUBSCRIPTION.account, ACCOUNT)
+                .where(CHANNEL.id.eq(channelId), SUBSCRIPTION.createdAt.between(startDate, endDate))
+                .orderBy(SUBSCRIPTION.id.desc())
+                .fetch();
     }
 }
