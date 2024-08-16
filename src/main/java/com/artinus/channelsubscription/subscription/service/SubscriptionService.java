@@ -11,6 +11,7 @@ import com.artinus.channelsubscription.subscription.mapper.SubscriptionMapper;
 import com.artinus.channelsubscription.subscription.repository.AccountRepository;
 import com.artinus.channelsubscription.subscription.repository.SubscriptionRepository;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
@@ -22,6 +23,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -102,6 +105,10 @@ public class SubscriptionService {
         return subscriptionMapper.registeredSubscription(savedSubscription, updatedAccount, channel);
     }
 
+    @Transactional(readOnly = true)
+    public Map<String, List<SubscriptionHistory>> getSubscriptionHistory(@NotBlank String phoneNumber) {
+        return subscriptionRepository.findAllByPhoneNumber(phoneNumber);
+    }
 
 
     @Transactional
@@ -127,7 +134,7 @@ public class SubscriptionService {
         return SubscriptionEvent.from(previousStatus, nextStatus, channelType);
     }
 
-    private void transitionSubscriptionStatus(Account account, Channel channel,  SubscriptionEvent subscriptionEvent, SubscribeOperation operation) {
+    private void transitionSubscriptionStatus(Account account, Channel channel, SubscriptionEvent subscriptionEvent, SubscribeOperation operation) {
         // 회원에 해당하는 State Machine을 Redis에서 가져옴 (없으면 신규 생성)
         StateMachine<SubscriptionStatus, SubscriptionEvent> acquiredStateMachine =
                 stateMachineService.acquireStateMachine(String.valueOf(account.getId()));

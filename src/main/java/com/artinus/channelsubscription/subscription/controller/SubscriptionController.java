@@ -5,12 +5,16 @@ import com.artinus.channelsubscription.common.response.Response;
 import com.artinus.channelsubscription.common.response.ResponseMapper;
 import com.artinus.channelsubscription.subscription.domain.RegisteredSubscription;
 import com.artinus.channelsubscription.subscription.domain.SubscribeRequest;
+import com.artinus.channelsubscription.subscription.domain.SubscriptionHistory;
 import com.artinus.channelsubscription.subscription.service.SubscriptionService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/subscriptions")
@@ -34,9 +38,10 @@ public class SubscriptionController {
     }
 
     @GetMapping
-    public ResponseEntity<Response<?>> getSubscriptionHistory(
+    public ResponseEntity<Response<Map<String, List<SubscriptionHistory>>>> getSubscriptionHistory(
             @RequestParam(name = "phoneNumber") @NotBlank String phoneNumber) {
-        return responseMapper.ok();
+        Map<String, List<SubscriptionHistory>> histories = subscriptionService.getSubscriptionHistory(phoneNumber);
+        return responseMapper.ok(histories);
     }
 
 

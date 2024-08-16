@@ -57,11 +57,11 @@
         "disabled" : false
       } ],
       "cookie" : [ ],
-      "body" : "{\n  \"message\" : \"생성이 완료되었습니다.\",\n  \"code\" : \"0001\",\n  \"data\" : {\n    \"id\" : 612162791386685652,\n    \"name\" : \"KT 통신사\",\n    \"type\" : \"SUBSCRIBE_UNSUBSCRIBE\",\n    \"created_at\" : \"2024-08-16 14:56:22\",\n    \"updated_at\" : \"2024-08-16 14:56:22\"\n  }\n}",
+      "body" : "{\n  \"message\" : \"생성이 완료되었습니다.\",\n  \"code\" : \"0001\",\n  \"data\" : {\n    \"id\" : 612197070090137815,\n    \"name\" : \"KT 통신사\",\n    \"type\" : \"SUBSCRIBE_UNSUBSCRIBE\",\n    \"created_at\" : \"2024-08-16 17:12:35\",\n    \"updated_at\" : \"2024-08-16 17:12:35\"\n  }\n}",
       "code" : 201
     } ]
   }, {
-    "id" : "subscribe-regular-initialize-success",
+    "id" : "subscribe-none-to-premium-success",
     "name" : "/subscriptions/subscribe",
     "description" : "구독하기",
     "variable" : [ ],
@@ -81,11 +81,41 @@
       } ],
       "body" : {
         "mode" : "raw",
-        "raw" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612162805861228594,\n  \"operation\" : \"REGULAR\"\n}",
+        "raw" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612197090340237437,\n  \"operation\" : \"PREMIUM\"\n}",
         "urlencoded" : [ ]
       }
     },
     "response" : [ {
+      "id" : "subscribe-none-to-premium-success",
+      "name" : "subscribe-none-to-premium-success",
+      "originalRequest" : {
+        "url" : {
+          "protocol" : "http",
+          "host" : "localhost",
+          "path" : "/subscriptions/subscribe",
+          "port" : "8080"
+        },
+        "method" : "POST",
+        "header" : [ {
+          "key" : "Content-Type",
+          "value" : "application/json;charset=UTF-8",
+          "disabled" : false
+        } ],
+        "body" : {
+          "mode" : "raw",
+          "raw" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612197090340237437,\n  \"operation\" : \"PREMIUM\"\n}",
+          "urlencoded" : [ ]
+        }
+      },
+      "header" : [ {
+        "key" : "Content-Type",
+        "value" : "application/json;charset=UTF-8",
+        "disabled" : false
+      } ],
+      "cookie" : [ ],
+      "body" : "{\n  \"message\" : \"생성이 완료되었습니다.\",\n  \"code\" : \"0001\",\n  \"data\" : {\n    \"subscription_id\" : 612197090466066579,\n    \"phone_number\" : \"010-1234-5678\",\n    \"channel_id\" : 612197090340237437,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"PREMIUM\",\n    \"created_at\" : \"2024-08-16 17:12:40\"\n  }\n}",
+      "code" : 201
+    }, {
       "id" : "subscribe-regular-initialize-success",
       "name" : "subscribe-regular-initialize-success",
       "originalRequest" : {
@@ -103,7 +133,7 @@
         } ],
         "body" : {
           "mode" : "raw",
-          "raw" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612162805861228594,\n  \"operation\" : \"REGULAR\"\n}",
+          "raw" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612197089966944510,\n  \"operation\" : \"REGULAR\"\n}",
           "urlencoded" : [ ]
         }
       },
@@ -113,7 +143,7 @@
         "disabled" : false
       } ],
       "cookie" : [ ],
-      "body" : "{\n  \"message\" : \"생성이 완료되었습니다.\",\n  \"code\" : \"0001\",\n  \"data\" : {\n    \"subscription_id\" : 612162805919948991,\n    \"phone_number\" : \"010-1234-5678\",\n    \"channel_id\" : 612162805861228594,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"REGULAR\",\n    \"created_at\" : \"2024-08-16 14:56:26\"\n  }\n}",
+      "body" : "{\n  \"message\" : \"생성이 완료되었습니다.\",\n  \"code\" : \"0001\",\n  \"data\" : {\n    \"subscription_id\" : 612197090034053333,\n    \"phone_number\" : \"010-1234-5678\",\n    \"channel_id\" : 612197089966944510,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"REGULAR\",\n    \"created_at\" : \"2024-08-16 17:12:40\"\n  }\n}",
       "code" : 201
     }, {
       "id" : "subscribe-initialize-none-success",
@@ -133,7 +163,7 @@
         } ],
         "body" : {
           "mode" : "raw",
-          "raw" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612162805563433087,\n  \"operation\" : \"NONE\"\n}",
+          "raw" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612197089623011454,\n  \"operation\" : \"NONE\"\n}",
           "urlencoded" : [ ]
         }
       },
@@ -143,7 +173,7 @@
         "disabled" : false
       } ],
       "cookie" : [ ],
-      "body" : "{\n  \"message\" : \"생성이 완료되었습니다.\",\n  \"code\" : \"0001\",\n  \"data\" : {\n    \"subscription_id\" : 612162805727010905,\n    \"phone_number\" : \"010-1234-5678\",\n    \"channel_id\" : 612162805563433087,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"NONE\",\n    \"created_at\" : \"2024-08-16 14:56:26\"\n  }\n}",
+      "body" : "{\n  \"message\" : \"생성이 완료되었습니다.\",\n  \"code\" : \"0001\",\n  \"data\" : {\n    \"subscription_id\" : 612197089799172253,\n    \"phone_number\" : \"010-1234-5678\",\n    \"channel_id\" : 612197089623011454,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"NONE\",\n    \"created_at\" : \"2024-08-16 17:12:40\"\n  }\n}",
       "code" : 201
     }, {
       "id" : "subscribe-failure_invalid-channel-type",
@@ -163,7 +193,7 @@
         } ],
         "body" : {
           "mode" : "raw",
-          "raw" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612162806414876927,\n  \"operation\" : \"REGULAR\"\n}",
+          "raw" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612197090977771773,\n  \"operation\" : \"REGULAR\"\n}",
           "urlencoded" : [ ]
         }
       },
@@ -193,7 +223,7 @@
         } ],
         "body" : {
           "mode" : "raw",
-          "raw" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612162806054166769,\n  \"operation\" : \"PREMIUM\"\n}",
+          "raw" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612197090143105274,\n  \"operation\" : \"PREMIUM\"\n}",
           "urlencoded" : [ ]
         }
       },
@@ -203,7 +233,7 @@
         "disabled" : false
       } ],
       "cookie" : [ ],
-      "body" : "{\n  \"message\" : \"생성이 완료되었습니다.\",\n  \"code\" : \"0001\",\n  \"data\" : {\n    \"subscription_id\" : 612162806112886839,\n    \"phone_number\" : \"010-1234-5678\",\n    \"channel_id\" : 612162806054166769,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"PREMIUM\",\n    \"created_at\" : \"2024-08-16 14:56:26\"\n  }\n}",
+      "body" : "{\n  \"message\" : \"생성이 완료되었습니다.\",\n  \"code\" : \"0001\",\n  \"data\" : {\n    \"subscription_id\" : 612197090226991224,\n    \"phone_number\" : \"010-1234-5678\",\n    \"channel_id\" : 612197090143105274,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"PREMIUM\",\n    \"created_at\" : \"2024-08-16 17:12:40\"\n  }\n}",
       "code" : 201
     }, {
       "id" : "subscribe-regular-to-premium-success",
@@ -223,7 +253,7 @@
         } ],
         "body" : {
           "mode" : "raw",
-          "raw" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612162806205161563,\n  \"operation\" : \"PREMIUM\"\n}",
+          "raw" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612197090759667920,\n  \"operation\" : \"PREMIUM\"\n}",
           "urlencoded" : [ ]
         }
       },
@@ -233,8 +263,214 @@
         "disabled" : false
       } ],
       "cookie" : [ ],
-      "body" : "{\n  \"message\" : \"생성이 완료되었습니다.\",\n  \"code\" : \"0001\",\n  \"data\" : {\n    \"subscription_id\" : 612162806326796533,\n    \"phone_number\" : \"010-1234-5678\",\n    \"channel_id\" : 612162806205161563,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"REGULAR\",\n    \"status\" : \"PREMIUM\",\n    \"created_at\" : \"2024-08-16 14:56:26\"\n  }\n}",
+      "body" : "{\n  \"message\" : \"생성이 완료되었습니다.\",\n  \"code\" : \"0001\",\n  \"data\" : {\n    \"subscription_id\" : 612197090881302553,\n    \"phone_number\" : \"010-1234-5678\",\n    \"channel_id\" : 612197090759667920,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"REGULAR\",\n    \"status\" : \"PREMIUM\",\n    \"created_at\" : \"2024-08-16 17:12:40\"\n  }\n}",
       "code" : 201
+    }, {
+      "id" : "subscribe-none-to-regular-success",
+      "name" : "subscribe-none-to-regular-success",
+      "originalRequest" : {
+        "url" : {
+          "protocol" : "http",
+          "host" : "localhost",
+          "path" : "/subscriptions/subscribe",
+          "port" : "8080"
+        },
+        "method" : "POST",
+        "header" : [ {
+          "key" : "Content-Type",
+          "value" : "application/json;charset=UTF-8",
+          "disabled" : false
+        } ],
+        "body" : {
+          "mode" : "raw",
+          "raw" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612197090566729970,\n  \"operation\" : \"REGULAR\"\n}",
+          "urlencoded" : [ ]
+        }
+      },
+      "header" : [ {
+        "key" : "Content-Type",
+        "value" : "application/json;charset=UTF-8",
+        "disabled" : false
+      } ],
+      "cookie" : [ ],
+      "body" : "{\n  \"message\" : \"생성이 완료되었습니다.\",\n  \"code\" : \"0001\",\n  \"data\" : {\n    \"subscription_id\" : 612197090659004478,\n    \"phone_number\" : \"010-1234-5678\",\n    \"channel_id\" : 612197090566729970,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"REGULAR\",\n    \"created_at\" : \"2024-08-16 17:12:40\"\n  }\n}",
+      "code" : 201
+    } ]
+  }, {
+    "id" : "unsubscribe-regular-to-none-success",
+    "name" : "/subscriptions/unsubscribe",
+    "description" : "구독해제",
+    "variable" : [ ],
+    "event" : [ ],
+    "request" : {
+      "url" : {
+        "protocol" : "http",
+        "host" : "localhost",
+        "path" : "/subscriptions/unsubscribe",
+        "port" : "8080"
+      },
+      "method" : "POST",
+      "header" : [ {
+        "key" : "Content-Type",
+        "value" : "application/json;charset=UTF-8",
+        "disabled" : false
+      } ],
+      "body" : {
+        "mode" : "raw",
+        "raw" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612197091523031190,\n  \"operation\" : \"NONE\"\n}",
+        "urlencoded" : [ ]
+      }
+    },
+    "response" : [ {
+      "id" : "unsubscribe-regular-to-none-success",
+      "name" : "unsubscribe-regular-to-none-success",
+      "originalRequest" : {
+        "url" : {
+          "protocol" : "http",
+          "host" : "localhost",
+          "path" : "/subscriptions/unsubscribe",
+          "port" : "8080"
+        },
+        "method" : "POST",
+        "header" : [ {
+          "key" : "Content-Type",
+          "value" : "application/json;charset=UTF-8",
+          "disabled" : false
+        } ],
+        "body" : {
+          "mode" : "raw",
+          "raw" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612197091523031190,\n  \"operation\" : \"NONE\"\n}",
+          "urlencoded" : [ ]
+        }
+      },
+      "header" : [ {
+        "key" : "Content-Type",
+        "value" : "application/json;charset=UTF-8",
+        "disabled" : false
+      } ],
+      "cookie" : [ ],
+      "body" : "{\n  \"message\" : \"요청이 성공적으로 처리되었습니다.\",\n  \"code\" : \"0000\",\n  \"data\" : {\n    \"subscription_id\" : 612197091661443322,\n    \"phone_number\" : \"010-1234-5678\",\n    \"channel_id\" : 612197091523031190,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"REGULAR\",\n    \"status\" : \"NONE\",\n    \"created_at\" : \"2024-08-16 17:12:40\"\n  }\n}",
+      "code" : 200
+    }, {
+      "id" : "unsubscribe-premium-to-regular-success",
+      "name" : "unsubscribe-premium-to-regular-success",
+      "originalRequest" : {
+        "url" : {
+          "protocol" : "http",
+          "host" : "localhost",
+          "path" : "/subscriptions/unsubscribe",
+          "port" : "8080"
+        },
+        "method" : "POST",
+        "header" : [ {
+          "key" : "Content-Type",
+          "value" : "application/json;charset=UTF-8",
+          "disabled" : false
+        } ],
+        "body" : {
+          "mode" : "raw",
+          "raw" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612197091120378001,\n  \"operation\" : \"REGULAR\"\n}",
+          "urlencoded" : [ ]
+        }
+      },
+      "header" : [ {
+        "key" : "Content-Type",
+        "value" : "application/json;charset=UTF-8",
+        "disabled" : false
+      } ],
+      "cookie" : [ ],
+      "body" : "{\n  \"message\" : \"요청이 성공적으로 처리되었습니다.\",\n  \"code\" : \"0000\",\n  \"data\" : {\n    \"subscription_id\" : 612197091225235473,\n    \"phone_number\" : \"010-1234-5678\",\n    \"channel_id\" : 612197091120378001,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"PREMIUM\",\n    \"status\" : \"REGULAR\",\n    \"created_at\" : \"2024-08-16 17:12:40\"\n  }\n}",
+      "code" : 200
+    }, {
+      "id" : "unsubscribe-failure_invalid-channel-type",
+      "name" : "unsubscribe-failure_invalid-channel-type",
+      "originalRequest" : {
+        "url" : {
+          "protocol" : "http",
+          "host" : "localhost",
+          "path" : "/subscriptions/unsubscribe",
+          "port" : "8080"
+        },
+        "method" : "POST",
+        "header" : [ {
+          "key" : "Content-Type",
+          "value" : "application/json;charset=UTF-8",
+          "disabled" : false
+        } ],
+        "body" : {
+          "mode" : "raw",
+          "raw" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612197091736940560,\n  \"operation\" : \"NONE\"\n}",
+          "urlencoded" : [ ]
+        }
+      },
+      "header" : [ {
+        "key" : "Content-Type",
+        "value" : "application/json;charset=UTF-8",
+        "disabled" : false
+      } ],
+      "cookie" : [ ],
+      "body" : "{\n  \"message\" : \"올바르지 않은 구독 상태 변경입니다.\",\n  \"code\" : \"1301\"\n}",
+      "code" : 400
+    }, {
+      "id" : "unsubscribe-success",
+      "name" : "unsubscribe-success",
+      "originalRequest" : {
+        "url" : {
+          "protocol" : "http",
+          "host" : "localhost",
+          "path" : "/subscriptions/unsubscribe",
+          "port" : "8080"
+        },
+        "method" : "POST",
+        "header" : [ {
+          "key" : "Content-Type",
+          "value" : "application/json;charset=UTF-8",
+          "disabled" : false
+        } ],
+        "body" : {
+          "mode" : "raw",
+          "raw" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612169422176989245,\n  \"operation\" : \"REGULAR\"\n}",
+          "urlencoded" : [ ]
+        }
+      },
+      "header" : [ {
+        "key" : "Content-Type",
+        "value" : "application/json;charset=UTF-8",
+        "disabled" : false
+      } ],
+      "cookie" : [ ],
+      "body" : "{\n  \"message\" : \"요청이 성공적으로 처리되었습니다.\",\n  \"code\" : \"0000\",\n  \"data\" : {\n    \"subscription_id\" : 612169423997317169,\n    \"phone_number\" : \"010-1234-5678\",\n    \"channel_id\" : 612169422176989245,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"PREMIUM\",\n    \"status\" : \"REGULAR\",\n    \"created_at\" : \"2024-08-16 15:22:44\"\n  }\n}",
+      "code" : 200
+    }, {
+      "id" : "unsubscribe-premium-to-none-success",
+      "name" : "unsubscribe-premium-to-none-success",
+      "originalRequest" : {
+        "url" : {
+          "protocol" : "http",
+          "host" : "localhost",
+          "path" : "/subscriptions/unsubscribe",
+          "port" : "8080"
+        },
+        "method" : "POST",
+        "header" : [ {
+          "key" : "Content-Type",
+          "value" : "application/json;charset=UTF-8",
+          "disabled" : false
+        } ],
+        "body" : {
+          "mode" : "raw",
+          "raw" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612197091321704638,\n  \"operation\" : \"NONE\"\n}",
+          "urlencoded" : [ ]
+        }
+      },
+      "header" : [ {
+        "key" : "Content-Type",
+        "value" : "application/json;charset=UTF-8",
+        "disabled" : false
+      } ],
+      "cookie" : [ ],
+      "body" : "{\n  \"message\" : \"요청이 성공적으로 처리되었습니다.\",\n  \"code\" : \"0000\",\n  \"data\" : {\n    \"subscription_id\" : 612197091430756562,\n    \"phone_number\" : \"010-1234-5678\",\n    \"channel_id\" : 612197091321704638,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"PREMIUM\",\n    \"status\" : \"NONE\",\n    \"created_at\" : \"2024-08-16 17:12:40\"\n  }\n}",
+      "code" : 200
     } ]
   } ],
   "event" : [ ],
