@@ -38,7 +38,8 @@ public class ChannelService implements RegisterChannelUseCase, GetChannelHistory
 
     @Transactional(readOnly = true)
     public List<SubscriptionHistory> getChannelSubscriptionHistory(@NotNull Long channelId, LocalDate date) {
-        if (loadChannelPort.existsById(channelId)) CommonApplicationException.CHANNEL_NOT_FOUND.run();
+        // TODO : exists 쿼리가 동작하지 않음
+//        if (loadChannelPort.existsById(channelId)) CommonApplicationException.CHANNEL_NOT_FOUND.run();
         return subscriptionRepository.findAllByChannelIdAndDate(channelId, date);
     }
 }

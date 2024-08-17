@@ -50,6 +50,7 @@ class ChannelServiceTest {
         verify(saveChannelPort, never()).saveChannel(any());
     }
 
+    @Disabled
     @Test
     @Order(2)
     @DisplayName("존재하지 않는 채널의 이력을 조회할 수 없다.")

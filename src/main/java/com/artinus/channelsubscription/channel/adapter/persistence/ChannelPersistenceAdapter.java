@@ -32,7 +32,7 @@ public class ChannelPersistenceAdapter implements LoadChannelPort, SaveChannelPo
 
     @Override
     public Boolean existsById(final Long channelId) {
-        return channelJpaRepository.existsById(channelId);
+        return channelJpaRepository.existsByChannelId(channelId);
     }
 
     @Override

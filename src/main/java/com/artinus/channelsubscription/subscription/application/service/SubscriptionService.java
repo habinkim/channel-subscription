@@ -9,22 +9,14 @@ import com.artinus.channelsubscription.subscription.application.port.input.GetSu
 import com.artinus.channelsubscription.subscription.application.port.input.SubscribeCommand;
 import com.artinus.channelsubscription.subscription.application.port.input.SubscribeUseCase;
 import com.artinus.channelsubscription.subscription.application.port.input.UnsubscribeUseCase;
-import com.artinus.channelsubscription.subscription.application.port.output.LoadAccountPort;
-import com.artinus.channelsubscription.subscription.application.port.output.LoadSubscriptionPort;
-import com.artinus.channelsubscription.subscription.application.port.output.SaveAccountPort;
-import com.artinus.channelsubscription.subscription.application.port.output.SaveSubscriptionPort;
+import com.artinus.channelsubscription.subscription.application.port.output.*;
 import com.artinus.channelsubscription.subscription.domain.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.support.MessageBuilder;
-import org.springframework.statemachine.StateMachine;
-import org.springframework.statemachine.StateMachineEventResult;
 import org.springframework.statemachine.service.StateMachineService;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Map;
@@ -47,7 +39,7 @@ public class SubscriptionService implements SubscribeUseCase, UnsubscribeUseCase
     private final LoadSubscriptionPort loadSubscriptionPort;
     private final SaveSubscriptionPort saveSubscriptionPort;
 
-    private final StateMachineService<SubscriptionStatus, SubscriptionEvent> stateMachineService;
+    private final AttemptTransitionPort attemptTransitionPort;
 
     @Transactional
     public RegisteredSubscription subscribe(@Valid SubscribeCommand command) {
@@ -75,7 +67,9 @@ public class SubscriptionService implements SubscribeUseCase, UnsubscribeUseCase
         // State Machine에서 사용할 이벤트 생성
         SubscriptionEvent subscriptionEvent = getEvent(account.currentSubscriptionStatus(), command.operation(), channel.type());
 
-        transitionSubscriptionStatus(account, channel, subscriptionEvent, SubscribeOperation.SUBSCRIBE);
+        AttemptTransitionSubscriptionStatus transitionBehavior = new AttemptTransitionSubscriptionStatus(account.id(),
+                account.phoneNumber(), channel.type(), subscriptionEvent, SubscribeOperation.SUBSCRIBE);
+        attemptTransitionPort.transitionSubscriptionStatus(transitionBehavior);
 
         // State Machine에서 성공하면 DB에 구독 정보 저장
         SaveSubscription behavior = new SaveSubscription(account.phoneNumber(), channel.id(),
@@ -101,7 +95,9 @@ public class SubscriptionService implements SubscribeUseCase, UnsubscribeUseCase
         // State Machine에서 사용할 이벤트 생성
         SubscriptionEvent subscriptionEvent = getEvent(account.currentSubscriptionStatus(), command.operation(), channel.type());
 
-        transitionSubscriptionStatus(account, channel, subscriptionEvent, SubscribeOperation.UNSUBSCRIBE);
+        AttemptTransitionSubscriptionStatus transitionBehavior = new AttemptTransitionSubscriptionStatus(account.id(),
+                account.phoneNumber(), channel.type(), subscriptionEvent, SubscribeOperation.UNSUBSCRIBE);
+        attemptTransitionPort.transitionSubscriptionStatus(transitionBehavior);
 
         // State Machine에서 성공하면 DB에 구독 정보 저장
         SaveSubscription behavior = new SaveSubscription(account.phoneNumber(), channel.id(),
@@ -128,30 +124,4 @@ public class SubscriptionService implements SubscribeUseCase, UnsubscribeUseCase
         return SubscriptionEvent.from(previousStatus, nextStatus, channelType);
     }
 
-    private void transitionSubscriptionStatus(RegisteredAccount account, RegisteredChannel channel, SubscriptionEvent subscriptionEvent, SubscribeOperation operation) {
-        // 회원에 해당하는 State Machine을 Redis에서 가져옴 (없으면 신규 생성)
-        StateMachine<SubscriptionStatus, SubscriptionEvent> acquiredStateMachine =
-                stateMachineService.acquireStateMachine(account.phoneNumber());
-
-        // State Machine에 이벤트 전달 및 결과 리턴
-        StateMachineEventResult<SubscriptionStatus, SubscriptionEvent> stateMachineEventResult = acquiredStateMachine
-                .sendEvent(buildMessage(subscriptionEvent, channel.type(), operation))
-                .blockFirst();
-
-        assert stateMachineEventResult != null;
-        StateMachineEventResult.ResultType resultType = stateMachineEventResult.getResultType();
-
-        // State Machine에서 거부되면 예외 발생
-        if (StateMachineEventResult.ResultType.DENIED.equals(resultType))
-            throw CommonApplicationException.SUBSCRIPTION_TRANSITION_DENIED;
-    }
-
-    private static Mono<Message<SubscriptionEvent>> buildMessage(final SubscriptionEvent event, final ChannelType channelType, final SubscribeOperation operation) {
-        return Mono.just(
-                MessageBuilder.withPayload(event)
-                        .setHeader("channelType", channelType)
-                        .setHeader("operation", operation)
-                        .build()
-        );
-    }
 }
