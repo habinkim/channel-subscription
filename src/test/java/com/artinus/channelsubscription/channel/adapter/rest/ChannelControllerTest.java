@@ -1,6 +1,7 @@
-package com.artinus.channelsubscription.channel.controller;
+package com.artinus.channelsubscription.channel.adapter.rest;
 
 import com.artinus.channelsubscription.base.ControllerBaseTest;
+import com.artinus.channelsubscription.channel.application.port.input.RegisterChannelUseCase;
 import com.artinus.channelsubscription.channel.domain.ChannelType;
 import com.artinus.channelsubscription.channel.application.port.input.RegisterChannelCommand;
 import com.artinus.channelsubscription.channel.domain.RegisteredChannel;
@@ -36,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ChannelControllerTest extends ControllerBaseTest {
 
     @Autowired
-    private ChannelService channelService;
+    private RegisterChannelUseCase registerChannelUseCase;
 
     @Autowired
     private SubscriptionService subscriptionService;
@@ -102,7 +103,7 @@ class ChannelControllerTest extends ControllerBaseTest {
     @DisplayName("채널 이력 조회, 성공")
     void getChannelSubscriptionHistorySuccess() throws Exception {
         RegisterChannelCommand registerChannelCommand = new RegisterChannelCommand("홈쇼핑 고객센터", ChannelType.SUBSCRIBE_UNSUBSCRIBE);
-        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelCommand);
+        RegisteredChannel registeredChannel = registerChannelUseCase.registerChannel(registerChannelCommand);
 
         IntStream.rangeClosed(1, 20).forEach(i -> {
             String phoneNumber = "010-1234-" + String.format("%04d", i);

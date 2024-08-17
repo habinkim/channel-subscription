@@ -19,6 +19,9 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Input port adapter for channel registration and history.
+ */
 @WebAdapter
 @RequestMapping("/channels")
 @RequiredArgsConstructor

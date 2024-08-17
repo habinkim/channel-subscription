@@ -1,11 +1,8 @@
-package com.artinus.channelsubscription.channel.service;
+package com.artinus.channelsubscription.channel.application.service;
 
-import com.artinus.channelsubscription.channel.adapter.persistence.ChannelJpaRepository;
-import com.artinus.channelsubscription.channel.adapter.persistence.ChannelMapper;
 import com.artinus.channelsubscription.channel.application.port.input.RegisterChannelCommand;
 import com.artinus.channelsubscription.channel.application.port.output.LoadChannelPort;
 import com.artinus.channelsubscription.channel.application.port.output.SaveChannelPort;
-import com.artinus.channelsubscription.channel.application.service.ChannelService;
 import com.artinus.channelsubscription.channel.domain.ChannelType;
 import com.artinus.channelsubscription.common.exception.CommonApplicationException;
 import com.artinus.channelsubscription.subscription.repository.SubscriptionRepository;
@@ -15,8 +12,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -24,9 +19,6 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ChannelServiceTest {
-
-    @Mock
-    private ChannelJpaRepository channelJpaRepository;
 
     @Mock
     private SubscriptionRepository subscriptionRepository;
@@ -65,14 +57,14 @@ class ChannelServiceTest {
         // given
         Long channelId = 1L;
 
-        when(channelJpaRepository.findByIdAndAvailableTrue(channelId)).thenReturn(Optional.empty());
+        when(loadChannelPort.existsById(channelId)).thenReturn(true);
 
         // when & then
         CommonApplicationException exception = assertThrows(CommonApplicationException.class, () -> channelService.getChannelSubscriptionHistory(channelId, null));
 
         assertEquals(CommonApplicationException.CHANNEL_NOT_FOUND, exception);
 
-        verify(channelJpaRepository, times(1)).findByIdAndAvailableTrue(channelId);
+        verify(loadChannelPort, times(1)).existsById(channelId);
         verify(subscriptionRepository, never()).findAllByChannelIdAndDate(any(), any());
     }
 
