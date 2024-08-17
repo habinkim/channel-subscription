@@ -1,11 +1,16 @@
-package com.artinus.channelsubscription.subscription.service;
+package com.artinus.channelsubscription.subscription.application.service;
 
 import com.artinus.channelsubscription.channel.adapter.persistence.ChannelJpaEntity;
 import com.artinus.channelsubscription.channel.domain.ChannelType;
 import com.artinus.channelsubscription.channel.adapter.persistence.ChannelJpaRepository;
 import com.artinus.channelsubscription.common.exception.CommonApplicationException;
+import com.artinus.channelsubscription.common.stereotype.UseCase;
 import com.artinus.channelsubscription.subscription.adapter.persistence.AccountJpaEntity;
 import com.artinus.channelsubscription.subscription.adapter.persistence.SubscriptionJpaEntity;
+import com.artinus.channelsubscription.subscription.application.port.input.GetSubscriptionHistoryUseCase;
+import com.artinus.channelsubscription.subscription.application.port.input.SubscribeCommand;
+import com.artinus.channelsubscription.subscription.application.port.input.SubscribeUseCase;
+import com.artinus.channelsubscription.subscription.application.port.input.UnsubscribeUseCase;
 import com.artinus.channelsubscription.subscription.domain.*;
 import com.artinus.channelsubscription.subscription.adapter.persistence.SubscriptionMapper;
 import com.artinus.channelsubscription.subscription.adapter.persistence.AccountJpaRepository;
@@ -31,10 +36,10 @@ import java.util.concurrent.atomic.AtomicReference;
  * @see <a href="https://devloo.tistory.com/entry/Spring-State-Machine-%EC%9D%84-%EC%96%B4%EB%96%BB%EA%B2%8C-%ED%99%9C%EC%9A%A9%ED%95%A0-%EC%88%98-%EC%9E%88%EC%9D%84%EA%B9%8C%EC%9A%94-%EC%82%AC%EC%9A%A9-%EB%B0%A9%EB%B2%95-%EB%B0%8F-%EC%98%88%EC%A0%9C">Spring State Machine을 어떻게 활용할 수 있을까요?</a>
  * @see <a href="https://medium.com/@alishazy/spring-statemachine-a-comprehensive-guide-31dc346a600d">Spring Statemachine: A Comprehensive Guide</a>
  */
-@Service
+@UseCase
 @RequiredArgsConstructor
 @Slf4j
-public class SubscriptionService {
+public class SubscriptionService implements SubscribeUseCase, UnsubscribeUseCase, GetSubscriptionHistoryUseCase {
 
     private final AccountJpaRepository accountRepository;
     private final SubscriptionJpaRepository subscriptionRepository;
@@ -45,7 +50,7 @@ public class SubscriptionService {
     private final SubscriptionMapper subscriptionMapper;
 
     @Transactional
-    public RegisteredSubscription subscribe(@Valid SubscribeRequest request) {
+    public RegisteredSubscription subscribe(@Valid SubscribeCommand request) {
         AtomicReference<Boolean> isNewAccount = new AtomicReference<>(false);
 
         // ChannelJpaEntity 조회
@@ -82,7 +87,7 @@ public class SubscriptionService {
     }
 
     @Transactional
-    public RegisteredSubscription unsubscribe(@Valid SubscribeRequest request) {
+    public RegisteredSubscription unsubscribe(@Valid SubscribeCommand request) {
         // ChannelJpaEntity 조회
         ChannelJpaEntity channel = channelJpaRepository.findByIdAndAvailableTrue(request.channelId())
                 .orElseThrow(CommonApplicationException.CHANNEL_NOT_FOUND);
@@ -112,19 +117,19 @@ public class SubscriptionService {
 
 
     @Transactional
-    public AccountJpaEntity createNewAccount(SubscribeRequest request) {
+    public AccountJpaEntity createNewAccount(SubscribeCommand request) {
         AccountJpaEntity build = AccountJpaEntity.builder().phoneNumber(request.phoneNumber()).build();
         return accountRepository.save(build);
     }
 
     @Transactional
-    public SubscriptionJpaEntity createNewSubscription(SubscribeRequest request, AccountJpaEntity account, ChannelJpaEntity channel) {
+    public SubscriptionJpaEntity createNewSubscription(SubscribeCommand request, AccountJpaEntity account, ChannelJpaEntity channel) {
         SubscriptionJpaEntity build = subscriptionMapper.toEntity(request, account, channel);
         return subscriptionRepository.save(build);
     }
 
     @Transactional
-    public AccountJpaEntity updateCurrentSubscriptionStatus(SubscribeRequest request, AccountJpaEntity account) {
+    public AccountJpaEntity updateCurrentSubscriptionStatus(SubscribeCommand request, AccountJpaEntity account) {
         AccountJpaEntity updatedAccount = account.toBuilder().currentSubscriptionStatus(request.operation()).build();
         accountRepository.save(updatedAccount);
         return updatedAccount;

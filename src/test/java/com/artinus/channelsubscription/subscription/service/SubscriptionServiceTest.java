@@ -4,7 +4,8 @@ import com.artinus.channelsubscription.channel.adapter.persistence.ChannelJpaEnt
 import com.artinus.channelsubscription.channel.adapter.persistence.ChannelJpaRepository;
 import com.artinus.channelsubscription.common.exception.CommonApplicationException;
 import com.artinus.channelsubscription.subscription.adapter.persistence.AccountJpaEntity;
-import com.artinus.channelsubscription.subscription.domain.SubscribeRequest;
+import com.artinus.channelsubscription.subscription.application.service.SubscriptionService;
+import com.artinus.channelsubscription.subscription.application.port.input.SubscribeCommand;
 import com.artinus.channelsubscription.subscription.domain.SubscriptionStatus;
 import com.artinus.channelsubscription.subscription.adapter.persistence.AccountJpaRepository;
 import com.artinus.channelsubscription.subscription.adapter.persistence.SubscriptionJpaRepository;
@@ -40,7 +41,7 @@ class SubscriptionServiceTest {
     @DisplayName("존재하지 않는 채널로 구독할 수 없다.")
     void subscribe_channelNotFound_throwsException() {
         // given
-        SubscribeRequest request = new SubscribeRequest("010-0000-0000", 1L, SubscriptionStatus.REGULAR);
+        SubscribeCommand request = new SubscribeCommand("010-0000-0000", 1L, SubscriptionStatus.REGULAR);
 
         when(channelJpaRepository.findByIdAndAvailableTrue(request.channelId())).thenReturn(Optional.empty());
 
@@ -58,7 +59,7 @@ class SubscriptionServiceTest {
     @DisplayName("기존 회원은 구독 안함으로 상태를 초기화할 수 없다.")
     void subscribe_existingAccountWithNoneStatus_throwsException() {
         // given
-        SubscribeRequest request = new SubscribeRequest("010-0000-0000", 1L, SubscriptionStatus.NONE);
+        SubscribeCommand request = new SubscribeCommand("010-0000-0000", 1L, SubscriptionStatus.NONE);
 
         AccountJpaEntity accountMock = mock(AccountJpaEntity.class);
         when(channelJpaRepository.findByIdAndAvailableTrue(request.channelId())).thenReturn(Optional.of(mock(ChannelJpaEntity.class)));
@@ -80,7 +81,7 @@ class SubscriptionServiceTest {
     @DisplayName("존재하지 않는 채널로 구독해지할 수 없다.")
     void unsubscribe_channelNotFound_throwsException() {
         // given
-        SubscribeRequest request = new SubscribeRequest("010-0000-0000", 1L, SubscriptionStatus.NONE);
+        SubscribeCommand request = new SubscribeCommand("010-0000-0000", 1L, SubscriptionStatus.NONE);
 
         when(channelJpaRepository.findByIdAndAvailableTrue(request.channelId())).thenReturn(Optional.empty());
 
@@ -98,7 +99,7 @@ class SubscriptionServiceTest {
     @DisplayName("존재하지 않는 전화번호로 구독해지할 수 없다.")
     void unsubscribe_accountNotFound_throwsException() {
         // given
-        SubscribeRequest request = new SubscribeRequest("010-0000-0000", 1L, SubscriptionStatus.NONE);
+        SubscribeCommand request = new SubscribeCommand("010-0000-0000", 1L, SubscriptionStatus.NONE);
 
         when(channelJpaRepository.findByIdAndAvailableTrue(request.channelId())).thenReturn(Optional.of(mock(ChannelJpaEntity.class)));
         when(accountRepository.findByPhoneNumber(request.phoneNumber())).thenReturn(Optional.empty());

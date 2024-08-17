@@ -5,11 +5,10 @@ import com.artinus.channelsubscription.channel.application.port.input.RegisterCh
 import com.artinus.channelsubscription.channel.domain.ChannelType;
 import com.artinus.channelsubscription.channel.application.port.input.RegisterChannelCommand;
 import com.artinus.channelsubscription.channel.domain.RegisteredChannel;
-import com.artinus.channelsubscription.channel.application.service.ChannelService;
 import com.artinus.channelsubscription.common.response.MessageCode;
-import com.artinus.channelsubscription.subscription.domain.SubscribeRequest;
+import com.artinus.channelsubscription.subscription.application.port.input.SubscribeCommand;
 import com.artinus.channelsubscription.subscription.domain.SubscriptionStatus;
-import com.artinus.channelsubscription.subscription.service.SubscriptionService;
+import com.artinus.channelsubscription.subscription.application.service.SubscriptionService;
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
@@ -107,8 +106,8 @@ class ChannelControllerTest extends ControllerBaseTest {
 
         IntStream.rangeClosed(1, 20).forEach(i -> {
             String phoneNumber = "010-1234-" + String.format("%04d", i);
-            SubscribeRequest subscribeRequest = new SubscribeRequest(phoneNumber, registeredChannel.id(), SubscriptionStatus.REGULAR);
-            subscriptionService.subscribe(subscribeRequest);
+            SubscribeCommand subscribeCommand = new SubscribeCommand(phoneNumber, registeredChannel.id(), SubscriptionStatus.REGULAR);
+            subscriptionService.subscribe(subscribeCommand);
         });
 
         ParameterDescriptor pathParameterDescriptor = parameterWithName("channelId").description("채널 ID");
