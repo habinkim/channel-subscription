@@ -8,8 +8,9 @@ import com.artinus.channelsubscription.channel.application.port.output.SaveChann
 import com.artinus.channelsubscription.channel.domain.RegisteredChannel;
 import com.artinus.channelsubscription.channel.domain.SaveChannel;
 import com.artinus.channelsubscription.common.exception.CommonApplicationException;
-import com.artinus.channelsubscription.subscription.domain.SubscriptionHistory;
 import com.artinus.channelsubscription.subscription.adapter.persistence.SubscriptionJpaRepository;
+import com.artinus.channelsubscription.subscription.application.port.output.LoadSubscriptionPort;
+import com.artinus.channelsubscription.subscription.domain.SubscriptionHistory;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -23,10 +24,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChannelService implements RegisterChannelUseCase, GetChannelHistoryUseCase {
 
-    private final SubscriptionJpaRepository subscriptionRepository;
-
     private final LoadChannelPort loadChannelPort;
     private final SaveChannelPort saveChannelPort;
+
+    private final LoadSubscriptionPort loadSubscriptionPort;
 
     @Transactional
     public RegisteredChannel registerChannel(@Valid RegisterChannelCommand command) {
@@ -40,6 +41,6 @@ public class ChannelService implements RegisterChannelUseCase, GetChannelHistory
     public List<SubscriptionHistory> getChannelSubscriptionHistory(@NotNull Long channelId, LocalDate date) {
         // TODO : exists 쿼리가 동작하지 않음
 //        if (loadChannelPort.existsById(channelId)) CommonApplicationException.CHANNEL_NOT_FOUND.run();
-        return subscriptionRepository.findAllByChannelIdAndDate(channelId, date);
+        return loadSubscriptionPort.findAllByChannelIdAndDate(channelId, date);
     }
 }

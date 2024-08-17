@@ -10,6 +10,7 @@ import com.artinus.channelsubscription.subscription.domain.SaveSubscription;
 import com.artinus.channelsubscription.subscription.domain.SubscriptionHistory;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -41,5 +42,10 @@ public class SubscriptionPersistenceAdapter implements SaveSubscriptionPort, Loa
     @Override
     public Map<String, List<SubscriptionHistory>> getSubscriptionHistory(final String phoneNumber) {
         return subscriptionJpaRepository.findAllByPhoneNumber(phoneNumber);
+    }
+
+    @Override
+    public List<SubscriptionHistory> findAllByChannelIdAndDate(Long channelId, LocalDate date) {
+        return subscriptionJpaRepository.findAllByChannelIdAndDate(channelId, date);
     }
 }
