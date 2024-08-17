@@ -1,10 +1,11 @@
-package com.artinus.channelsubscription.channel.service;
+package com.artinus.channelsubscription.channel.application.service;
 
 import com.artinus.channelsubscription.channel.adapter.persistence.ChannelJpaEntity;
 import com.artinus.channelsubscription.channel.adapter.persistence.ChannelJpaRepository;
 import com.artinus.channelsubscription.channel.adapter.persistence.ChannelMapper;
 import com.artinus.channelsubscription.channel.application.port.input.GetChannelHistoryUseCase;
 import com.artinus.channelsubscription.channel.application.port.input.RegisterChannelUseCase;
+import com.artinus.channelsubscription.channel.application.port.output.LoadChannelPort;
 import com.artinus.channelsubscription.channel.domain.RegisterChannelCommand;
 import com.artinus.channelsubscription.channel.domain.RegisteredChannel;
 import com.artinus.channelsubscription.common.exception.CommonApplicationException;
@@ -26,14 +27,18 @@ public class ChannelService implements RegisterChannelUseCase, GetChannelHistory
     private final ChannelJpaRepository channelJpaRepository;
     private final SubscriptionRepository subscriptionRepository;
 
+    private final LoadChannelPort loadChannelPort;
+
     private final ChannelMapper channelMapper;
 
     @Transactional
-    public RegisteredChannel registerChannel(@Valid RegisterChannelCommand request) {
-        channelJpaRepository.findByNameAndAvailableTrue(request.name())
-                .ifPresent(channel -> CommonApplicationException.CHANNEL_ALREADY_EXISTS.run());
+    public RegisteredChannel registerChannel(@Valid RegisterChannelCommand command) {
+//        channelJpaRepository.findByNameAndAvailableTrue(command.name())
+//                .ifPresent(channel -> CommonApplicationException.CHANNEL_ALREADY_EXISTS.run());
 
-        ChannelJpaEntity channel = ChannelJpaEntity.builder().name(request.name()).type(request.type()).build();
+        if(loadChannelPort.existsByName(command.name())) CommonApplicationException.CHANNEL_ALREADY_EXISTS.run();
+
+        ChannelJpaEntity channel = ChannelJpaEntity.builder().name(command.name()).type(command.type()).build();
         ChannelJpaEntity savedChannel = channelJpaRepository.save(channel);
 
         return channelMapper.registeredChannel(savedChannel);

@@ -4,7 +4,6 @@ import com.artinus.channelsubscription.channel.application.port.input.GetChannel
 import com.artinus.channelsubscription.channel.application.port.input.RegisterChannelUseCase;
 import com.artinus.channelsubscription.channel.domain.RegisterChannelCommand;
 import com.artinus.channelsubscription.channel.domain.RegisteredChannel;
-import com.artinus.channelsubscription.channel.service.ChannelService;
 import com.artinus.channelsubscription.common.response.MessageCode;
 import com.artinus.channelsubscription.common.response.Response;
 import com.artinus.channelsubscription.common.response.ResponseMapper;

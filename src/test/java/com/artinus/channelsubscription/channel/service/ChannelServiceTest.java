@@ -1,5 +1,6 @@
 package com.artinus.channelsubscription.channel.service;
 
+import com.artinus.channelsubscription.channel.application.service.ChannelService;
 import com.artinus.channelsubscription.channel.domain.RegisterChannelCommand;
 import com.artinus.channelsubscription.channel.adapter.persistence.ChannelJpaEntity;
 import com.artinus.channelsubscription.channel.domain.ChannelType;

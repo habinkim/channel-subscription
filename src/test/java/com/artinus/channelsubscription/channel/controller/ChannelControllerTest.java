@@ -4,7 +4,7 @@ import com.artinus.channelsubscription.base.ControllerBaseTest;
 import com.artinus.channelsubscription.channel.domain.ChannelType;
 import com.artinus.channelsubscription.channel.domain.RegisterChannelCommand;
 import com.artinus.channelsubscription.channel.domain.RegisteredChannel;
-import com.artinus.channelsubscription.channel.service.ChannelService;
+import com.artinus.channelsubscription.channel.application.service.ChannelService;
 import com.artinus.channelsubscription.common.response.MessageCode;
 import com.artinus.channelsubscription.subscription.domain.SubscribeRequest;
 import com.artinus.channelsubscription.subscription.domain.SubscriptionStatus;
