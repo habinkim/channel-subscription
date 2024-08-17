@@ -416,7 +416,7 @@ class SubscriptionControllerTest extends ControllerBaseTest {
         AtomicInteger count = new AtomicInteger(0);
 
         IntStream.rangeClosed(1, 20).forEach(i -> {
-            RegisterChannelRequest registerChannelRequest = new RegisterChannelRequest("Channel" + i, ChannelType.SUBSCRIBE_UNSUBSCRIBE);
+            RegisterChannelRequest registerChannelRequest = new RegisterChannelRequest("ChannelJpaEntity" + i, ChannelType.SUBSCRIBE_UNSUBSCRIBE);
             RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelRequest);
 
             SubscribeRequest subscribeRequest = new SubscribeRequest(phoneNumber, registeredChannel.id(), SubscriptionStatus.REGULAR);

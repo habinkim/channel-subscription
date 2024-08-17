@@ -1,4 +1,4 @@
-package com.artinus.channelsubscription.channel.entity;
+package com.artinus.channelsubscription.channel.adapter.persistence;
 
 import com.artinus.channelsubscription.channel.domain.ChannelType;
 import com.artinus.channelsubscription.common.entity.BaseEntity;
@@ -19,7 +19,7 @@ import org.hibernate.annotations.Comment;
 @Getter
 @Entity
 @Table(name = "channel")
-public class Channel extends BaseEntity {
+public class ChannelJpaEntity extends BaseEntity {
 
     @Column(name = "name", unique = true, nullable = false)
     @Comment("채널명")

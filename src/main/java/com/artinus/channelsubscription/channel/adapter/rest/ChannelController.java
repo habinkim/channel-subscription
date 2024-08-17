@@ -1,4 +1,4 @@
-package com.artinus.channelsubscription.channel.controller;
+package com.artinus.channelsubscription.channel.adapter.rest;
 
 import com.artinus.channelsubscription.channel.domain.RegisterChannelRequest;
 import com.artinus.channelsubscription.channel.domain.RegisteredChannel;

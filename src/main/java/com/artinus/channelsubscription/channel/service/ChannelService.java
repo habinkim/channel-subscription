@@ -1,10 +1,10 @@
 package com.artinus.channelsubscription.channel.service;
 
+import com.artinus.channelsubscription.channel.adapter.persistence.ChannelJpaEntity;
 import com.artinus.channelsubscription.channel.domain.RegisterChannelRequest;
 import com.artinus.channelsubscription.channel.domain.RegisteredChannel;
-import com.artinus.channelsubscription.channel.entity.Channel;
-import com.artinus.channelsubscription.channel.mapper.ChannelMapper;
-import com.artinus.channelsubscription.channel.repository.ChannelRepository;
+import com.artinus.channelsubscription.channel.adapter.persistence.ChannelMapper;
+import com.artinus.channelsubscription.channel.adapter.persistence.ChannelJpaRepository;
 import com.artinus.channelsubscription.common.exception.CommonApplicationException;
 import com.artinus.channelsubscription.subscription.domain.SubscriptionHistory;
 import com.artinus.channelsubscription.subscription.repository.SubscriptionRepository;
@@ -21,25 +21,25 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChannelService {
 
-    private final ChannelRepository channelRepository;
+    private final ChannelJpaRepository channelJpaRepository;
     private final SubscriptionRepository subscriptionRepository;
 
     private final ChannelMapper channelMapper;
 
     @Transactional
     public RegisteredChannel registerChannel(@Valid RegisterChannelRequest request) {
-        channelRepository.findByNameAndAvailableTrue(request.name())
+        channelJpaRepository.findByNameAndAvailableTrue(request.name())
                 .ifPresent(channel -> CommonApplicationException.CHANNEL_ALREADY_EXISTS.run());
 
-        Channel channel = Channel.builder().name(request.name()).type(request.type()).build();
-        Channel savedChannel = channelRepository.save(channel);
+        ChannelJpaEntity channel = ChannelJpaEntity.builder().name(request.name()).type(request.type()).build();
+        ChannelJpaEntity savedChannel = channelJpaRepository.save(channel);
 
         return channelMapper.registeredChannel(savedChannel);
     }
 
     @Transactional(readOnly = true)
     public List<SubscriptionHistory> getChannelSubscriptionHistory(@NotNull Long channelId, LocalDate date) {
-        channelRepository.findByIdAndAvailableTrue(channelId).orElseThrow(CommonApplicationException.CHANNEL_NOT_FOUND);
+        channelJpaRepository.findByIdAndAvailableTrue(channelId).orElseThrow(CommonApplicationException.CHANNEL_NOT_FOUND);
         return subscriptionRepository.findAllByChannelIdAndDate(channelId, date);
     }
 }

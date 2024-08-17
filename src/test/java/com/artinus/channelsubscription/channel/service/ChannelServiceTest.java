@@ -1,10 +1,10 @@
 package com.artinus.channelsubscription.channel.service;
 
 import com.artinus.channelsubscription.channel.domain.RegisterChannelRequest;
-import com.artinus.channelsubscription.channel.entity.Channel;
+import com.artinus.channelsubscription.channel.adapter.persistence.ChannelJpaEntity;
 import com.artinus.channelsubscription.channel.domain.ChannelType;
-import com.artinus.channelsubscription.channel.mapper.ChannelMapper;
-import com.artinus.channelsubscription.channel.repository.ChannelRepository;
+import com.artinus.channelsubscription.channel.adapter.persistence.ChannelMapper;
+import com.artinus.channelsubscription.channel.adapter.persistence.ChannelJpaRepository;
 import com.artinus.channelsubscription.common.exception.CommonApplicationException;
 import com.artinus.channelsubscription.subscription.repository.SubscriptionRepository;
 import org.junit.jupiter.api.*;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.*;
 class ChannelServiceTest {
 
     @Mock
-    private ChannelRepository channelRepository;
+    private ChannelJpaRepository channelJpaRepository;
 
     @Mock
     private SubscriptionRepository subscriptionRepository;
@@ -39,17 +39,17 @@ class ChannelServiceTest {
     @DisplayName("이미 존재하는 채널 명 으로 채널을 생성할 수 없다.")
     void registerChannel_alreadyExists_throwsException() {
         // given
-        RegisterChannelRequest request = new RegisterChannelRequest("Existing Channel", ChannelType.SUBSCRIBE_ONLY);
+        RegisterChannelRequest request = new RegisterChannelRequest("Existing ChannelJpaEntity", ChannelType.SUBSCRIBE_ONLY);
 
-        when(channelRepository.findByNameAndAvailableTrue(request.name())).thenReturn(Optional.of(new Channel()));
+        when(channelJpaRepository.findByNameAndAvailableTrue(request.name())).thenReturn(Optional.of(new ChannelJpaEntity()));
 
         // when & then
         CommonApplicationException exception = assertThrows(CommonApplicationException.class, () -> channelService.registerChannel(request));
 
         assertEquals(CommonApplicationException.CHANNEL_ALREADY_EXISTS, exception);
 
-        verify(channelRepository, times(1)).findByNameAndAvailableTrue(request.name());
-        verify(channelRepository, never()).save(any());
+        verify(channelJpaRepository, times(1)).findByNameAndAvailableTrue(request.name());
+        verify(channelJpaRepository, never()).save(any());
     }
 
     @Test
@@ -59,14 +59,14 @@ class ChannelServiceTest {
         // given
         Long channelId = 1L;
 
-        when(channelRepository.findByIdAndAvailableTrue(channelId)).thenReturn(Optional.empty());
+        when(channelJpaRepository.findByIdAndAvailableTrue(channelId)).thenReturn(Optional.empty());
 
         // when & then
         CommonApplicationException exception = assertThrows(CommonApplicationException.class, () -> channelService.getChannelSubscriptionHistory(channelId, null));
 
         assertEquals(CommonApplicationException.CHANNEL_NOT_FOUND, exception);
 
-        verify(channelRepository, times(1)).findByIdAndAvailableTrue(channelId);
+        verify(channelJpaRepository, times(1)).findByIdAndAvailableTrue(channelId);
         verify(subscriptionRepository, never()).findAllByChannelIdAndDate(any(), any());
     }
 
