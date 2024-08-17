@@ -2,7 +2,7 @@ package com.artinus.channelsubscription.channel.adapter.rest;
 
 import com.artinus.channelsubscription.channel.application.port.input.GetChannelHistoryUseCase;
 import com.artinus.channelsubscription.channel.application.port.input.RegisterChannelUseCase;
-import com.artinus.channelsubscription.channel.domain.RegisterChannelCommand;
+import com.artinus.channelsubscription.channel.application.port.input.RegisterChannelCommand;
 import com.artinus.channelsubscription.channel.domain.RegisteredChannel;
 import com.artinus.channelsubscription.common.response.MessageCode;
 import com.artinus.channelsubscription.common.response.Response;

@@ -1,12 +1,12 @@
 package com.artinus.channelsubscription.channel.service;
 
-import com.artinus.channelsubscription.channel.application.port.output.LoadChannelPort;
-import com.artinus.channelsubscription.channel.application.service.ChannelService;
-import com.artinus.channelsubscription.channel.domain.RegisterChannelCommand;
-import com.artinus.channelsubscription.channel.adapter.persistence.ChannelJpaEntity;
-import com.artinus.channelsubscription.channel.domain.ChannelType;
-import com.artinus.channelsubscription.channel.adapter.persistence.ChannelMapper;
 import com.artinus.channelsubscription.channel.adapter.persistence.ChannelJpaRepository;
+import com.artinus.channelsubscription.channel.adapter.persistence.ChannelMapper;
+import com.artinus.channelsubscription.channel.application.port.input.RegisterChannelCommand;
+import com.artinus.channelsubscription.channel.application.port.output.LoadChannelPort;
+import com.artinus.channelsubscription.channel.application.port.output.SaveChannelPort;
+import com.artinus.channelsubscription.channel.application.service.ChannelService;
+import com.artinus.channelsubscription.channel.domain.ChannelType;
 import com.artinus.channelsubscription.common.exception.CommonApplicationException;
 import com.artinus.channelsubscription.subscription.repository.SubscriptionRepository;
 import org.junit.jupiter.api.*;
@@ -17,7 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,7 +35,7 @@ class ChannelServiceTest {
     private LoadChannelPort loadChannelPort;
 
     @Mock
-    private ChannelMapper channelMapper;
+    private SaveChannelPort saveChannelPort;
 
     @InjectMocks
     private ChannelService channelService;
@@ -54,7 +55,7 @@ class ChannelServiceTest {
         assertEquals(CommonApplicationException.CHANNEL_ALREADY_EXISTS, exception);
 
         verify(loadChannelPort, times(1)).existsByName(request.name());
-        verify(channelJpaRepository, never()).save(any());
+        verify(saveChannelPort, never()).saveChannel(any());
     }
 
     @Test
