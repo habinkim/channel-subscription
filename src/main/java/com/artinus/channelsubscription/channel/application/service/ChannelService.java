@@ -33,9 +33,6 @@ public class ChannelService implements RegisterChannelUseCase, GetChannelHistory
 
     @Transactional
     public RegisteredChannel registerChannel(@Valid RegisterChannelCommand command) {
-//        channelJpaRepository.findByNameAndAvailableTrue(command.name())
-//                .ifPresent(channel -> CommonApplicationException.CHANNEL_ALREADY_EXISTS.run());
-
         if(loadChannelPort.existsByName(command.name())) CommonApplicationException.CHANNEL_ALREADY_EXISTS.run();
 
         ChannelJpaEntity channel = ChannelJpaEntity.builder().name(command.name()).type(command.type()).build();

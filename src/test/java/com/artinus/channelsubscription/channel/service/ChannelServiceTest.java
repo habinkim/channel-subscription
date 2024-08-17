@@ -1,5 +1,6 @@
 package com.artinus.channelsubscription.channel.service;
 
+import com.artinus.channelsubscription.channel.application.port.output.LoadChannelPort;
 import com.artinus.channelsubscription.channel.application.service.ChannelService;
 import com.artinus.channelsubscription.channel.domain.RegisterChannelCommand;
 import com.artinus.channelsubscription.channel.adapter.persistence.ChannelJpaEntity;
@@ -30,6 +31,9 @@ class ChannelServiceTest {
     private SubscriptionRepository subscriptionRepository;
 
     @Mock
+    private LoadChannelPort loadChannelPort;
+
+    @Mock
     private ChannelMapper channelMapper;
 
     @InjectMocks
@@ -42,14 +46,14 @@ class ChannelServiceTest {
         // given
         RegisterChannelCommand request = new RegisterChannelCommand("Existing ChannelJpaEntity", ChannelType.SUBSCRIBE_ONLY);
 
-        when(channelJpaRepository.findByNameAndAvailableTrue(request.name())).thenReturn(Optional.of(new ChannelJpaEntity()));
+        when(loadChannelPort.existsByName(request.name())).thenReturn(true);
 
         // when & then
         CommonApplicationException exception = assertThrows(CommonApplicationException.class, () -> channelService.registerChannel(request));
 
         assertEquals(CommonApplicationException.CHANNEL_ALREADY_EXISTS, exception);
 
-        verify(channelJpaRepository, times(1)).findByNameAndAvailableTrue(request.name());
+        verify(loadChannelPort, times(1)).existsByName(request.name());
         verify(channelJpaRepository, never()).save(any());
     }
 

@@ -11,7 +11,7 @@ public class ChannelPersistenceAdapter implements LoadChannelPort {
     private final ChannelJpaRepository channelJpaRepository;
 
     @Override
-    public Boolean existsByName(String name) {
-        return null;
+    public Boolean existsByName(final String name) {
+        return channelJpaRepository.existsByName(name);
     }
 }
