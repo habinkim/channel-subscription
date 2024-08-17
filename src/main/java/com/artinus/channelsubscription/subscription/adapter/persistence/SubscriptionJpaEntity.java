@@ -1,4 +1,4 @@
-package com.artinus.channelsubscription.subscription.entity;
+package com.artinus.channelsubscription.subscription.adapter.persistence;
 
 import com.artinus.channelsubscription.channel.adapter.persistence.ChannelJpaEntity;
 import com.artinus.channelsubscription.common.entity.BaseEntity;
@@ -20,12 +20,12 @@ import org.hibernate.annotations.Comment;
 @Getter
 @Entity
 @Table(name = "subscription")
-public class Subscription extends BaseEntity {
+public class SubscriptionJpaEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false)
     @Comment("계정 ID")
-    private Account account;
+    private AccountJpaEntity account;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "channel_id", nullable = false)

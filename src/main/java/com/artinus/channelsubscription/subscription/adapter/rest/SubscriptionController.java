@@ -1,8 +1,9 @@
-package com.artinus.channelsubscription.subscription.controller;
+package com.artinus.channelsubscription.subscription.adapter.rest;
 
 import com.artinus.channelsubscription.common.response.MessageCode;
 import com.artinus.channelsubscription.common.response.Response;
 import com.artinus.channelsubscription.common.response.ResponseMapper;
+import com.artinus.channelsubscription.common.stereotype.WebAdapter;
 import com.artinus.channelsubscription.subscription.domain.RegisteredSubscription;
 import com.artinus.channelsubscription.subscription.domain.SubscribeRequest;
 import com.artinus.channelsubscription.subscription.domain.SubscriptionHistory;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@RestController
+@WebAdapter
 @RequestMapping("/subscriptions")
 @RequiredArgsConstructor
 public class SubscriptionController {

@@ -9,7 +9,7 @@ import com.artinus.channelsubscription.channel.domain.RegisteredChannel;
 import com.artinus.channelsubscription.channel.domain.SaveChannel;
 import com.artinus.channelsubscription.common.exception.CommonApplicationException;
 import com.artinus.channelsubscription.subscription.domain.SubscriptionHistory;
-import com.artinus.channelsubscription.subscription.repository.SubscriptionRepository;
+import com.artinus.channelsubscription.subscription.adapter.persistence.SubscriptionJpaRepository;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChannelService implements RegisterChannelUseCase, GetChannelHistoryUseCase {
 
-    private final SubscriptionRepository subscriptionRepository;
+    private final SubscriptionJpaRepository subscriptionRepository;
 
     private final LoadChannelPort loadChannelPort;
     private final SaveChannelPort saveChannelPort;

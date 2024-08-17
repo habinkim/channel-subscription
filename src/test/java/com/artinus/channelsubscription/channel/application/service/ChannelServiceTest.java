@@ -5,7 +5,7 @@ import com.artinus.channelsubscription.channel.application.port.output.LoadChann
 import com.artinus.channelsubscription.channel.application.port.output.SaveChannelPort;
 import com.artinus.channelsubscription.channel.domain.ChannelType;
 import com.artinus.channelsubscription.common.exception.CommonApplicationException;
-import com.artinus.channelsubscription.subscription.repository.SubscriptionRepository;
+import com.artinus.channelsubscription.subscription.adapter.persistence.SubscriptionJpaRepository;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,7 +21,7 @@ import static org.mockito.Mockito.*;
 class ChannelServiceTest {
 
     @Mock
-    private SubscriptionRepository subscriptionRepository;
+    private SubscriptionJpaRepository subscriptionRepository;
 
     @Mock
     private LoadChannelPort loadChannelPort;

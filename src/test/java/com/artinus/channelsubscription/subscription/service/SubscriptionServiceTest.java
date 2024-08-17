@@ -3,11 +3,11 @@ package com.artinus.channelsubscription.subscription.service;
 import com.artinus.channelsubscription.channel.adapter.persistence.ChannelJpaEntity;
 import com.artinus.channelsubscription.channel.adapter.persistence.ChannelJpaRepository;
 import com.artinus.channelsubscription.common.exception.CommonApplicationException;
+import com.artinus.channelsubscription.subscription.adapter.persistence.AccountJpaEntity;
 import com.artinus.channelsubscription.subscription.domain.SubscribeRequest;
 import com.artinus.channelsubscription.subscription.domain.SubscriptionStatus;
-import com.artinus.channelsubscription.subscription.entity.Account;
-import com.artinus.channelsubscription.subscription.repository.AccountRepository;
-import com.artinus.channelsubscription.subscription.repository.SubscriptionRepository;
+import com.artinus.channelsubscription.subscription.adapter.persistence.AccountJpaRepository;
+import com.artinus.channelsubscription.subscription.adapter.persistence.SubscriptionJpaRepository;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,10 +24,10 @@ import static org.mockito.Mockito.*;
 class SubscriptionServiceTest {
 
     @Mock
-    private AccountRepository accountRepository;
+    private AccountJpaRepository accountRepository;
 
     @Mock
-    private SubscriptionRepository subscriptionRepository;
+    private SubscriptionJpaRepository subscriptionRepository;
 
     @Mock
     private ChannelJpaRepository channelJpaRepository;
@@ -60,7 +60,7 @@ class SubscriptionServiceTest {
         // given
         SubscribeRequest request = new SubscribeRequest("010-0000-0000", 1L, SubscriptionStatus.NONE);
 
-        Account accountMock = mock(Account.class);
+        AccountJpaEntity accountMock = mock(AccountJpaEntity.class);
         when(channelJpaRepository.findByIdAndAvailableTrue(request.channelId())).thenReturn(Optional.of(mock(ChannelJpaEntity.class)));
         when(accountRepository.findByPhoneNumber(request.phoneNumber())).thenReturn(Optional.of(accountMock));
         when(accountMock.getCurrentSubscriptionStatus()).thenReturn(SubscriptionStatus.NONE);
