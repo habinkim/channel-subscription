@@ -523,5 +523,8 @@ Spring의 @Transactional 애노테이션을 사용하여 트랜잭션의 격리 
 
 ## 3. 테스트
 
+### 3.1. Mock을 통한 행동 기반 테스트
 
 
+
+### 3.2. TestContainers, MockMvc를 통한 API 통합 테스트
