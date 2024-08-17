@@ -1,5 +1,7 @@
 # ARTINUS - Channel Subscription Service
 
+[TOC]
+
 
 
 ## 1. 설계
@@ -46,7 +48,7 @@
 
  
 
-## [🚀 다중 마스터 복제(multi-master replication)](https://ssdragon.tistory.com/162#%F-%-F%-A%--%--%EB%-B%A-%EC%A-%--%--%EB%A-%--%EC%-A%A-%ED%--%B-%--%EB%B-%B-%EC%A-%-C-multi-master%--replication-)
+#### 2.1.1. 다중 마스터 복제(multi-master replication)
 
 
 
@@ -59,7 +61,9 @@
   - 위 그림에서는 DB서버가 2개이므로 k = 2 가 됨
 - 규모 확장성을 어느정도 해결
 
-#### [😈 단점](https://ssdragon.tistory.com/162#%F-%-F%--%--%--%EB%-B%A-%EC%A-%--)
+
+
+##### 단점
 
 - 여러 데이터 센터에 걸쳐 확장 어려움
 - 시간 흐름에 맞춰 ID값을 커지도록 보장할 수 없음
@@ -67,7 +71,7 @@
 
  
 
-## [🚀 UUID](https://ssdragon.tistory.com/162#%F-%-F%-A%--%--UUID)
+#### 2.1.2. UUID
 
 > UUID값 예시 : bb6266a8-09aa-4c90-b597-05f1cc958acd
 
@@ -76,13 +80,13 @@
 - 서버 간 조율 없이 독립적으로 생성 가능
 - 알파벳은 소문자로 표현되며, 입력시 대소문자를 구분하지 않음
 
-#### [👍 장점](https://ssdragon.tistory.com/162#%F-%-F%--%-D%--%EC%-E%A-%EC%A-%--)
+##### 장점
 
 - UUID 생성은 간단
 - 동기화 이슈 X
 - 규모 확장 쉬움
 
-#### [😈 단점](https://ssdragon.tistory.com/162#%F-%-F%--%--%--%EB%-B%A-%EC%A-%--)
+##### 단점
 
 - ID값이 128비트로 길며, 용량도 큼
   - 대규모 테이블에서 저장공간 많이 차지
@@ -95,14 +99,14 @@
 
  
 
-#### [📝 참고자료](https://ssdragon.tistory.com/162#%F-%-F%--%-D%--%EC%B-%B-%EA%B-%A-%EC%-E%--%EB%A-%-C)
+##### 참고자료
 
 - [UUID는 인기가 있지만 성능에는 좋지 않습니다](https://www.percona.com/blog/uuids-are-popular-but-bad-for-performance-lets-discuss/)
 - [데이터베이스 기본키에 가장 적합한 UUID 유형](https://vladmihalcea.com/uuid-database-primary-key/)
 
  
 
-## [🚀 ULID](https://ssdragon.tistory.com/162#%F-%-F%-A%--%--ULID)
+#### 2.1.3. ULID
 
 ([ULID Github 링크](https://github.com/ulid/spec))
 
@@ -119,7 +123,7 @@
 - 밀리초의 정밀도를 가지며, 단순하게 증가
 - 밀리초 내에 동시 생성되면 무작위성에 따라 순서가 달라짐
 
-#### [👍 장점](https://ssdragon.tistory.com/162#%F-%-F%--%-D%--%EC%-E%A-%EC%A-%--)
+##### 장점
 
 - UUID의 단점을 해결하기 위해 만들어짐
 - UUID의 36문자와 달리 ULID는 26문자로 인코딩됨
@@ -131,7 +135,7 @@
   - "I", "L", "O", "U" 제외됨
   - 문자당 5bit
 
-#### [😈 단점](https://ssdragon.tistory.com/162#%F-%-F%--%--%--%EB%-B%A-%EC%A-%--)
+##### 단점
 
 - 128bit로 상대적으로 용량이 큼
 
@@ -143,7 +147,7 @@
 
  
 
-## [🚀 트위터 스노플레이크(snowflake) 접근법](https://ssdragon.tistory.com/162#%F-%-F%-A%--%--%ED%-A%B-%EC%-C%--%ED%--%B-%--%EC%-A%A-%EB%--%B-%ED%--%-C%EB%A-%--%EC%-D%B-%ED%--%AC-snowflake-%--%EC%A-%--%EA%B-%BC%EB%B-%--)
+#### 2.1.4. 트위터 스노플레이크(snowflake) 접근법
 
 > 트위터는 고가용성 방식으로 초당 수만 개의 ID를 생성할 수 있는 것이 필요했고, 이러한 ID는 대략적으로 정렬 가능해야 하며, 64bit의 용량을 가져야 한다. MySQL 기반 티켓 서버는 일종의 재 동기화 루틴을 구축해야 했고, 다양한 UUID는 128bit가 필요했다. 따라서 대략적으로 정렬된 64bit 용량을 가진 ID를 생성하기 위해 타임 스탬프(timestamp), 작업자 번호(worker number) 및 시퀀스 번호(sequence number)의 구성을 결정했다. 시퀀스 번호는 스레드별로 지정되며, 작업자 번호는 시작 시 Zookeeper를 통해 선택된다. [[원문링크](https://blog.twitter.com/engineering/en_us/a/2010/announcing-snowflake)] [[Github 링크](https://github.com/twitter-archive/snowflake)]
 
@@ -158,7 +162,7 @@
 
 
 
-#### [📚 스노우플레이크 구조 설명](https://ssdragon.tistory.com/162#%F-%-F%--%-A%--%EC%-A%A-%EB%--%B-%EC%-A%B-%ED%--%-C%EB%A-%--%EC%-D%B-%ED%--%AC%--%EA%B-%AC%EC%A-%B-%--%EC%--%A-%EB%AA%--)
+##### 스노우플레이크 구조 설명
 
 - 사인(sign) 비트
   - 1bit 할당
@@ -187,7 +191,7 @@
 
  
 
-#### [👍 장점](https://ssdragon.tistory.com/162#%F-%-F%--%-D%--%EC%-E%A-%EC%A-%--)
+##### 장점
 
 - 프로세스당 초당 최소 10,000개 ID 생성
 - 응답 속도 2ms (네트워크 대기 시간 추가)
@@ -196,7 +200,7 @@
 - 독립적으로 ID 생성 가능하므로 분산환경에서 확장성 높음
 - 병렬로 유일한 ID 생성 가능
 
-#### [😈 단점](https://ssdragon.tistory.com/162#%F-%-F%--%--%--%EB%-B%A-%EC%A-%--)
+##### 단점
 
 - 69년동안 사용가능함
 - 중~소규모에서 운영할 때는 trade-off를 생각해야 함
@@ -205,7 +209,7 @@
 
  
 
-## [🚀 TSID(Time-Sorted Unique Identifier)](https://ssdragon.tistory.com/162#%F-%-F%-A%--%--TSID-Time-Sorted%--Unique%--Identifier-)
+#### 2.1.5. TSID(Time-Sorted Unique Identifier)
 
 ([TSID Github 링크](https://github.com/f4b6a3/tsid-creator))
 
@@ -222,7 +226,7 @@
 
 
 
-#### [📚 TSID 구조](https://ssdragon.tistory.com/162#%F-%-F%--%-A%--TSID%--%EA%B-%AC%EC%A-%B-)
+##### TSID 구조
 
 - 시간(Time component) 42bit 와 랜덤구성요소(Random component) 22bit 로 이루어짐
 - 시간구성요소는 2020-01-01 00:00:00 UTC 이후의 밀리초 수
@@ -231,7 +235,9 @@
 - 시간구성요소는 부호 있는 64bit 정수 필드에 저장되면 약 69년 동안 사용 가능
 - 시간구성요소는 부호 없는 64bit 정수 필드에 저장되면 약 139년 동안 사용 가능
 
-#### [👍 장점](https://ssdragon.tistory.com/162#%F-%-F%--%-D%--%EC%-E%A-%EC%A-%--)
+
+
+##### 장점
 
 - 64bit(8 byte)로 UUID에 비해 상대적으로 적은 용량
 - DB에 bitint로 저장하고, Java에서 long 사용 가능
@@ -240,11 +246,15 @@
 - 시계열 정렬이 가능해서 DB 성능 저하가 발생하지 않음
 - JPA와 Hibernate에서 구현되었기에 매우 간단하게 사용 가능
 
-#### [😈 단점](https://ssdragon.tistory.com/162#%F-%-F%--%--%--%EB%-B%A-%EC%A-%--)
+
+
+##### 단점
 
 - 69년 또는 139년동안만 사용가능함
 
-#### [📝 참고자료](https://ssdragon.tistory.com/162#%F-%-F%--%-D%--%EC%B-%B-%EA%B-%A-%EC%-E%--%EB%A-%-C)
+
+
+##### 참고자료
 
 - [DB의 기본키는 무엇을 사용해야 할까? ID와 UUID 외에 다른 것이 있을까?](https://www.linkedin.com/pulse/primary-keys-db-what-use-id-vs-uuid-something-else-lucas-persson/)
 - [JPA 및 Hibernate를 사용하여 TSID 엔티티 식별자를 생성하는 가장 좋은 방법](https://vladmihalcea.com/tsid-identifier-jpa-hibernate/)
@@ -252,7 +262,7 @@
 
  
 
-#### [👨‍🏫 JPA & Hibernate 엔티티에서 사용방법](https://ssdragon.tistory.com/162#%F-%-F%--%A-%E-%--%-D%F-%-F%-F%AB%--JPA%--%--%--Hibernate%--%EC%--%--%ED%-B%B-%ED%-B%B-%EC%--%--%EC%--%-C%--%EC%--%AC%EC%-A%A-%EB%B-%A-%EB%B-%--)
+##### JPA & Hibernate 엔티티에서 사용방법
 
 Spring Boot 3 버전을 사용할 경우 Hibernate 6 버전을 사용한다.
 
@@ -291,7 +301,7 @@ TSID 값만 생성하는 것이 필요하다면 [TSID Github](https://github.com
 
  
 
-## [🚀 결론](https://ssdragon.tistory.com/162#%F-%-F%-A%--%--%EA%B-%B-%EB%A-%A-)
+#### 2.1.6. 결론
 
 - 외부에 왠만하면 추측가능한 ID를 노출하지 않는게 좋음 (엔티티를 외부에 노출하지 않듯이)
   - e.g. "/users/109" 보다는 "/users/38352658568129975" 또는 "/users/01294A2BDA2"
@@ -311,49 +321,49 @@ Spring State Machine을 사용하여 유한 상태 기계를 구현할 때의 �
 
 
 
-**1. 명확한 상태 관리**
+#### 2.2.1. 명확한 상태 관리
 
 - **복잡한 상태 전이 관리**: 구독 서비스에서 사용자의 구독 상태는 구독 안함, 일반 구독, 프리미엄 구독과 같은 다양한 상태로 전환된다. Spring State Machine을 사용하면 상태 전이를 명확하게 정의하고, 상태 간 전환을 자동으로 관리할 수 있어 복잡한 상태 전이 로직을 체계적으로 처리할 수 있다.
 - **가독성 향상**: 상태 전이가 코드 내에 명시적으로 정의되므로, 코드의 가독성이 향상된다. 상태와 전이 이벤트를 별도로 정의하고 관리할 수 있어 비즈니스 로직을 쉽게 이해하고 유지보수할 수 있다.
 
 
 
-**2. 상태 전이에 대한 명확한 트리거 관리**
+#### 2.2.2. 상태 전이에 대한 명확한 트리거 관리
 
 - **이벤트 기반 상태 전이** : Spring State Machine은 특정 이벤트에 따라 상태를 전환할 수 있도록 지원한다. 예를 들어, 구독하기, 업그레이드, 구독 해지 등의 이벤트에 따라 사용자의 상태를 자동으로 변경할 수 있다.
 - **비즈니스 로직과 상태 전이 분리**: 상태 전이 로직이 명확하게 분리되기 때문에 비즈니스 로직과 상태 관리가 혼재되지 않으며, 각기 독립적으로 관리될 수 있다.
 
 
 
-**3. 트랜지션과 액션의 분리**
+#### 2.2.3. 트랜지션과 액션의 분리
 
-- **상태 전이와 함께 실행되는 동작 (Action) 관리** : 상태 전이가 발생할 때, 그와 연관된 비즈니스 로직을 State Machine 내에서 처리할 수 있습니다. 예를 들어, 프리미엄 구독 → 일반 구독 상태 전이 시 자동으로 특정 액션(예: 결제 취소, 알림 발송 등)을 수행할 수 있습니다.
-- **동기 및 비동기 작업** : 상태 전이와 관련된 동작을 동기적으로 처리하거나, 필요에 따라 비동기적으로 처리할 수 있어 유연한 상태 관리가 가능합니다.
+- **상태 전이와 함께 실행되는 동작 (Action) 관리** : 상태 전이가 발생할 때, 그와 연관된 비즈니스 로직을 State Machine 내에서 처리할 수 있다. 예를 들어, 프리미엄 구독 → 일반 구독 상태 전이 시 자동으로 특정 액션(예: 결제 취소, 알림 발송 등)을 수행할 수 있다.
+- **동기 및 비동기 작업** : 상태 전이와 관련된 동작을 동기적으로 처리하거나, 필요에 따라 비동기적으로 처리할 수 있어 유연한 상태 관리가 가능하다.
 
 
 
-**4. 동시성 문제에 대한 개선**
+#### 2.2.4. 동시성 문제에 대한 개선
 
 - **동시성 제어 **: Spring State Machine은 상태 전이에 대한 동시성을 효과적으로 관리할 수 있다. 다중 인스턴스 환경에서도 상태 전이를 일관성 있게 관리하여, 동시성 이슈를 줄일 수 있다.
 - **상태 영속성** : Spring State Machine을 통해 상태를 영속성 계층에 저장하고 관리할 수 있어, 애플리케이션 재시작 시에도 상태를 안전하게 복구할 수 있다. 특히, 다중화된 환경에서 Redis와 같은 외부 저장소와 함께 사용하면, 여러 인스턴스 간의 상태 일관성을 유지할 수 있다.
 
 
 
-**5. 유연한 상태 확장과 관리**
+#### 2.2.5. 유연한 상태 확장과 관리
 
 - **상태와 이벤트 추가의 용이성**: 새로운 상태나 이벤트를 추가하거나 수정할 때, 기존의 상태 전이 로직에 큰 영향을 주지 않고 확장할 수 있다. 이는 비즈니스 요구사항이 변경되더라도 시스템의 안정성을 유지하는 데 도움이 된다.
 - **테스트 용이성**: 상태와 이벤트가 명확하게 정의되어 있으므로, 특정 상태 전이에 대한 유닛 테스트 및 통합 테스트를 쉽게 작성할 수 있다.
 
 
 
-**6. 유지보수성 향상**
+#### 2.2.6. 유지보수성 향상
 
 - **코드의 모듈화**: 상태 관리 로직이 잘 모듈화되어 있어, 상태 전이 관련 코드만 별도로 수정하거나 확장하기 용이하다. 이는 시스템 유지보수성을 크게 향상시킨다.
 - **문서화 용이**: Spring State Machine을 사용하면 상태와 전이 관계가 코드 내에서 명확하게 드러나므로, 이를 통해 자동으로 상태 전이 다이어그램을 생성하거나, 상태 전이의 흐름을 시각적으로 문서화할 수 있다.
 
 
 
-**결론**
+#### 2.2.7. 결론
 
 Spring State Machine을 사용하여 구독 서비스의 상태 관리를 구현하면, 복잡한 상태 전이 로직을 명확하게 정의하고 관리할 수 있다. 이는 시스템의 안정성, 유지보수성, 가독성을 모두 향상시키며, 특히 다중화된 환경에서의 동시성 문제 해결에도 큰 도움이 된다. 이러한 이점은 구독 서비스와 같이 상태 전이가 빈번하고 복잡한 비즈니스 로직을 처리하는 시스템에서 특히 유용하다.
 
