@@ -7,5 +7,5 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public record RegisterChannelRequest(@NotBlank String name, @NotNull ChannelType type) {
+public record RegisterChannelCommand(@NotBlank String name, @NotNull ChannelType type) {
 }

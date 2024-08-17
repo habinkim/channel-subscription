@@ -1,10 +1,12 @@
 package com.artinus.channelsubscription.channel.service;
 
 import com.artinus.channelsubscription.channel.adapter.persistence.ChannelJpaEntity;
-import com.artinus.channelsubscription.channel.domain.RegisterChannelRequest;
-import com.artinus.channelsubscription.channel.domain.RegisteredChannel;
-import com.artinus.channelsubscription.channel.adapter.persistence.ChannelMapper;
 import com.artinus.channelsubscription.channel.adapter.persistence.ChannelJpaRepository;
+import com.artinus.channelsubscription.channel.adapter.persistence.ChannelMapper;
+import com.artinus.channelsubscription.channel.application.port.input.GetChannelHistoryUseCase;
+import com.artinus.channelsubscription.channel.application.port.input.RegisterChannelUseCase;
+import com.artinus.channelsubscription.channel.domain.RegisterChannelCommand;
+import com.artinus.channelsubscription.channel.domain.RegisteredChannel;
 import com.artinus.channelsubscription.common.exception.CommonApplicationException;
 import com.artinus.channelsubscription.subscription.domain.SubscriptionHistory;
 import com.artinus.channelsubscription.subscription.repository.SubscriptionRepository;
@@ -19,7 +21,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ChannelService {
+public class ChannelService implements RegisterChannelUseCase, GetChannelHistoryUseCase {
 
     private final ChannelJpaRepository channelJpaRepository;
     private final SubscriptionRepository subscriptionRepository;
@@ -27,7 +29,7 @@ public class ChannelService {
     private final ChannelMapper channelMapper;
 
     @Transactional
-    public RegisteredChannel registerChannel(@Valid RegisterChannelRequest request) {
+    public RegisteredChannel registerChannel(@Valid RegisterChannelCommand request) {
         channelJpaRepository.findByNameAndAvailableTrue(request.name())
                 .ifPresent(channel -> CommonApplicationException.CHANNEL_ALREADY_EXISTS.run());
 

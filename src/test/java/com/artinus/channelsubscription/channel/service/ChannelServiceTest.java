@@ -1,6 +1,6 @@
 package com.artinus.channelsubscription.channel.service;
 
-import com.artinus.channelsubscription.channel.domain.RegisterChannelRequest;
+import com.artinus.channelsubscription.channel.domain.RegisterChannelCommand;
 import com.artinus.channelsubscription.channel.adapter.persistence.ChannelJpaEntity;
 import com.artinus.channelsubscription.channel.domain.ChannelType;
 import com.artinus.channelsubscription.channel.adapter.persistence.ChannelMapper;
@@ -39,7 +39,7 @@ class ChannelServiceTest {
     @DisplayName("이미 존재하는 채널 명 으로 채널을 생성할 수 없다.")
     void registerChannel_alreadyExists_throwsException() {
         // given
-        RegisterChannelRequest request = new RegisterChannelRequest("Existing ChannelJpaEntity", ChannelType.SUBSCRIBE_ONLY);
+        RegisterChannelCommand request = new RegisterChannelCommand("Existing ChannelJpaEntity", ChannelType.SUBSCRIBE_ONLY);
 
         when(channelJpaRepository.findByNameAndAvailableTrue(request.name())).thenReturn(Optional.of(new ChannelJpaEntity()));
 
