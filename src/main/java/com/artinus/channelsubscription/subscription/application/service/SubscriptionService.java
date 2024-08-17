@@ -1,8 +1,9 @@
 package com.artinus.channelsubscription.subscription.application.service;
 
 import com.artinus.channelsubscription.channel.adapter.persistence.ChannelJpaEntity;
+import com.artinus.channelsubscription.channel.application.port.output.LoadChannelPort;
 import com.artinus.channelsubscription.channel.domain.ChannelType;
-import com.artinus.channelsubscription.channel.adapter.persistence.ChannelJpaRepository;
+import com.artinus.channelsubscription.channel.domain.RegisteredChannel;
 import com.artinus.channelsubscription.common.exception.CommonApplicationException;
 import com.artinus.channelsubscription.common.stereotype.UseCase;
 import com.artinus.channelsubscription.subscription.adapter.persistence.AccountJpaEntity;
@@ -11,6 +12,8 @@ import com.artinus.channelsubscription.subscription.application.port.input.GetSu
 import com.artinus.channelsubscription.subscription.application.port.input.SubscribeCommand;
 import com.artinus.channelsubscription.subscription.application.port.input.SubscribeUseCase;
 import com.artinus.channelsubscription.subscription.application.port.input.UnsubscribeUseCase;
+import com.artinus.channelsubscription.subscription.application.port.output.LoadAccountPort;
+import com.artinus.channelsubscription.subscription.application.port.output.SaveAccountPort;
 import com.artinus.channelsubscription.subscription.domain.*;
 import com.artinus.channelsubscription.subscription.adapter.persistence.SubscriptionMapper;
 import com.artinus.channelsubscription.subscription.adapter.persistence.AccountJpaRepository;
@@ -24,7 +27,6 @@ import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.StateMachineEventResult;
 import org.springframework.statemachine.service.StateMachineService;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
@@ -43,69 +45,75 @@ public class SubscriptionService implements SubscribeUseCase, UnsubscribeUseCase
 
     private final AccountJpaRepository accountRepository;
     private final SubscriptionJpaRepository subscriptionRepository;
-    private final ChannelJpaRepository channelJpaRepository;
+
+    private final LoadChannelPort loadChannelPort;
+
+    private final LoadAccountPort loadAccountPort;
+    private final SaveAccountPort saveAccountPort;
 
     private final StateMachineService<SubscriptionStatus, SubscriptionEvent> stateMachineService;
 
     private final SubscriptionMapper subscriptionMapper;
 
     @Transactional
-    public RegisteredSubscription subscribe(@Valid SubscribeCommand request) {
+    public RegisteredSubscription subscribe(@Valid SubscribeCommand command) {
         AtomicReference<Boolean> isNewAccount = new AtomicReference<>(false);
 
         // ChannelJpaEntity 조회
-        ChannelJpaEntity channel = channelJpaRepository.findByIdAndAvailableTrue(request.channelId())
+        RegisteredChannel channel = loadChannelPort.findById(command.channelId())
                 .orElseThrow(CommonApplicationException.CHANNEL_NOT_FOUND);
 
         // 휴대폰 번호에 해당하는 회원 조회 및 없으면 신규 생성
-        AccountJpaEntity account = accountRepository.findByPhoneNumber(request.phoneNumber()).orElseGet(() -> {
+        RegisteredAccount account = loadAccountPort.findByPhoneNumber(command.phoneNumber()).orElseGet(() -> {
             isNewAccount.set(true);
-            return createNewAccount(request);
+            return createNewAccount(command);
         });
 
         // 신규 회원이 아니면서 현재 구독 상태가 '구독 안함' 이고, 요청한 구독 상태도 '구독 안함'이면 거부
         if (!isNewAccount.get() &&
-                SubscriptionStatus.NONE.equals(account.getCurrentSubscriptionStatus()) &&
-                SubscriptionStatus.NONE.equals(request.operation())) {
+                SubscriptionStatus.NONE.equals(account.currentSubscriptionStatus()) &&
+                SubscriptionStatus.NONE.equals(command.operation())) {
             log.error("SubscriptionJpaEntity transition denied. AccountJpaEntity: {}, Current SubscriptionJpaEntity Status: {}, Requested SubscriptionJpaEntity Status: {}",
-                    account.getPhoneNumber(), account.getCurrentSubscriptionStatus(), request.operation());
+                    account.phoneNumber(), account.currentSubscriptionStatus(), command.operation());
             throw CommonApplicationException.SUBSCRIPTION_TRANSITION_DENIED;
         }
 
         // State Machine에서 사용할 이벤트 생성
-        SubscriptionEvent subscriptionEvent = getEvent(account.getCurrentSubscriptionStatus(), request.operation(), channel.getType());
+        SubscriptionEvent subscriptionEvent = getEvent(account.currentSubscriptionStatus(), command.operation(), channel.type());
 
         transitionSubscriptionStatus(account, channel, subscriptionEvent, SubscribeOperation.SUBSCRIBE);
 
         // State Machine에서 성공하면 DB에 구독 정보 저장
-        SubscriptionJpaEntity savedSubscription = createNewSubscription(request, account, channel);
+        SubscriptionJpaEntity savedSubscription = createNewSubscription(command, account, channel);
 
         // 회원의 현재 구독 상태 업데이트
-        AccountJpaEntity updatedAccount = updateCurrentSubscriptionStatus(request, account);
+        saveAccountPort.updateCurrentSubscriptionStatus(command.phoneNumber(), command.operation());
+        AccountJpaEntity updatedAccount = updateCurrentSubscriptionStatus(command, account);
 
         return subscriptionMapper.registeredSubscription(savedSubscription, updatedAccount, channel);
     }
 
     @Transactional
-    public RegisteredSubscription unsubscribe(@Valid SubscribeCommand request) {
+    public RegisteredSubscription unsubscribe(@Valid SubscribeCommand command) {
         // ChannelJpaEntity 조회
-        ChannelJpaEntity channel = channelJpaRepository.findByIdAndAvailableTrue(request.channelId())
+        RegisteredChannel channel = loadChannelPort.findById(command.channelId())
                 .orElseThrow(CommonApplicationException.CHANNEL_NOT_FOUND);
 
         // 휴대폰 번호에 해당하는 회원 조회 및 없으면 예외 발생
-        AccountJpaEntity account = accountRepository.findByPhoneNumber(request.phoneNumber())
+        RegisteredAccount account = loadAccountPort.findByPhoneNumber(command.phoneNumber())
                 .orElseThrow(CommonApplicationException.ACCOUNT_NOT_FOUND);
 
         // State Machine에서 사용할 이벤트 생성
-        SubscriptionEvent subscriptionEvent = getEvent(account.getCurrentSubscriptionStatus(), request.operation(), channel.getType());
+        SubscriptionEvent subscriptionEvent = getEvent(account.currentSubscriptionStatus(), command.operation(), channel.type());
 
         transitionSubscriptionStatus(account, channel, subscriptionEvent, SubscribeOperation.UNSUBSCRIBE);
 
         // State Machine에서 성공하면 DB에 구독 정보 저장
-        SubscriptionJpaEntity savedSubscription = createNewSubscription(request, account, channel);
+        SubscriptionJpaEntity savedSubscription = createNewSubscription(command, account, channel);
 
         // 회원의 현재 구독 상태 업데이트
-        AccountJpaEntity updatedAccount = updateCurrentSubscriptionStatus(request, account);
+        saveAccountPort.updateCurrentSubscriptionStatus(command.phoneNumber(), command.operation());
+        AccountJpaEntity updatedAccount = updateCurrentSubscriptionStatus(command, account);
 
         return subscriptionMapper.registeredSubscription(savedSubscription, updatedAccount, channel);
     }
@@ -115,11 +123,9 @@ public class SubscriptionService implements SubscribeUseCase, UnsubscribeUseCase
         return subscriptionRepository.findAllByPhoneNumber(phoneNumber);
     }
 
-
     @Transactional
-    public AccountJpaEntity createNewAccount(SubscribeCommand request) {
-        AccountJpaEntity build = AccountJpaEntity.builder().phoneNumber(request.phoneNumber()).build();
-        return accountRepository.save(build);
+    public RegisteredAccount createNewAccount(SubscribeCommand command) {
+        return saveAccountPort.createAccount(command.phoneNumber());
     }
 
     @Transactional
@@ -139,14 +145,14 @@ public class SubscriptionService implements SubscribeUseCase, UnsubscribeUseCase
         return SubscriptionEvent.from(previousStatus, nextStatus, channelType);
     }
 
-    private void transitionSubscriptionStatus(AccountJpaEntity account, ChannelJpaEntity channel, SubscriptionEvent subscriptionEvent, SubscribeOperation operation) {
+    private void transitionSubscriptionStatus(RegisteredAccount account, RegisteredChannel channel, SubscriptionEvent subscriptionEvent, SubscribeOperation operation) {
         // 회원에 해당하는 State Machine을 Redis에서 가져옴 (없으면 신규 생성)
         StateMachine<SubscriptionStatus, SubscriptionEvent> acquiredStateMachine =
-                stateMachineService.acquireStateMachine(String.valueOf(account.getId()));
+                stateMachineService.acquireStateMachine(String.valueOf(account.id()));
 
         // State Machine에 이벤트 전달 및 결과 리턴
         StateMachineEventResult<SubscriptionStatus, SubscriptionEvent> stateMachineEventResult = acquiredStateMachine
-                .sendEvent(buildMessage(subscriptionEvent, channel.getType(), operation))
+                .sendEvent(buildMessage(subscriptionEvent, channel.type(), operation))
                 .blockFirst();
 
         assert stateMachineEventResult != null;

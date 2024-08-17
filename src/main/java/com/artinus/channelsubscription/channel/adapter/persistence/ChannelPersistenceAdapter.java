@@ -7,6 +7,8 @@ import com.artinus.channelsubscription.channel.domain.SaveChannel;
 import com.artinus.channelsubscription.common.stereotype.PersistenceAdapter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Optional;
+
 /**
  * Output port adapter for channel persistence.
  */
@@ -17,6 +19,12 @@ public class ChannelPersistenceAdapter implements LoadChannelPort, SaveChannelPo
     private final ChannelJpaRepository channelJpaRepository;
 
     private final ChannelMapper channelMapper;
+
+    @Override
+    public Optional<RegisteredChannel> findById(Long channelId) {
+        return channelJpaRepository.findByIdAndAvailableTrue(channelId)
+                .map(channelMapper::registeredChannel);
+    }
 
     @Override
     public Boolean existsByName(final String name) {
