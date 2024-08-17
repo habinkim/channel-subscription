@@ -6,6 +6,7 @@ import com.artinus.channelsubscription.channel.domain.ChannelType;
 import com.artinus.channelsubscription.channel.mapper.ChannelMapper;
 import com.artinus.channelsubscription.channel.repository.ChannelRepository;
 import com.artinus.channelsubscription.common.exception.CommonApplicationException;
+import com.artinus.channelsubscription.subscription.repository.SubscriptionRepository;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,6 +24,9 @@ class ChannelServiceTest {
 
     @Mock
     private ChannelRepository channelRepository;
+
+    @Mock
+    private SubscriptionRepository subscriptionRepository;
 
     @Mock
     private ChannelMapper channelMapper;
@@ -46,6 +50,24 @@ class ChannelServiceTest {
 
         verify(channelRepository, times(1)).findByNameAndAvailableTrue(request.name());
         verify(channelRepository, never()).save(any());
+    }
+
+    @Test
+    @Order(2)
+    @DisplayName("존재하지 않는 채널의 이력을 조회할 수 없다.")
+    void getChannelSubscriptionHistory_notFound_throwsException() {
+        // given
+        Long channelId = 1L;
+
+        when(channelRepository.findByIdAndAvailableTrue(channelId)).thenReturn(Optional.empty());
+
+        // when & then
+        CommonApplicationException exception = assertThrows(CommonApplicationException.class, () -> channelService.getChannelSubscriptionHistory(channelId, null));
+
+        assertEquals(CommonApplicationException.CHANNEL_NOT_FOUND, exception);
+
+        verify(channelRepository, times(1)).findByIdAndAvailableTrue(channelId);
+        verify(subscriptionRepository, never()).findAllByChannelIdAndDate(any(), any());
     }
 
 }

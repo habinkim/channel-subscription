@@ -40,7 +40,49 @@
                 },
                 "examples" : {
                   "register-channel-success" : {
-                    "value" : "{\n  \"message\" : \"생성이 완료되었습니다.\",\n  \"code\" : \"0001\",\n  \"data\" : {\n    \"id\" : 612197070090137815,\n    \"name\" : \"KT 통신사\",\n    \"type\" : \"SUBSCRIBE_UNSUBSCRIBE\",\n    \"created_at\" : \"2024-08-16 17:12:35\",\n    \"updated_at\" : \"2024-08-16 17:12:35\"\n  }\n}"
+                    "value" : "{\n  \"message\" : \"생성이 완료되었습니다.\",\n  \"code\" : \"0001\",\n  \"data\" : {\n    \"id\" : 612547316294906004,\n    \"name\" : \"KT 통신사\",\n    \"type\" : \"SUBSCRIBE_UNSUBSCRIBE\",\n    \"created_at\" : \"2024-08-17 16:24:20\",\n    \"updated_at\" : \"2024-08-17 16:24:20\"\n  }\n}"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/channels/{channelId}/subscriptions" : {
+      "get" : {
+        "tags" : [ "channels" ],
+        "summary" : "채널 구독 이력 조회",
+        "description" : "채널 구독 이력 조회",
+        "operationId" : "get-channel-subscription-history-success",
+        "parameters" : [ {
+          "name" : "channelId",
+          "in" : "path",
+          "description" : "채널 ID",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "date",
+          "in" : "query",
+          "description" : "조회일자 [yyyyMMdd]",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "200",
+            "content" : {
+              "application/json;charset=UTF-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/channels-channelId-subscriptions-573105177"
+                },
+                "examples" : {
+                  "get-channel-subscription-history-success" : {
+                    "value" : "{\n  \"message\" : \"요청이 성공적으로 처리되었습니다.\",\n  \"code\" : \"0000\",\n  \"data\" : [ {\n    \"subscription_id\" : 612547320573095956,\n    \"phone_number\" : \"010-1234-0020\",\n    \"channel_id\" : 612547317804855511,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"REGULAR\",\n    \"created_at\" : \"2024-08-17 16:24:21\"\n  }, {\n    \"subscription_id\" : 612547320510181426,\n    \"phone_number\" : \"010-1234-0019\",\n    \"channel_id\" : 612547317804855511,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"REGULAR\",\n    \"created_at\" : \"2024-08-17 16:24:21\"\n  }, {\n    \"subscription_id\" : 612547320451461144,\n    \"phone_number\" : \"010-1234-0018\",\n    \"channel_id\" : 612547317804855511,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"REGULAR\",\n    \"created_at\" : \"2024-08-17 16:24:21\"\n  }, {\n    \"subscription_id\" : 612547320338215000,\n    \"phone_number\" : \"010-1234-0017\",\n    \"channel_id\" : 612547317804855511,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"REGULAR\",\n    \"created_at\" : \"2024-08-17 16:24:21\"\n  }, {\n    \"subscription_id\" : 612547320271106068,\n    \"phone_number\" : \"010-1234-0016\",\n    \"channel_id\" : 612547317804855511,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"REGULAR\",\n    \"created_at\" : \"2024-08-17 16:24:21\"\n  }, {\n    \"subscription_id\" : 612547320191414328,\n    \"phone_number\" : \"010-1234-0015\",\n    \"channel_id\" : 612547317804855511,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"REGULAR\",\n    \"created_at\" : \"2024-08-17 16:24:21\"\n  }, {\n    \"subscription_id\" : 612547320111722706,\n    \"phone_number\" : \"010-1234-0014\",\n    \"channel_id\" : 612547317804855511,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"REGULAR\",\n    \"created_at\" : \"2024-08-17 16:24:21\"\n  }, {\n    \"subscription_id\" : 612547320048808120,\n    \"phone_number\" : \"010-1234-0013\",\n    \"channel_id\" : 612547317804855511,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"REGULAR\",\n    \"created_at\" : \"2024-08-17 16:24:21\"\n  }, {\n    \"subscription_id\" : 612547319985893557,\n    \"phone_number\" : \"010-1234-0012\",\n    \"channel_id\" : 612547317804855511,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"REGULAR\",\n    \"created_at\" : \"2024-08-17 16:24:21\"\n  }, {\n    \"subscription_id\" : 612547319927173209,\n    \"phone_number\" : \"010-1234-0011\",\n    \"channel_id\" : 612547317804855511,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"REGULAR\",\n    \"created_at\" : \"2024-08-17 16:24:21\"\n  }, {\n    \"subscription_id\" : 612547319860064337,\n    \"phone_number\" : \"010-1234-0010\",\n    \"channel_id\" : 612547317804855511,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"REGULAR\",\n    \"created_at\" : \"2024-08-17 16:24:21\"\n  }, {\n    \"subscription_id\" : 612547319792955548,\n    \"phone_number\" : \"010-1234-0009\",\n    \"channel_id\" : 612547317804855511,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"REGULAR\",\n    \"created_at\" : \"2024-08-17 16:24:21\"\n  }, {\n    \"subscription_id\" : 612547319725846744,\n    \"phone_number\" : \"010-1234-0008\",\n    \"channel_id\" : 612547317804855511,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"REGULAR\",\n    \"created_at\" : \"2024-08-17 16:24:21\"\n  }, {\n    \"subscription_id\" : 612547319658737877,\n    \"phone_number\" : \"010-1234-0007\",\n    \"channel_id\" : 612547317804855511,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"REGULAR\",\n    \"created_at\" : \"2024-08-17 16:24:21\"\n  }, {\n    \"subscription_id\" : 612547319583240370,\n    \"phone_number\" : \"010-1234-0006\",\n    \"channel_id\" : 612547317804855511,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"REGULAR\",\n    \"created_at\" : \"2024-08-17 16:24:21\"\n  }, {\n    \"subscription_id\" : 612547319495159935,\n    \"phone_number\" : \"010-1234-0005\",\n    \"channel_id\" : 612547317804855511,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"REGULAR\",\n    \"created_at\" : \"2024-08-17 16:24:21\"\n  }, {\n    \"subscription_id\" : 612547319360942333,\n    \"phone_number\" : \"010-1234-0004\",\n    \"channel_id\" : 612547317804855511,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"REGULAR\",\n    \"created_at\" : \"2024-08-17 16:24:21\"\n  }, {\n    \"subscription_id\" : 612547319298027582,\n    \"phone_number\" : \"010-1234-0003\",\n    \"channel_id\" : 612547317804855511,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"REGULAR\",\n    \"created_at\" : \"2024-08-17 16:24:21\"\n  }, {\n    \"subscription_id\" : 612547319226724375,\n    \"phone_number\" : \"010-1234-0002\",\n    \"channel_id\" : 612547317804855511,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"REGULAR\",\n    \"created_at\" : \"2024-08-17 16:24:21\"\n  }, {\n    \"subscription_id\" : 612547319105089727,\n    \"phone_number\" : \"010-1234-0001\",\n    \"channel_id\" : 612547317804855511,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"REGULAR\",\n    \"created_at\" : \"2024-08-17 16:24:21\"\n  } ]\n}"
                   }
                 }
               }
@@ -59,29 +101,29 @@
           "content" : {
             "application/json;charset=UTF-8" : {
               "schema" : {
-                "$ref" : "#/components/schemas/subscriptions-subscribe-1672040100"
+                "$ref" : "#/components/schemas/subscriptions-unsubscribe-1672040100"
               },
               "examples" : {
                 "subscribe-none-to-premium-success" : {
-                  "value" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612197090340237437,\n  \"operation\" : \"PREMIUM\"\n}"
+                  "value" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612547339808174330,\n  \"operation\" : \"PREMIUM\"\n}"
                 },
                 "subscribe-regular-initialize-success" : {
-                  "value" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612197089966944510,\n  \"operation\" : \"REGULAR\"\n}"
+                  "value" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612547339485212926,\n  \"operation\" : \"REGULAR\"\n}"
                 },
                 "subscribe-initialize-none-success" : {
-                  "value" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612197089623011454,\n  \"operation\" : \"NONE\"\n}"
+                  "value" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612547339279691898,\n  \"operation\" : \"NONE\"\n}"
                 },
                 "subscribe-failure_invalid-channel-type" : {
-                  "value" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612197090977771773,\n  \"operation\" : \"REGULAR\"\n}"
+                  "value" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612547340340850929,\n  \"operation\" : \"REGULAR\"\n}"
                 },
                 "subscribe-premium-initialize-success" : {
-                  "value" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612197090143105274,\n  \"operation\" : \"PREMIUM\"\n}"
+                  "value" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612547339657179166,\n  \"operation\" : \"PREMIUM\"\n}"
                 },
                 "subscribe-regular-to-premium-success" : {
-                  "value" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612197090759667920,\n  \"operation\" : \"PREMIUM\"\n}"
+                  "value" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612547340168884282,\n  \"operation\" : \"PREMIUM\"\n}"
                 },
                 "subscribe-none-to-regular-success" : {
-                  "value" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612197090566729970,\n  \"operation\" : \"REGULAR\"\n}"
+                  "value" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612547339996917915,\n  \"operation\" : \"REGULAR\"\n}"
                 }
               }
             }
@@ -93,26 +135,26 @@
             "content" : {
               "application/json;charset=UTF-8" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/subscriptions-subscribe645906284"
+                  "$ref" : "#/components/schemas/subscriptions-unsubscribe645906284"
                 },
                 "examples" : {
                   "subscribe-none-to-premium-success" : {
-                    "value" : "{\n  \"message\" : \"생성이 완료되었습니다.\",\n  \"code\" : \"0001\",\n  \"data\" : {\n    \"subscription_id\" : 612197090466066579,\n    \"phone_number\" : \"010-1234-5678\",\n    \"channel_id\" : 612197090340237437,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"PREMIUM\",\n    \"created_at\" : \"2024-08-16 17:12:40\"\n  }\n}"
+                    "value" : "{\n  \"message\" : \"생성이 완료되었습니다.\",\n  \"code\" : \"0001\",\n  \"data\" : {\n    \"subscription_id\" : 612547339904643129,\n    \"phone_number\" : \"010-1234-5678\",\n    \"channel_id\" : 612547339808174330,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"PREMIUM\",\n    \"created_at\" : \"2024-08-17 16:24:26\"\n  }\n}"
                   },
                   "subscribe-regular-initialize-success" : {
-                    "value" : "{\n  \"message\" : \"생성이 완료되었습니다.\",\n  \"code\" : \"0001\",\n  \"data\" : {\n    \"subscription_id\" : 612197090034053333,\n    \"phone_number\" : \"010-1234-5678\",\n    \"channel_id\" : 612197089966944510,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"REGULAR\",\n    \"created_at\" : \"2024-08-16 17:12:40\"\n  }\n}"
+                    "value" : "{\n  \"message\" : \"생성이 완료되었습니다.\",\n  \"code\" : \"0001\",\n  \"data\" : {\n    \"subscription_id\" : 612547339539738837,\n    \"phone_number\" : \"010-1234-5678\",\n    \"channel_id\" : 612547339485212926,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"REGULAR\",\n    \"created_at\" : \"2024-08-17 16:24:26\"\n  }\n}"
                   },
                   "subscribe-initialize-none-success" : {
-                    "value" : "{\n  \"message\" : \"생성이 완료되었습니다.\",\n  \"code\" : \"0001\",\n  \"data\" : {\n    \"subscription_id\" : 612197089799172253,\n    \"phone_number\" : \"010-1234-5678\",\n    \"channel_id\" : 612197089623011454,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"NONE\",\n    \"created_at\" : \"2024-08-16 17:12:40\"\n  }\n}"
+                    "value" : "{\n  \"message\" : \"생성이 완료되었습니다.\",\n  \"code\" : \"0001\",\n  \"data\" : {\n    \"subscription_id\" : 612547339342606516,\n    \"phone_number\" : \"010-1234-5678\",\n    \"channel_id\" : 612547339279691898,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"NONE\",\n    \"created_at\" : \"2024-08-17 16:24:26\"\n  }\n}"
                   },
                   "subscribe-premium-initialize-success" : {
-                    "value" : "{\n  \"message\" : \"생성이 완료되었습니다.\",\n  \"code\" : \"0001\",\n  \"data\" : {\n    \"subscription_id\" : 612197090226991224,\n    \"phone_number\" : \"010-1234-5678\",\n    \"channel_id\" : 612197090143105274,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"PREMIUM\",\n    \"created_at\" : \"2024-08-16 17:12:40\"\n  }\n}"
+                    "value" : "{\n  \"message\" : \"생성이 완료되었습니다.\",\n  \"code\" : \"0001\",\n  \"data\" : {\n    \"subscription_id\" : 612547339711705298,\n    \"phone_number\" : \"010-1234-5678\",\n    \"channel_id\" : 612547339657179166,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"PREMIUM\",\n    \"created_at\" : \"2024-08-17 16:24:26\"\n  }\n}"
                   },
                   "subscribe-regular-to-premium-success" : {
-                    "value" : "{\n  \"message\" : \"생성이 완료되었습니다.\",\n  \"code\" : \"0001\",\n  \"data\" : {\n    \"subscription_id\" : 612197090881302553,\n    \"phone_number\" : \"010-1234-5678\",\n    \"channel_id\" : 612197090759667920,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"REGULAR\",\n    \"status\" : \"PREMIUM\",\n    \"created_at\" : \"2024-08-16 17:12:40\"\n  }\n}"
+                    "value" : "{\n  \"message\" : \"생성이 완료되었습니다.\",\n  \"code\" : \"0001\",\n  \"data\" : {\n    \"subscription_id\" : 612547340256964824,\n    \"phone_number\" : \"010-1234-5678\",\n    \"channel_id\" : 612547340168884282,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"REGULAR\",\n    \"status\" : \"PREMIUM\",\n    \"created_at\" : \"2024-08-17 16:24:26\"\n  }\n}"
                   },
                   "subscribe-none-to-regular-success" : {
-                    "value" : "{\n  \"message\" : \"생성이 완료되었습니다.\",\n  \"code\" : \"0001\",\n  \"data\" : {\n    \"subscription_id\" : 612197090659004478,\n    \"phone_number\" : \"010-1234-5678\",\n    \"channel_id\" : 612197090566729970,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"REGULAR\",\n    \"created_at\" : \"2024-08-16 17:12:40\"\n  }\n}"
+                    "value" : "{\n  \"message\" : \"생성이 완료되었습니다.\",\n  \"code\" : \"0001\",\n  \"data\" : {\n    \"subscription_id\" : 612547340080803988,\n    \"phone_number\" : \"010-1234-5678\",\n    \"channel_id\" : 612547339996917915,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"NONE\",\n    \"status\" : \"REGULAR\",\n    \"created_at\" : \"2024-08-17 16:24:26\"\n  }\n}"
                   }
                 }
               }
@@ -123,7 +165,7 @@
             "content" : {
               "application/json;charset=UTF-8" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/subscriptions-subscribe1192419680"
+                  "$ref" : "#/components/schemas/subscriptions-unsubscribe1192419680"
                 },
                 "examples" : {
                   "subscribe-failure_invalid-channel-type" : {
@@ -146,23 +188,20 @@
           "content" : {
             "application/json;charset=UTF-8" : {
               "schema" : {
-                "$ref" : "#/components/schemas/subscriptions-subscribe-1672040100"
+                "$ref" : "#/components/schemas/subscriptions-unsubscribe-1672040100"
               },
               "examples" : {
                 "unsubscribe-regular-to-none-success" : {
-                  "value" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612197091523031190,\n  \"operation\" : \"NONE\"\n}"
+                  "value" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612547340848361558,\n  \"operation\" : \"NONE\"\n}"
                 },
                 "unsubscribe-premium-to-regular-success" : {
-                  "value" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612197091120378001,\n  \"operation\" : \"REGULAR\"\n}"
+                  "value" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612547340462485691,\n  \"operation\" : \"REGULAR\"\n}"
                 },
                 "unsubscribe-failure_invalid-channel-type" : {
-                  "value" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612197091736940560,\n  \"operation\" : \"NONE\"\n}"
-                },
-                "unsubscribe-success" : {
-                  "value" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612169422176989245,\n  \"operation\" : \"REGULAR\"\n}"
+                  "value" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612547341016133747,\n  \"operation\" : \"NONE\"\n}"
                 },
                 "unsubscribe-premium-to-none-success" : {
-                  "value" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612197091321704638,\n  \"operation\" : \"NONE\"\n}"
+                  "value" : "{\n  \"phone_number\" : \"010-1234-5678\",\n  \"channel_id\" : 612547340634452120,\n  \"operation\" : \"NONE\"\n}"
                 }
               }
             }
@@ -174,20 +213,17 @@
             "content" : {
               "application/json;charset=UTF-8" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/subscriptions-subscribe645906284"
+                  "$ref" : "#/components/schemas/subscriptions-unsubscribe645906284"
                 },
                 "examples" : {
                   "unsubscribe-regular-to-none-success" : {
-                    "value" : "{\n  \"message\" : \"요청이 성공적으로 처리되었습니다.\",\n  \"code\" : \"0000\",\n  \"data\" : {\n    \"subscription_id\" : 612197091661443322,\n    \"phone_number\" : \"010-1234-5678\",\n    \"channel_id\" : 612197091523031190,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"REGULAR\",\n    \"status\" : \"NONE\",\n    \"created_at\" : \"2024-08-16 17:12:40\"\n  }\n}"
+                    "value" : "{\n  \"message\" : \"요청이 성공적으로 처리되었습니다.\",\n  \"code\" : \"0000\",\n  \"data\" : {\n    \"subscription_id\" : 612547340940636251,\n    \"phone_number\" : \"010-1234-5678\",\n    \"channel_id\" : 612547340848361558,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"REGULAR\",\n    \"status\" : \"NONE\",\n    \"created_at\" : \"2024-08-17 16:24:26\"\n  }\n}"
                   },
                   "unsubscribe-premium-to-regular-success" : {
-                    "value" : "{\n  \"message\" : \"요청이 성공적으로 처리되었습니다.\",\n  \"code\" : \"0000\",\n  \"data\" : {\n    \"subscription_id\" : 612197091225235473,\n    \"phone_number\" : \"010-1234-5678\",\n    \"channel_id\" : 612197091120378001,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"PREMIUM\",\n    \"status\" : \"REGULAR\",\n    \"created_at\" : \"2024-08-16 17:12:40\"\n  }\n}"
-                  },
-                  "unsubscribe-success" : {
-                    "value" : "{\n  \"message\" : \"요청이 성공적으로 처리되었습니다.\",\n  \"code\" : \"0000\",\n  \"data\" : {\n    \"subscription_id\" : 612169423997317169,\n    \"phone_number\" : \"010-1234-5678\",\n    \"channel_id\" : 612169422176989245,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"PREMIUM\",\n    \"status\" : \"REGULAR\",\n    \"created_at\" : \"2024-08-16 15:22:44\"\n  }\n}"
+                    "value" : "{\n  \"message\" : \"요청이 성공적으로 처리되었습니다.\",\n  \"code\" : \"0000\",\n  \"data\" : {\n    \"subscription_id\" : 612547340554760304,\n    \"phone_number\" : \"010-1234-5678\",\n    \"channel_id\" : 612547340462485691,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"PREMIUM\",\n    \"status\" : \"REGULAR\",\n    \"created_at\" : \"2024-08-17 16:24:26\"\n  }\n}"
                   },
                   "unsubscribe-premium-to-none-success" : {
-                    "value" : "{\n  \"message\" : \"요청이 성공적으로 처리되었습니다.\",\n  \"code\" : \"0000\",\n  \"data\" : {\n    \"subscription_id\" : 612197091430756562,\n    \"phone_number\" : \"010-1234-5678\",\n    \"channel_id\" : 612197091321704638,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"PREMIUM\",\n    \"status\" : \"NONE\",\n    \"created_at\" : \"2024-08-16 17:12:40\"\n  }\n}"
+                    "value" : "{\n  \"message\" : \"요청이 성공적으로 처리되었습니다.\",\n  \"code\" : \"0000\",\n  \"data\" : {\n    \"subscription_id\" : 612547340760281180,\n    \"phone_number\" : \"010-1234-5678\",\n    \"channel_id\" : 612547340634452120,\n    \"channel_name\" : \"홈쇼핑 고객센터\",\n    \"previous_status\" : \"PREMIUM\",\n    \"status\" : \"NONE\",\n    \"created_at\" : \"2024-08-17 16:24:26\"\n  }\n}"
                   }
                 }
               }
@@ -198,7 +234,7 @@
             "content" : {
               "application/json;charset=UTF-8" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/subscriptions-subscribe1192419680"
+                  "$ref" : "#/components/schemas/subscriptions-unsubscribe1192419680"
                 },
                 "examples" : {
                   "unsubscribe-failure_invalid-channel-type" : {
@@ -214,7 +250,59 @@
   },
   "components" : {
     "schemas" : {
-      "subscriptions-subscribe1192419680" : {
+      "channels-channelId-subscriptions-573105177" : {
+        "required" : [ "code", "data", "message" ],
+        "type" : "object",
+        "properties" : {
+          "code" : {
+            "type" : "string",
+            "description" : "시스템 코드"
+          },
+          "data" : {
+            "type" : "array",
+            "description" : "구독 이력 목록",
+            "items" : {
+              "required" : [ "channel_id", "channel_name", "created_at", "phone_number", "previous_status", "status", "subscription_id" ],
+              "type" : "object",
+              "properties" : {
+                "channel_name" : {
+                  "type" : "string",
+                  "description" : "채널명"
+                },
+                "subscription_id" : {
+                  "type" : "number",
+                  "description" : "구독 이력 ID"
+                },
+                "created_at" : {
+                  "type" : "string",
+                  "description" : "생성일시"
+                },
+                "phone_number" : {
+                  "type" : "string",
+                  "description" : "휴대폰 번호"
+                },
+                "previous_status" : {
+                  "type" : "string",
+                  "description" : "이전 구독 상태 [NONE, REGULAR, PREMIUM]"
+                },
+                "channel_id" : {
+                  "type" : "number",
+                  "description" : "채널 ID"
+                },
+                "status" : {
+                  "type" : "string",
+                  "description" : "현재 구독 상태 [NONE, REGULAR, PREMIUM]"
+                }
+              }
+            }
+          },
+          "message" : {
+            "type" : "string",
+            "description" : "시스템 메시지"
+          }
+        }
+      },
+      "subscriptions-unsubscribe1192419680" : {
         "required" : [ "code", "message" ],
         "type" : "object",
         "properties" : {
@@ -242,7 +330,7 @@
           }
         }
       },
-      "subscriptions-subscribe645906284" : {
+      "subscriptions-unsubscribe645906284" : {
         "required" : [ "code", "message" ],
         "type" : "object",
         "properties" : {
@@ -330,7 +418,7 @@
           }
         }
       },
-      "subscriptions-subscribe-1672040100" : {
+      "subscriptions-unsubscribe-1672040100" : {
         "required" : [ "channel_id", "operation", "phone_number" ],
         "type" : "object",
         "properties" : {

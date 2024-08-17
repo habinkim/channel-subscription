@@ -2,8 +2,8 @@ package com.artinus.channelsubscription.channel.service;
 
 import com.artinus.channelsubscription.channel.domain.RegisterChannelRequest;
 import com.artinus.channelsubscription.channel.domain.RegisteredChannel;
-import com.artinus.channelsubscription.channel.mapper.ChannelMapper;
 import com.artinus.channelsubscription.channel.entity.Channel;
+import com.artinus.channelsubscription.channel.mapper.ChannelMapper;
 import com.artinus.channelsubscription.channel.repository.ChannelRepository;
 import com.artinus.channelsubscription.common.exception.CommonApplicationException;
 import com.artinus.channelsubscription.subscription.domain.SubscriptionHistory;
@@ -39,6 +39,7 @@ public class ChannelService {
 
     @Transactional(readOnly = true)
     public List<SubscriptionHistory> getChannelSubscriptionHistory(@NotNull Long channelId, LocalDate date) {
+        channelRepository.findByIdAndAvailableTrue(channelId).orElseThrow(CommonApplicationException.CHANNEL_NOT_FOUND);
         return subscriptionRepository.findAllByChannelIdAndDate(channelId, date);
     }
 }
