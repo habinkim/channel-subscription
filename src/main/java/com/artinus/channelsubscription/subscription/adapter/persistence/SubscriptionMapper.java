@@ -4,6 +4,7 @@ import com.artinus.channelsubscription.channel.adapter.persistence.ChannelJpaEnt
 import com.artinus.channelsubscription.common.config.BaseMapperConfig;
 import com.artinus.channelsubscription.subscription.domain.RegisteredSubscription;
 import com.artinus.channelsubscription.subscription.application.port.input.SubscribeCommand;
+import com.artinus.channelsubscription.subscription.domain.SaveSubscription;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -16,8 +17,8 @@ public abstract  class SubscriptionMapper {
     @Mapping(target = "account", source = "account")
     @Mapping(target = "channel", source = "channel")
     @Mapping(target = "previousSubscriptionStatus", source = "account.currentSubscriptionStatus")
-    @Mapping(target = "subscriptionStatus", source = "request.operation")
-    public abstract SubscriptionJpaEntity toEntity(SubscribeCommand request, AccountJpaEntity account, ChannelJpaEntity channel);
+    @Mapping(target = "subscriptionStatus", source = "behavior.subscriptionStatus")
+    public abstract SubscriptionJpaEntity toEntity(SaveSubscription behavior, AccountJpaEntity account, ChannelJpaEntity channel);
 
     @Mapping(target = "subscriptionId", source = "subscription.id")
     @Mapping(target = "phoneNumber", source = "account.phoneNumber")

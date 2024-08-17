@@ -17,7 +17,7 @@ public class AccountPersistenceAdapter implements LoadAccountPort, SaveAccountPo
 
     @Override
     public Optional<RegisteredAccount> findByPhoneNumber(String phoneNumber) {
-        return accountJpaRepository.findByPhoneNumber(phoneNumber)
+        return findEntityByPhoneNumber(phoneNumber)
                 .map(accountEntity -> new RegisteredAccount(accountEntity.getId(), accountEntity.getPhoneNumber(),
                         accountEntity.getCurrentSubscriptionStatus())
                 );
@@ -34,7 +34,7 @@ public class AccountPersistenceAdapter implements LoadAccountPort, SaveAccountPo
 
     @Override
     public RegisteredAccount updateCurrentSubscriptionStatus(String phoneNumber, SubscriptionStatus status) {
-        Optional<AccountJpaEntity> byPhoneNumber = accountJpaRepository.findByPhoneNumber(phoneNumber);
+        Optional<AccountJpaEntity> byPhoneNumber = findEntityByPhoneNumber(phoneNumber);
 
         if (byPhoneNumber.isPresent()) {
             AccountJpaEntity updatedAccount = byPhoneNumber.get()
@@ -45,5 +45,9 @@ public class AccountPersistenceAdapter implements LoadAccountPort, SaveAccountPo
         }
 
         throw new IllegalArgumentException("Account not found");
+    }
+
+    public Optional<AccountJpaEntity> findEntityByPhoneNumber(String phoneNumber) {
+        return accountJpaRepository.findByPhoneNumber(phoneNumber);
     }
 }

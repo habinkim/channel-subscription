@@ -22,8 +22,7 @@ public class ChannelPersistenceAdapter implements LoadChannelPort, SaveChannelPo
 
     @Override
     public Optional<RegisteredChannel> findById(Long channelId) {
-        return channelJpaRepository.findByIdAndAvailableTrue(channelId)
-                .map(channelMapper::registeredChannel);
+        return findByAndAvailableTrue(channelId).map(channelMapper::registeredChannel);
     }
 
     @Override
@@ -41,5 +40,9 @@ public class ChannelPersistenceAdapter implements LoadChannelPort, SaveChannelPo
         ChannelJpaEntity build = channelMapper.toEntity(behavior);
         ChannelJpaEntity savedChannel = channelJpaRepository.save(build);
         return channelMapper.registeredChannel(savedChannel);
+    }
+
+    public Optional<ChannelJpaEntity> findByAndAvailableTrue(Long channelId) {
+        return channelJpaRepository.findByIdAndAvailableTrue(channelId);
     }
 }

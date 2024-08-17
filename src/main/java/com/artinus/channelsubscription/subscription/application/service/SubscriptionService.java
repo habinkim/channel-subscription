@@ -1,23 +1,19 @@
 package com.artinus.channelsubscription.subscription.application.service;
 
-import com.artinus.channelsubscription.channel.adapter.persistence.ChannelJpaEntity;
 import com.artinus.channelsubscription.channel.application.port.output.LoadChannelPort;
 import com.artinus.channelsubscription.channel.domain.ChannelType;
 import com.artinus.channelsubscription.channel.domain.RegisteredChannel;
 import com.artinus.channelsubscription.common.exception.CommonApplicationException;
 import com.artinus.channelsubscription.common.stereotype.UseCase;
-import com.artinus.channelsubscription.subscription.adapter.persistence.AccountJpaEntity;
-import com.artinus.channelsubscription.subscription.adapter.persistence.SubscriptionJpaEntity;
+import com.artinus.channelsubscription.subscription.adapter.persistence.SubscriptionJpaRepository;
 import com.artinus.channelsubscription.subscription.application.port.input.GetSubscriptionHistoryUseCase;
 import com.artinus.channelsubscription.subscription.application.port.input.SubscribeCommand;
 import com.artinus.channelsubscription.subscription.application.port.input.SubscribeUseCase;
 import com.artinus.channelsubscription.subscription.application.port.input.UnsubscribeUseCase;
 import com.artinus.channelsubscription.subscription.application.port.output.LoadAccountPort;
 import com.artinus.channelsubscription.subscription.application.port.output.SaveAccountPort;
+import com.artinus.channelsubscription.subscription.application.port.output.SaveSubscriptionPort;
 import com.artinus.channelsubscription.subscription.domain.*;
-import com.artinus.channelsubscription.subscription.adapter.persistence.SubscriptionMapper;
-import com.artinus.channelsubscription.subscription.adapter.persistence.AccountJpaRepository;
-import com.artinus.channelsubscription.subscription.adapter.persistence.SubscriptionJpaRepository;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +39,6 @@ import java.util.concurrent.atomic.AtomicReference;
 @Slf4j
 public class SubscriptionService implements SubscribeUseCase, UnsubscribeUseCase, GetSubscriptionHistoryUseCase {
 
-    private final AccountJpaRepository accountRepository;
     private final SubscriptionJpaRepository subscriptionRepository;
 
     private final LoadChannelPort loadChannelPort;
@@ -51,9 +46,9 @@ public class SubscriptionService implements SubscribeUseCase, UnsubscribeUseCase
     private final LoadAccountPort loadAccountPort;
     private final SaveAccountPort saveAccountPort;
 
-    private final StateMachineService<SubscriptionStatus, SubscriptionEvent> stateMachineService;
+    private final SaveSubscriptionPort saveSubscriptionPort;
 
-    private final SubscriptionMapper subscriptionMapper;
+    private final StateMachineService<SubscriptionStatus, SubscriptionEvent> stateMachineService;
 
     @Transactional
     public RegisteredSubscription subscribe(@Valid SubscribeCommand command) {
@@ -84,13 +79,14 @@ public class SubscriptionService implements SubscribeUseCase, UnsubscribeUseCase
         transitionSubscriptionStatus(account, channel, subscriptionEvent, SubscribeOperation.SUBSCRIBE);
 
         // State Machine에서 성공하면 DB에 구독 정보 저장
-        SubscriptionJpaEntity savedSubscription = createNewSubscription(command, account, channel);
+        SaveSubscription behavior = new SaveSubscription(account.phoneNumber(), channel.id(),
+                account.currentSubscriptionStatus(), command.operation());
+        RegisteredSubscription registeredSubscription = saveSubscriptionPort.saveSubscription(behavior);
 
         // 회원의 현재 구독 상태 업데이트
         saveAccountPort.updateCurrentSubscriptionStatus(command.phoneNumber(), command.operation());
-        AccountJpaEntity updatedAccount = updateCurrentSubscriptionStatus(command, account);
 
-        return subscriptionMapper.registeredSubscription(savedSubscription, updatedAccount, channel);
+        return registeredSubscription;
     }
 
     @Transactional
@@ -109,13 +105,14 @@ public class SubscriptionService implements SubscribeUseCase, UnsubscribeUseCase
         transitionSubscriptionStatus(account, channel, subscriptionEvent, SubscribeOperation.UNSUBSCRIBE);
 
         // State Machine에서 성공하면 DB에 구독 정보 저장
-        SubscriptionJpaEntity savedSubscription = createNewSubscription(command, account, channel);
+        SaveSubscription behavior = new SaveSubscription(account.phoneNumber(), channel.id(),
+                account.currentSubscriptionStatus(), command.operation());
+        RegisteredSubscription registeredSubscription = saveSubscriptionPort.saveSubscription(behavior);
 
         // 회원의 현재 구독 상태 업데이트
         saveAccountPort.updateCurrentSubscriptionStatus(command.phoneNumber(), command.operation());
-        AccountJpaEntity updatedAccount = updateCurrentSubscriptionStatus(command, account);
 
-        return subscriptionMapper.registeredSubscription(savedSubscription, updatedAccount, channel);
+        return registeredSubscription;
     }
 
     @Transactional(readOnly = true)
@@ -126,19 +123,6 @@ public class SubscriptionService implements SubscribeUseCase, UnsubscribeUseCase
     @Transactional
     public RegisteredAccount createNewAccount(SubscribeCommand command) {
         return saveAccountPort.createAccount(command.phoneNumber());
-    }
-
-    @Transactional
-    public SubscriptionJpaEntity createNewSubscription(SubscribeCommand request, AccountJpaEntity account, ChannelJpaEntity channel) {
-        SubscriptionJpaEntity build = subscriptionMapper.toEntity(request, account, channel);
-        return subscriptionRepository.save(build);
-    }
-
-    @Transactional
-    public AccountJpaEntity updateCurrentSubscriptionStatus(SubscribeCommand request, AccountJpaEntity account) {
-        AccountJpaEntity updatedAccount = account.toBuilder().currentSubscriptionStatus(request.operation()).build();
-        accountRepository.save(updatedAccount);
-        return updatedAccount;
     }
 
     private static SubscriptionEvent getEvent(final SubscriptionStatus previousStatus, final SubscriptionStatus nextStatus, final ChannelType channelType) {
