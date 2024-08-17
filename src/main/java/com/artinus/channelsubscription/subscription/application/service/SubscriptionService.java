@@ -5,12 +5,12 @@ import com.artinus.channelsubscription.channel.domain.ChannelType;
 import com.artinus.channelsubscription.channel.domain.RegisteredChannel;
 import com.artinus.channelsubscription.common.exception.CommonApplicationException;
 import com.artinus.channelsubscription.common.stereotype.UseCase;
-import com.artinus.channelsubscription.subscription.adapter.persistence.SubscriptionJpaRepository;
 import com.artinus.channelsubscription.subscription.application.port.input.GetSubscriptionHistoryUseCase;
 import com.artinus.channelsubscription.subscription.application.port.input.SubscribeCommand;
 import com.artinus.channelsubscription.subscription.application.port.input.SubscribeUseCase;
 import com.artinus.channelsubscription.subscription.application.port.input.UnsubscribeUseCase;
 import com.artinus.channelsubscription.subscription.application.port.output.LoadAccountPort;
+import com.artinus.channelsubscription.subscription.application.port.output.LoadSubscriptionPort;
 import com.artinus.channelsubscription.subscription.application.port.output.SaveAccountPort;
 import com.artinus.channelsubscription.subscription.application.port.output.SaveSubscriptionPort;
 import com.artinus.channelsubscription.subscription.domain.*;
@@ -39,13 +39,12 @@ import java.util.concurrent.atomic.AtomicReference;
 @Slf4j
 public class SubscriptionService implements SubscribeUseCase, UnsubscribeUseCase, GetSubscriptionHistoryUseCase {
 
-    private final SubscriptionJpaRepository subscriptionRepository;
-
     private final LoadChannelPort loadChannelPort;
 
     private final LoadAccountPort loadAccountPort;
     private final SaveAccountPort saveAccountPort;
 
+    private final LoadSubscriptionPort loadSubscriptionPort;
     private final SaveSubscriptionPort saveSubscriptionPort;
 
     private final StateMachineService<SubscriptionStatus, SubscriptionEvent> stateMachineService;
@@ -117,7 +116,7 @@ public class SubscriptionService implements SubscribeUseCase, UnsubscribeUseCase
 
     @Transactional(readOnly = true)
     public Map<String, List<SubscriptionHistory>> getSubscriptionHistory(@NotBlank String phoneNumber) {
-        return subscriptionRepository.findAllByPhoneNumber(phoneNumber);
+        return loadSubscriptionPort.getSubscriptionHistory(phoneNumber);
     }
 
     @Transactional
@@ -132,7 +131,7 @@ public class SubscriptionService implements SubscribeUseCase, UnsubscribeUseCase
     private void transitionSubscriptionStatus(RegisteredAccount account, RegisteredChannel channel, SubscriptionEvent subscriptionEvent, SubscribeOperation operation) {
         // 회원에 해당하는 State Machine을 Redis에서 가져옴 (없으면 신규 생성)
         StateMachine<SubscriptionStatus, SubscriptionEvent> acquiredStateMachine =
-                stateMachineService.acquireStateMachine(String.valueOf(account.id()));
+                stateMachineService.acquireStateMachine(account.phoneNumber());
 
         // State Machine에 이벤트 전달 및 결과 리턴
         StateMachineEventResult<SubscriptionStatus, SubscriptionEvent> stateMachineEventResult = acquiredStateMachine

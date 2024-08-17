@@ -3,14 +3,19 @@ package com.artinus.channelsubscription.subscription.adapter.persistence;
 import com.artinus.channelsubscription.channel.adapter.persistence.ChannelJpaEntity;
 import com.artinus.channelsubscription.channel.adapter.persistence.ChannelPersistenceAdapter;
 import com.artinus.channelsubscription.common.stereotype.PersistenceAdapter;
+import com.artinus.channelsubscription.subscription.application.port.output.LoadSubscriptionPort;
 import com.artinus.channelsubscription.subscription.application.port.output.SaveSubscriptionPort;
 import com.artinus.channelsubscription.subscription.domain.RegisteredSubscription;
 import com.artinus.channelsubscription.subscription.domain.SaveSubscription;
+import com.artinus.channelsubscription.subscription.domain.SubscriptionHistory;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+import java.util.Map;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class SubscriptionPersistenceAdapter implements SaveSubscriptionPort {
+public class SubscriptionPersistenceAdapter implements SaveSubscriptionPort, LoadSubscriptionPort {
 
     private final SubscriptionJpaRepository subscriptionJpaRepository;
 
@@ -31,5 +36,10 @@ public class SubscriptionPersistenceAdapter implements SaveSubscriptionPort {
         SubscriptionJpaEntity saved = subscriptionJpaRepository.save(build);
 
         return subscriptionMapper.registeredSubscription(saved, accountJpaEntity, channelJpaEntity);
+    }
+
+    @Override
+    public Map<String, List<SubscriptionHistory>> getSubscriptionHistory(final String phoneNumber) {
+        return subscriptionJpaRepository.findAllByPhoneNumber(phoneNumber);
     }
 }
