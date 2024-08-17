@@ -133,6 +133,13 @@ class ChannelControllerTest extends ControllerBaseTest {
                 .andExpectAll(baseAssertion(MessageCode.SUCCESS))
                 .andExpect(jsonPath("$.data", notNullValue()))
                 .andExpect(jsonPath("$.data.length()", is(20)))
+                .andExpect(jsonPath("$.data[*].subscription_id", notNullValue()))
+                .andExpect(jsonPath("$.data[*].phone_number", notNullValue()))
+                .andExpect(jsonPath("$.data[*].channel_id", notNullValue()))
+                .andExpect(jsonPath("$.data[*].channel_name", notNullValue()))
+                .andExpect(jsonPath("$.data[*].previous_status", notNullValue()))
+                .andExpect(jsonPath("$.data[*].status", notNullValue()))
+                .andExpect(jsonPath("$.data[*].created_at", notNullValue()))
                 .andDo(
                         restDocs.document(
                                 pathParameters(pathParameterDescriptor),

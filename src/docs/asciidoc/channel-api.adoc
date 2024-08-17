@@ -1,6 +1,14 @@
 [[Channel-API]]
 == Channel-API
+
 === 채널 등록 API
 
 ==== 성공
+
 operation::register-channel-success[snippets='http-request,http-response,request-fields,response-fields']
+
+=== 채널 이력 조회 API
+
+==== 성공
+
+operation::get-channel-subscription-history-success[snippets='http-request,http-response,response-fields']
