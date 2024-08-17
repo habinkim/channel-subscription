@@ -1,6 +1,6 @@
 package com.artinus.channelsubscription.subscription.repository;
 
-import com.artinus.channelsubscription.channel.entity.QChannel;
+import com.artinus.channelsubscription.channel.adapter.persistence.QChannelJpaEntity;
 import com.artinus.channelsubscription.subscription.domain.SubscriptionHistory;
 import com.artinus.channelsubscription.subscription.entity.QAccount;
 import com.artinus.channelsubscription.subscription.entity.QSubscription;
@@ -27,7 +27,7 @@ public class SubscriptionCustomRepositoryImpl implements SubscriptionCustomRepos
     private final JPAQueryFactory queryFactory;
 
     private static final QSubscription SUBSCRIPTION = QSubscription.subscription;
-    private static final QChannel CHANNEL = QChannel.channel;
+    private static final QChannelJpaEntity CHANNEL = QChannelJpaEntity.channelJpaEntity;
     private static final QAccount ACCOUNT = QAccount.account;
 
     @Override

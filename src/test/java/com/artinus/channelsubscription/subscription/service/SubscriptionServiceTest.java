@@ -1,7 +1,7 @@
 package com.artinus.channelsubscription.subscription.service;
 
-import com.artinus.channelsubscription.channel.entity.Channel;
-import com.artinus.channelsubscription.channel.repository.ChannelRepository;
+import com.artinus.channelsubscription.channel.adapter.persistence.ChannelJpaEntity;
+import com.artinus.channelsubscription.channel.adapter.persistence.ChannelJpaRepository;
 import com.artinus.channelsubscription.common.exception.CommonApplicationException;
 import com.artinus.channelsubscription.subscription.domain.SubscribeRequest;
 import com.artinus.channelsubscription.subscription.domain.SubscriptionStatus;
@@ -30,7 +30,7 @@ class SubscriptionServiceTest {
     private SubscriptionRepository subscriptionRepository;
 
     @Mock
-    private ChannelRepository channelRepository;
+    private ChannelJpaRepository channelJpaRepository;
 
     @InjectMocks
     private SubscriptionService subscriptionService;
@@ -42,14 +42,14 @@ class SubscriptionServiceTest {
         // given
         SubscribeRequest request = new SubscribeRequest("010-0000-0000", 1L, SubscriptionStatus.REGULAR);
 
-        when(channelRepository.findByIdAndAvailableTrue(request.channelId())).thenReturn(Optional.empty());
+        when(channelJpaRepository.findByIdAndAvailableTrue(request.channelId())).thenReturn(Optional.empty());
 
         // when & then
         CommonApplicationException exception = assertThrows(CommonApplicationException.class, () -> subscriptionService.subscribe(request));
 
         assertEquals(CommonApplicationException.CHANNEL_NOT_FOUND, exception);
 
-        verify(channelRepository, times(1)).findByIdAndAvailableTrue(request.channelId());
+        verify(channelJpaRepository, times(1)).findByIdAndAvailableTrue(request.channelId());
         verify(subscriptionRepository, never()).save(any());
     }
 
@@ -61,7 +61,7 @@ class SubscriptionServiceTest {
         SubscribeRequest request = new SubscribeRequest("010-0000-0000", 1L, SubscriptionStatus.NONE);
 
         Account accountMock = mock(Account.class);
-        when(channelRepository.findByIdAndAvailableTrue(request.channelId())).thenReturn(Optional.of(mock(Channel.class)));
+        when(channelJpaRepository.findByIdAndAvailableTrue(request.channelId())).thenReturn(Optional.of(mock(ChannelJpaEntity.class)));
         when(accountRepository.findByPhoneNumber(request.phoneNumber())).thenReturn(Optional.of(accountMock));
         when(accountMock.getCurrentSubscriptionStatus()).thenReturn(SubscriptionStatus.NONE);
 
@@ -70,7 +70,7 @@ class SubscriptionServiceTest {
 
         assertEquals(CommonApplicationException.SUBSCRIPTION_TRANSITION_DENIED, exception);
 
-        verify(channelRepository, times(1)).findByIdAndAvailableTrue(request.channelId());
+        verify(channelJpaRepository, times(1)).findByIdAndAvailableTrue(request.channelId());
         verify(accountRepository, times(1)).findByPhoneNumber(request.phoneNumber());
         verify(subscriptionRepository, never()).save(any());
     }
@@ -82,14 +82,14 @@ class SubscriptionServiceTest {
         // given
         SubscribeRequest request = new SubscribeRequest("010-0000-0000", 1L, SubscriptionStatus.NONE);
 
-        when(channelRepository.findByIdAndAvailableTrue(request.channelId())).thenReturn(Optional.empty());
+        when(channelJpaRepository.findByIdAndAvailableTrue(request.channelId())).thenReturn(Optional.empty());
 
         // when & then
         CommonApplicationException exception = assertThrows(CommonApplicationException.class, () -> subscriptionService.unsubscribe(request));
 
         assertEquals(CommonApplicationException.CHANNEL_NOT_FOUND, exception);
 
-        verify(channelRepository, times(1)).findByIdAndAvailableTrue(request.channelId());
+        verify(channelJpaRepository, times(1)).findByIdAndAvailableTrue(request.channelId());
         verify(subscriptionRepository, never()).save(any());
     }
 
@@ -100,7 +100,7 @@ class SubscriptionServiceTest {
         // given
         SubscribeRequest request = new SubscribeRequest("010-0000-0000", 1L, SubscriptionStatus.NONE);
 
-        when(channelRepository.findByIdAndAvailableTrue(request.channelId())).thenReturn(Optional.of(mock(Channel.class)));
+        when(channelJpaRepository.findByIdAndAvailableTrue(request.channelId())).thenReturn(Optional.of(mock(ChannelJpaEntity.class)));
         when(accountRepository.findByPhoneNumber(request.phoneNumber())).thenReturn(Optional.empty());
 
         // when & then
@@ -108,7 +108,7 @@ class SubscriptionServiceTest {
 
         assertEquals(CommonApplicationException.ACCOUNT_NOT_FOUND, exception);
 
-        verify(channelRepository, times(1)).findByIdAndAvailableTrue(request.channelId());
+        verify(channelJpaRepository, times(1)).findByIdAndAvailableTrue(request.channelId());
         verify(accountRepository, times(1)).findByPhoneNumber(request.phoneNumber());
         verify(subscriptionRepository, never()).save(any());
     }

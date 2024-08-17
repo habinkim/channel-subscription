@@ -22,6 +22,7 @@ public class LoggingAspect {
     @Around("com.artinus.channelsubscription.common.aspect.CustomPointCuts.restApi() " +
             "|| com.artinus.channelsubscription.common.aspect.CustomPointCuts.repository() " +
             "|| com.artinus.channelsubscription.common.aspect.CustomPointCuts.service()" +
+            "|| com.artinus.channelsubscription.common.aspect.CustomPointCuts.usecase()" +
             "&& !com.artinus.channelsubscription.common.aspect.CustomPointCuts.swaggerUI()" +
             "&& !com.artinus.channelsubscription.common.aspect.CustomPointCuts.springdoc() " +
             "&& !com.artinus.channelsubscription.common.aspect.CustomPointCuts.common()")

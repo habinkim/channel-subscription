@@ -16,6 +16,10 @@ public final class CustomPointCuts {
     public void restController() {
     }
 
+    @Pointcut("within(@com.artinus.channelsubscription.common.stereotype.UseCase)")
+    public void useCase() {
+    }
+
     @Pointcut(
             "within(@org.springframework.stereotype.Repository *)" +
                     " || within(@org.springframework.stereotype.Service *)" +

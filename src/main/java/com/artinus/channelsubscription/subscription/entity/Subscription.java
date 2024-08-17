@@ -1,6 +1,6 @@
 package com.artinus.channelsubscription.subscription.entity;
 
-import com.artinus.channelsubscription.channel.entity.Channel;
+import com.artinus.channelsubscription.channel.adapter.persistence.ChannelJpaEntity;
 import com.artinus.channelsubscription.common.entity.BaseEntity;
 import com.artinus.channelsubscription.subscription.domain.SubscriptionStatus;
 import jakarta.persistence.*;
@@ -30,7 +30,7 @@ public class Subscription extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "channel_id", nullable = false)
     @Comment("채널 ID")
-    private Channel channel;
+    private ChannelJpaEntity channel;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "previous_subscription_status", nullable = false)

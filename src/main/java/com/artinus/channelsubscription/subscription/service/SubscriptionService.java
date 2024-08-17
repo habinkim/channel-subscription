@@ -1,8 +1,8 @@
 package com.artinus.channelsubscription.subscription.service;
 
+import com.artinus.channelsubscription.channel.adapter.persistence.ChannelJpaEntity;
 import com.artinus.channelsubscription.channel.domain.ChannelType;
-import com.artinus.channelsubscription.channel.entity.Channel;
-import com.artinus.channelsubscription.channel.repository.ChannelRepository;
+import com.artinus.channelsubscription.channel.adapter.persistence.ChannelJpaRepository;
 import com.artinus.channelsubscription.common.exception.CommonApplicationException;
 import com.artinus.channelsubscription.subscription.domain.*;
 import com.artinus.channelsubscription.subscription.entity.Account;
@@ -38,7 +38,7 @@ public class SubscriptionService {
 
     private final AccountRepository accountRepository;
     private final SubscriptionRepository subscriptionRepository;
-    private final ChannelRepository channelRepository;
+    private final ChannelJpaRepository channelJpaRepository;
 
     private final StateMachineService<SubscriptionStatus, SubscriptionEvent> stateMachineService;
 
@@ -48,8 +48,8 @@ public class SubscriptionService {
     public RegisteredSubscription subscribe(@Valid SubscribeRequest request) {
         AtomicReference<Boolean> isNewAccount = new AtomicReference<>(false);
 
-        // Channel 조회
-        Channel channel = channelRepository.findByIdAndAvailableTrue(request.channelId())
+        // ChannelJpaEntity 조회
+        ChannelJpaEntity channel = channelJpaRepository.findByIdAndAvailableTrue(request.channelId())
                 .orElseThrow(CommonApplicationException.CHANNEL_NOT_FOUND);
 
         // 휴대폰 번호에 해당하는 회원 조회 및 없으면 신규 생성
@@ -83,8 +83,8 @@ public class SubscriptionService {
 
     @Transactional
     public RegisteredSubscription unsubscribe(@Valid SubscribeRequest request) {
-        // Channel 조회
-        Channel channel = channelRepository.findByIdAndAvailableTrue(request.channelId())
+        // ChannelJpaEntity 조회
+        ChannelJpaEntity channel = channelJpaRepository.findByIdAndAvailableTrue(request.channelId())
                 .orElseThrow(CommonApplicationException.CHANNEL_NOT_FOUND);
 
         // 휴대폰 번호에 해당하는 회원 조회 및 없으면 예외 발생
@@ -118,7 +118,7 @@ public class SubscriptionService {
     }
 
     @Transactional
-    public Subscription createNewSubscription(SubscribeRequest request, Account account, Channel channel) {
+    public Subscription createNewSubscription(SubscribeRequest request, Account account, ChannelJpaEntity channel) {
         Subscription build = subscriptionMapper.toEntity(request, account, channel);
         return subscriptionRepository.save(build);
     }
@@ -134,7 +134,7 @@ public class SubscriptionService {
         return SubscriptionEvent.from(previousStatus, nextStatus, channelType);
     }
 
-    private void transitionSubscriptionStatus(Account account, Channel channel, SubscriptionEvent subscriptionEvent, SubscribeOperation operation) {
+    private void transitionSubscriptionStatus(Account account, ChannelJpaEntity channel, SubscriptionEvent subscriptionEvent, SubscribeOperation operation) {
         // 회원에 해당하는 State Machine을 Redis에서 가져옴 (없으면 신규 생성)
         StateMachine<SubscriptionStatus, SubscriptionEvent> acquiredStateMachine =
                 stateMachineService.acquireStateMachine(String.valueOf(account.getId()));

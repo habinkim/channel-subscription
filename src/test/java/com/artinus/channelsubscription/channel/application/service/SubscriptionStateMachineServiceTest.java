@@ -1,4 +1,4 @@
-package com.artinus.channelsubscription.channel.service;
+package com.artinus.channelsubscription.channel.application.service;
 
 import com.artinus.channelsubscription.base.IntegrationTest;
 import com.artinus.channelsubscription.channel.domain.ChannelType;

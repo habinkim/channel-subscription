@@ -1,10 +1,11 @@
-package com.artinus.channelsubscription.channel.controller;
+package com.artinus.channelsubscription.channel.adapter.rest;
 
 import com.artinus.channelsubscription.base.ControllerBaseTest;
+import com.artinus.channelsubscription.channel.application.port.input.RegisterChannelUseCase;
 import com.artinus.channelsubscription.channel.domain.ChannelType;
-import com.artinus.channelsubscription.channel.domain.RegisterChannelRequest;
+import com.artinus.channelsubscription.channel.application.port.input.RegisterChannelCommand;
 import com.artinus.channelsubscription.channel.domain.RegisteredChannel;
-import com.artinus.channelsubscription.channel.service.ChannelService;
+import com.artinus.channelsubscription.channel.application.service.ChannelService;
 import com.artinus.channelsubscription.common.response.MessageCode;
 import com.artinus.channelsubscription.subscription.domain.SubscribeRequest;
 import com.artinus.channelsubscription.subscription.domain.SubscriptionStatus;
@@ -36,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ChannelControllerTest extends ControllerBaseTest {
 
     @Autowired
-    private ChannelService channelService;
+    private RegisterChannelUseCase registerChannelUseCase;
 
     @Autowired
     private SubscriptionService subscriptionService;
@@ -46,7 +47,7 @@ class ChannelControllerTest extends ControllerBaseTest {
     @Order(1)
     @DisplayName("채널 등록, 성공")
     void registerChannelSuccess() throws Exception {
-        RegisterChannelRequest request = new RegisterChannelRequest("KT 통신사", ChannelType.SUBSCRIBE_UNSUBSCRIBE);
+        RegisterChannelCommand request = new RegisterChannelCommand("KT 통신사", ChannelType.SUBSCRIBE_UNSUBSCRIBE);
 
         FieldDescriptor[] requestDescriptors = new FieldDescriptor[]{
                 fieldWithPath("name").description("채널명"),
@@ -101,8 +102,8 @@ class ChannelControllerTest extends ControllerBaseTest {
     @Order(2)
     @DisplayName("채널 이력 조회, 성공")
     void getChannelSubscriptionHistorySuccess() throws Exception {
-        RegisterChannelRequest registerChannelRequest = new RegisterChannelRequest("홈쇼핑 고객센터", ChannelType.SUBSCRIBE_UNSUBSCRIBE);
-        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelRequest);
+        RegisterChannelCommand registerChannelCommand = new RegisterChannelCommand("홈쇼핑 고객센터", ChannelType.SUBSCRIBE_UNSUBSCRIBE);
+        RegisteredChannel registeredChannel = registerChannelUseCase.registerChannel(registerChannelCommand);
 
         IntStream.rangeClosed(1, 20).forEach(i -> {
             String phoneNumber = "010-1234-" + String.format("%04d", i);

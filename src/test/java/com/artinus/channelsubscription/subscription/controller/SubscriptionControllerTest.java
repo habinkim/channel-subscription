@@ -2,9 +2,9 @@ package com.artinus.channelsubscription.subscription.controller;
 
 import com.artinus.channelsubscription.base.ControllerBaseTest;
 import com.artinus.channelsubscription.channel.domain.ChannelType;
-import com.artinus.channelsubscription.channel.domain.RegisterChannelRequest;
+import com.artinus.channelsubscription.channel.application.port.input.RegisterChannelCommand;
 import com.artinus.channelsubscription.channel.domain.RegisteredChannel;
-import com.artinus.channelsubscription.channel.service.ChannelService;
+import com.artinus.channelsubscription.channel.application.service.ChannelService;
 import com.artinus.channelsubscription.common.response.MessageCode;
 import com.artinus.channelsubscription.subscription.domain.SubscribeRequest;
 import com.artinus.channelsubscription.subscription.domain.SubscriptionStatus;
@@ -46,8 +46,8 @@ class SubscriptionControllerTest extends ControllerBaseTest {
     @Order(1)
     @DisplayName("신규 회원 구독하기(구독 안함), 성공")
     void subscribeInitializeNoneSuccess() throws Exception {
-        RegisterChannelRequest registerChannelRequest = new RegisterChannelRequest("홈쇼핑 고객센터", ChannelType.SUBSCRIBE_UNSUBSCRIBE);
-        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelRequest);
+        RegisterChannelCommand registerChannelCommand = new RegisterChannelCommand("홈쇼핑 고객센터", ChannelType.SUBSCRIBE_UNSUBSCRIBE);
+        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelCommand);
 
         SubscribeRequest subscribeRequest = new SubscribeRequest("010-1234-5678", registeredChannel.id(), SubscriptionStatus.NONE);
 
@@ -61,8 +61,8 @@ class SubscriptionControllerTest extends ControllerBaseTest {
     @Order(2)
     @DisplayName("신규 회원 구독하기(일반 구독), 성공")
     void subscribeRegularInitializeSuccess() throws Exception {
-        RegisterChannelRequest registerChannelRequest = new RegisterChannelRequest("홈쇼핑 고객센터", ChannelType.SUBSCRIBE_UNSUBSCRIBE);
-        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelRequest);
+        RegisterChannelCommand registerChannelCommand = new RegisterChannelCommand("홈쇼핑 고객센터", ChannelType.SUBSCRIBE_UNSUBSCRIBE);
+        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelCommand);
 
         SubscribeRequest subscribeRequest = new SubscribeRequest("010-1234-5678", registeredChannel.id(), SubscriptionStatus.REGULAR);
 
@@ -76,8 +76,8 @@ class SubscriptionControllerTest extends ControllerBaseTest {
     @Order(3)
     @DisplayName("신규 회원 구독하기(프리미엄 구독), 성공")
     void subscribePremiumInitializeSuccess() throws Exception {
-        RegisterChannelRequest registerChannelRequest = new RegisterChannelRequest("홈쇼핑 고객센터", ChannelType.SUBSCRIBE_UNSUBSCRIBE);
-        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelRequest);
+        RegisterChannelCommand registerChannelCommand = new RegisterChannelCommand("홈쇼핑 고객센터", ChannelType.SUBSCRIBE_UNSUBSCRIBE);
+        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelCommand);
 
         SubscribeRequest subscribeRequest = new SubscribeRequest("010-1234-5678", registeredChannel.id(), SubscriptionStatus.PREMIUM);
 
@@ -91,8 +91,8 @@ class SubscriptionControllerTest extends ControllerBaseTest {
     @Order(4)
     @DisplayName("기존 회원 구독하기(구독 안함 -> 프리미엄 구독), 성공")
     void subscribeNoneToPremiumSuccess() throws Exception {
-        RegisterChannelRequest registerChannelRequest = new RegisterChannelRequest("홈쇼핑 고객센터", ChannelType.SUBSCRIBE_UNSUBSCRIBE);
-        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelRequest);
+        RegisterChannelCommand registerChannelCommand = new RegisterChannelCommand("홈쇼핑 고객센터", ChannelType.SUBSCRIBE_UNSUBSCRIBE);
+        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelCommand);
 
         String phoneNumber = "010-1234-5678";
         SubscriptionStatus previousStatus = SubscriptionStatus.NONE;
@@ -111,8 +111,8 @@ class SubscriptionControllerTest extends ControllerBaseTest {
     @Order(5)
     @DisplayName("기존 회원 구독하기(구독 안함 -> 일반 구독), 성공")
     void subscribeNoneToRegularSuccess() throws Exception {
-        RegisterChannelRequest registerChannelRequest = new RegisterChannelRequest("홈쇼핑 고객센터", ChannelType.SUBSCRIBE_UNSUBSCRIBE);
-        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelRequest);
+        RegisterChannelCommand registerChannelCommand = new RegisterChannelCommand("홈쇼핑 고객센터", ChannelType.SUBSCRIBE_UNSUBSCRIBE);
+        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelCommand);
 
         String phoneNumber = "010-1234-5678";
         SubscriptionStatus previousStatus = SubscriptionStatus.NONE;
@@ -131,8 +131,8 @@ class SubscriptionControllerTest extends ControllerBaseTest {
     @Order(6)
     @DisplayName("기존 회원 구독하기(일반 구독 -> 프리미엄 구독), 성공")
     void subscribeRegularToPremiumSuccess() throws Exception {
-        RegisterChannelRequest registerChannelRequest = new RegisterChannelRequest("홈쇼핑 고객센터", ChannelType.SUBSCRIBE_UNSUBSCRIBE);
-        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelRequest);
+        RegisterChannelCommand registerChannelCommand = new RegisterChannelCommand("홈쇼핑 고객센터", ChannelType.SUBSCRIBE_UNSUBSCRIBE);
+        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelCommand);
 
         String phoneNumber = "010-1234-5678";
         SubscriptionStatus previousStatus = SubscriptionStatus.REGULAR;
@@ -151,8 +151,8 @@ class SubscriptionControllerTest extends ControllerBaseTest {
     @Order(7)
     @DisplayName("구독하기, 실패 (올바르지 않은 채널 타입)")
     void subscribeFailure_invalidChannelType() throws Exception {
-        RegisterChannelRequest registerChannelRequest = new RegisterChannelRequest("홈쇼핑 고객센터", ChannelType.UNSUBSCRIBE_ONLY);
-        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelRequest);
+        RegisterChannelCommand registerChannelCommand = new RegisterChannelCommand("홈쇼핑 고객센터", ChannelType.UNSUBSCRIBE_ONLY);
+        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelCommand);
 
         SubscribeRequest subscribeRequest = new SubscribeRequest("010-1234-5678", registeredChannel.id(), SubscriptionStatus.REGULAR);
 
@@ -248,8 +248,8 @@ class SubscriptionControllerTest extends ControllerBaseTest {
     @Order(8)
     @DisplayName("구독해제(프리미엄 구독 -> 일반 구독), 성공")
     void unsubscribePremiumToRegularSuccess() throws Exception {
-        RegisterChannelRequest registerChannelRequest = new RegisterChannelRequest("홈쇼핑 고객센터", ChannelType.SUBSCRIBE_UNSUBSCRIBE);
-        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelRequest);
+        RegisterChannelCommand registerChannelCommand = new RegisterChannelCommand("홈쇼핑 고객센터", ChannelType.SUBSCRIBE_UNSUBSCRIBE);
+        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelCommand);
 
         String phoneNumber = "010-1234-5678";
         SubscriptionStatus previousStatus = SubscriptionStatus.PREMIUM;
@@ -268,8 +268,8 @@ class SubscriptionControllerTest extends ControllerBaseTest {
     @Order(9)
     @DisplayName("구독해제(프리미엄 구독 -> 구독 안함), 성공")
     void unsubscribePremiumToNoneSuccess() throws Exception {
-        RegisterChannelRequest registerChannelRequest = new RegisterChannelRequest("홈쇼핑 고객센터", ChannelType.SUBSCRIBE_UNSUBSCRIBE);
-        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelRequest);
+        RegisterChannelCommand registerChannelCommand = new RegisterChannelCommand("홈쇼핑 고객센터", ChannelType.SUBSCRIBE_UNSUBSCRIBE);
+        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelCommand);
 
         String phoneNumber = "010-1234-5678";
         SubscriptionStatus previousStatus = SubscriptionStatus.PREMIUM;
@@ -288,8 +288,8 @@ class SubscriptionControllerTest extends ControllerBaseTest {
     @Order(10)
     @DisplayName("구독해제(일반 구독 -> 구독 안함), 성공")
     void unsubscribeRegularToNoneSuccess() throws Exception {
-        RegisterChannelRequest registerChannelRequest = new RegisterChannelRequest("홈쇼핑 고객센터", ChannelType.SUBSCRIBE_UNSUBSCRIBE);
-        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelRequest);
+        RegisterChannelCommand registerChannelCommand = new RegisterChannelCommand("홈쇼핑 고객센터", ChannelType.SUBSCRIBE_UNSUBSCRIBE);
+        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelCommand);
 
         String phoneNumber = "010-1234-5678";
         SubscriptionStatus previousStatus = SubscriptionStatus.REGULAR;
@@ -308,8 +308,8 @@ class SubscriptionControllerTest extends ControllerBaseTest {
     @Order(11)
     @DisplayName("구독해제, 실패 (올바르지 않은 채널 타입)")
     void unsubscribeFailure_invalidChannelType() throws Exception {
-        RegisterChannelRequest registerChannelRequest = new RegisterChannelRequest("홈쇼핑 고객센터", ChannelType.SUBSCRIBE_ONLY);
-        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelRequest);
+        RegisterChannelCommand registerChannelCommand = new RegisterChannelCommand("홈쇼핑 고객센터", ChannelType.SUBSCRIBE_ONLY);
+        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelCommand);
 
         String phoneNumber = "010-1234-5678";
         SubscribeRequest initialSubscribeRequest = new SubscribeRequest(phoneNumber, registeredChannel.id(), SubscriptionStatus.REGULAR);
@@ -416,8 +416,8 @@ class SubscriptionControllerTest extends ControllerBaseTest {
         AtomicInteger count = new AtomicInteger(0);
 
         IntStream.rangeClosed(1, 20).forEach(i -> {
-            RegisterChannelRequest registerChannelRequest = new RegisterChannelRequest("Channel" + i, ChannelType.SUBSCRIBE_UNSUBSCRIBE);
-            RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelRequest);
+            RegisterChannelCommand registerChannelCommand = new RegisterChannelCommand("ChannelJpaEntity" + i, ChannelType.SUBSCRIBE_UNSUBSCRIBE);
+            RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelCommand);
 
             SubscribeRequest subscribeRequest = new SubscribeRequest(phoneNumber, registeredChannel.id(), SubscriptionStatus.REGULAR);
             subscriptionService.subscribe(subscribeRequest);
