@@ -1,11 +1,10 @@
-package com.artinus.channelsubscription.subscription.mapper;
+package com.artinus.channelsubscription.subscription.adapter.persistence;
 
 import com.artinus.channelsubscription.channel.adapter.persistence.ChannelJpaEntity;
 import com.artinus.channelsubscription.common.config.BaseMapperConfig;
 import com.artinus.channelsubscription.subscription.domain.RegisteredSubscription;
-import com.artinus.channelsubscription.subscription.domain.SubscribeRequest;
-import com.artinus.channelsubscription.subscription.entity.Account;
-import com.artinus.channelsubscription.subscription.entity.Subscription;
+import com.artinus.channelsubscription.subscription.application.port.input.SubscribeCommand;
+import com.artinus.channelsubscription.subscription.domain.SaveSubscription;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -18,8 +17,8 @@ public abstract  class SubscriptionMapper {
     @Mapping(target = "account", source = "account")
     @Mapping(target = "channel", source = "channel")
     @Mapping(target = "previousSubscriptionStatus", source = "account.currentSubscriptionStatus")
-    @Mapping(target = "subscriptionStatus", source = "request.operation")
-    public abstract Subscription toEntity(SubscribeRequest request, Account account, ChannelJpaEntity channel);
+    @Mapping(target = "subscriptionStatus", source = "behavior.subscriptionStatus")
+    public abstract SubscriptionJpaEntity toEntity(SaveSubscription behavior, AccountJpaEntity account, ChannelJpaEntity channel);
 
     @Mapping(target = "subscriptionId", source = "subscription.id")
     @Mapping(target = "phoneNumber", source = "account.phoneNumber")
@@ -28,6 +27,6 @@ public abstract  class SubscriptionMapper {
     @Mapping(target = "previousStatus", source = "subscription.previousSubscriptionStatus")
     @Mapping(target = "status", source = "subscription.subscriptionStatus")
     @Mapping(target = "createdAt", source = "subscription.createdAt")
-    public abstract RegisteredSubscription registeredSubscription(Subscription subscription, Account account, ChannelJpaEntity channel);
+    public abstract RegisteredSubscription registeredSubscription(SubscriptionJpaEntity subscription, AccountJpaEntity account, ChannelJpaEntity channel);
 
 }

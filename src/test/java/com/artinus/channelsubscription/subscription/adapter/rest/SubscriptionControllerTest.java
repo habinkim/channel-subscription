@@ -1,14 +1,17 @@
-package com.artinus.channelsubscription.subscription.controller;
+package com.artinus.channelsubscription.subscription.adapter.rest;
 
 import com.artinus.channelsubscription.base.ControllerBaseTest;
+import com.artinus.channelsubscription.channel.application.port.input.RegisterChannelUseCase;
 import com.artinus.channelsubscription.channel.domain.ChannelType;
 import com.artinus.channelsubscription.channel.application.port.input.RegisterChannelCommand;
 import com.artinus.channelsubscription.channel.domain.RegisteredChannel;
 import com.artinus.channelsubscription.channel.application.service.ChannelService;
 import com.artinus.channelsubscription.common.response.MessageCode;
-import com.artinus.channelsubscription.subscription.domain.SubscribeRequest;
+import com.artinus.channelsubscription.subscription.application.port.input.SubscribeCommand;
+import com.artinus.channelsubscription.subscription.application.port.input.SubscribeUseCase;
+import com.artinus.channelsubscription.subscription.application.port.input.UnsubscribeUseCase;
 import com.artinus.channelsubscription.subscription.domain.SubscriptionStatus;
-import com.artinus.channelsubscription.subscription.service.SubscriptionService;
+import com.artinus.channelsubscription.subscription.application.service.SubscriptionService;
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
@@ -36,10 +39,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class SubscriptionControllerTest extends ControllerBaseTest {
 
     @Autowired
-    private ChannelService channelService;
+    private RegisterChannelUseCase registerChannelUseCase;
 
     @Autowired
-    private SubscriptionService subscriptionService;
+    private SubscribeUseCase subscribeUseCase;
+
+    @Autowired
+    private UnsubscribeUseCase unsubscribeUseCase;
 
     @Transactional
     @Test
@@ -47,12 +53,12 @@ class SubscriptionControllerTest extends ControllerBaseTest {
     @DisplayName("신규 회원 구독하기(구독 안함), 성공")
     void subscribeInitializeNoneSuccess() throws Exception {
         RegisterChannelCommand registerChannelCommand = new RegisterChannelCommand("홈쇼핑 고객센터", ChannelType.SUBSCRIBE_UNSUBSCRIBE);
-        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelCommand);
+        RegisteredChannel registeredChannel = registerChannelUseCase.registerChannel(registerChannelCommand);
 
-        SubscribeRequest subscribeRequest = new SubscribeRequest("010-1234-5678", registeredChannel.id(), SubscriptionStatus.NONE);
+        SubscribeCommand subscribeCommand = new SubscribeCommand("010-1234-5678", registeredChannel.id(), SubscriptionStatus.NONE);
 
         SubscriptionStatus previousStatus = SubscriptionStatus.NONE;
-        performSubscribeApi(subscribeRequest, registeredChannel, previousStatus);
+        performSubscribeApi(subscribeCommand, registeredChannel, previousStatus);
 
     }
 
@@ -62,12 +68,12 @@ class SubscriptionControllerTest extends ControllerBaseTest {
     @DisplayName("신규 회원 구독하기(일반 구독), 성공")
     void subscribeRegularInitializeSuccess() throws Exception {
         RegisterChannelCommand registerChannelCommand = new RegisterChannelCommand("홈쇼핑 고객센터", ChannelType.SUBSCRIBE_UNSUBSCRIBE);
-        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelCommand);
+        RegisteredChannel registeredChannel = registerChannelUseCase.registerChannel(registerChannelCommand);
 
-        SubscribeRequest subscribeRequest = new SubscribeRequest("010-1234-5678", registeredChannel.id(), SubscriptionStatus.REGULAR);
+        SubscribeCommand subscribeCommand = new SubscribeCommand("010-1234-5678", registeredChannel.id(), SubscriptionStatus.REGULAR);
 
         SubscriptionStatus previousStatus = SubscriptionStatus.NONE;
-        performSubscribeApi(subscribeRequest, registeredChannel, previousStatus);
+        performSubscribeApi(subscribeCommand, registeredChannel, previousStatus);
 
     }
 
@@ -77,12 +83,12 @@ class SubscriptionControllerTest extends ControllerBaseTest {
     @DisplayName("신규 회원 구독하기(프리미엄 구독), 성공")
     void subscribePremiumInitializeSuccess() throws Exception {
         RegisterChannelCommand registerChannelCommand = new RegisterChannelCommand("홈쇼핑 고객센터", ChannelType.SUBSCRIBE_UNSUBSCRIBE);
-        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelCommand);
+        RegisteredChannel registeredChannel = registerChannelUseCase.registerChannel(registerChannelCommand);
 
-        SubscribeRequest subscribeRequest = new SubscribeRequest("010-1234-5678", registeredChannel.id(), SubscriptionStatus.PREMIUM);
+        SubscribeCommand subscribeCommand = new SubscribeCommand("010-1234-5678", registeredChannel.id(), SubscriptionStatus.PREMIUM);
 
         SubscriptionStatus previousStatus = SubscriptionStatus.NONE;
-        performSubscribeApi(subscribeRequest, registeredChannel, previousStatus);
+        performSubscribeApi(subscribeCommand, registeredChannel, previousStatus);
 
     }
 
@@ -92,17 +98,17 @@ class SubscriptionControllerTest extends ControllerBaseTest {
     @DisplayName("기존 회원 구독하기(구독 안함 -> 프리미엄 구독), 성공")
     void subscribeNoneToPremiumSuccess() throws Exception {
         RegisterChannelCommand registerChannelCommand = new RegisterChannelCommand("홈쇼핑 고객센터", ChannelType.SUBSCRIBE_UNSUBSCRIBE);
-        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelCommand);
+        RegisteredChannel registeredChannel = registerChannelUseCase.registerChannel(registerChannelCommand);
 
         String phoneNumber = "010-1234-5678";
         SubscriptionStatus previousStatus = SubscriptionStatus.NONE;
-        SubscribeRequest initialSubscribeRequest = new SubscribeRequest(phoneNumber, registeredChannel.id(), previousStatus);
+        SubscribeCommand initialSubscribeCommand = new SubscribeCommand(phoneNumber, registeredChannel.id(), previousStatus);
 
-        subscriptionService.subscribe(initialSubscribeRequest);
+        subscribeUseCase.subscribe(initialSubscribeCommand);
 
-        SubscribeRequest subscribeRequest = new SubscribeRequest(phoneNumber, registeredChannel.id(), SubscriptionStatus.PREMIUM);
+        SubscribeCommand subscribeCommand = new SubscribeCommand(phoneNumber, registeredChannel.id(), SubscriptionStatus.PREMIUM);
 
-        performSubscribeApi(subscribeRequest, registeredChannel, previousStatus);
+        performSubscribeApi(subscribeCommand, registeredChannel, previousStatus);
 
     }
 
@@ -112,17 +118,17 @@ class SubscriptionControllerTest extends ControllerBaseTest {
     @DisplayName("기존 회원 구독하기(구독 안함 -> 일반 구독), 성공")
     void subscribeNoneToRegularSuccess() throws Exception {
         RegisterChannelCommand registerChannelCommand = new RegisterChannelCommand("홈쇼핑 고객센터", ChannelType.SUBSCRIBE_UNSUBSCRIBE);
-        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelCommand);
+        RegisteredChannel registeredChannel = registerChannelUseCase.registerChannel(registerChannelCommand);
 
         String phoneNumber = "010-1234-5678";
         SubscriptionStatus previousStatus = SubscriptionStatus.NONE;
-        SubscribeRequest initialSubscribeRequest = new SubscribeRequest(phoneNumber, registeredChannel.id(), previousStatus);
+        SubscribeCommand initialSubscribeCommand = new SubscribeCommand(phoneNumber, registeredChannel.id(), previousStatus);
 
-        subscriptionService.subscribe(initialSubscribeRequest);
+        subscribeUseCase.subscribe(initialSubscribeCommand);
 
-        SubscribeRequest subscribeRequest = new SubscribeRequest(phoneNumber, registeredChannel.id(), SubscriptionStatus.REGULAR);
+        SubscribeCommand subscribeCommand = new SubscribeCommand(phoneNumber, registeredChannel.id(), SubscriptionStatus.REGULAR);
 
-        performSubscribeApi(subscribeRequest, registeredChannel, previousStatus);
+        performSubscribeApi(subscribeCommand, registeredChannel, previousStatus);
 
     }
 
@@ -132,17 +138,17 @@ class SubscriptionControllerTest extends ControllerBaseTest {
     @DisplayName("기존 회원 구독하기(일반 구독 -> 프리미엄 구독), 성공")
     void subscribeRegularToPremiumSuccess() throws Exception {
         RegisterChannelCommand registerChannelCommand = new RegisterChannelCommand("홈쇼핑 고객센터", ChannelType.SUBSCRIBE_UNSUBSCRIBE);
-        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelCommand);
+        RegisteredChannel registeredChannel = registerChannelUseCase.registerChannel(registerChannelCommand);
 
         String phoneNumber = "010-1234-5678";
         SubscriptionStatus previousStatus = SubscriptionStatus.REGULAR;
-        SubscribeRequest initialSubscribeRequest = new SubscribeRequest(phoneNumber, registeredChannel.id(), previousStatus);
+        SubscribeCommand initialSubscribeCommand = new SubscribeCommand(phoneNumber, registeredChannel.id(), previousStatus);
 
-        subscriptionService.subscribe(initialSubscribeRequest);
+        subscribeUseCase.subscribe(initialSubscribeCommand);
 
-        SubscribeRequest subscribeRequest = new SubscribeRequest(phoneNumber, registeredChannel.id(), SubscriptionStatus.PREMIUM);
+        SubscribeCommand subscribeCommand = new SubscribeCommand(phoneNumber, registeredChannel.id(), SubscriptionStatus.PREMIUM);
 
-        performSubscribeApi(subscribeRequest, registeredChannel, previousStatus);
+        performSubscribeApi(subscribeCommand, registeredChannel, previousStatus);
 
     }
 
@@ -152,9 +158,9 @@ class SubscriptionControllerTest extends ControllerBaseTest {
     @DisplayName("구독하기, 실패 (올바르지 않은 채널 타입)")
     void subscribeFailure_invalidChannelType() throws Exception {
         RegisterChannelCommand registerChannelCommand = new RegisterChannelCommand("홈쇼핑 고객센터", ChannelType.UNSUBSCRIBE_ONLY);
-        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelCommand);
+        RegisteredChannel registeredChannel = registerChannelUseCase.registerChannel(registerChannelCommand);
 
-        SubscribeRequest subscribeRequest = new SubscribeRequest("010-1234-5678", registeredChannel.id(), SubscriptionStatus.REGULAR);
+        SubscribeCommand subscribeCommand = new SubscribeCommand("010-1234-5678", registeredChannel.id(), SubscriptionStatus.REGULAR);
 
         FieldDescriptor[] requestDescriptors = new FieldDescriptor[]{
                 fieldWithPath("phone_number").description("전화번호"),
@@ -165,7 +171,7 @@ class SubscriptionControllerTest extends ControllerBaseTest {
         mockMvc.perform(
                         post("/subscriptions/subscribe")
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                .content(toJson(subscribeRequest))
+                                .content(toJson(subscribeCommand))
                 )
                 .andExpectAll(baseAssertion(MessageCode.INVALID_STATUS_TRANSITION))
                 .andDo(
@@ -183,7 +189,7 @@ class SubscriptionControllerTest extends ControllerBaseTest {
                 );
     }
 
-    public void performSubscribeApi(SubscribeRequest subscribeRequest, RegisteredChannel registeredChannel, SubscriptionStatus previousStatus) throws Exception {
+    public void performSubscribeApi(SubscribeCommand subscribeCommand, RegisteredChannel registeredChannel, SubscriptionStatus previousStatus) throws Exception {
         FieldDescriptor[] requestDescriptors = new FieldDescriptor[]{
                 fieldWithPath("phone_number").description("전화번호"),
                 fieldWithPath("channel_id").description("채널 ID"),
@@ -204,13 +210,13 @@ class SubscriptionControllerTest extends ControllerBaseTest {
         mockMvc.perform(
                         post("/subscriptions/subscribe")
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                .content(toJson(subscribeRequest))
+                                .content(toJson(subscribeCommand))
                 )
                 .andExpectAll(baseAssertion(MessageCode.CREATED))
                 .andExpect(jsonPath("$.data.subscription_id", notNullValue()))
                 .andExpectAll(
                         jsonPath("$.data.phone_number", notNullValue()),
-                        jsonPath("$.data.phone_number", is(subscribeRequest.phoneNumber()))
+                        jsonPath("$.data.phone_number", is(subscribeCommand.phoneNumber()))
                 )
                 .andExpectAll(
                         jsonPath("$.data.channel_id", notNullValue()),
@@ -226,7 +232,7 @@ class SubscriptionControllerTest extends ControllerBaseTest {
                 )
                 .andExpectAll(
                         jsonPath("$.data.status", notNullValue()),
-                        jsonPath("$.data.status", is(subscribeRequest.operation().name()))
+                        jsonPath("$.data.status", is(subscribeCommand.operation().name()))
                 )
                 .andDo(
                         restDocs.document(
@@ -249,17 +255,17 @@ class SubscriptionControllerTest extends ControllerBaseTest {
     @DisplayName("구독해제(프리미엄 구독 -> 일반 구독), 성공")
     void unsubscribePremiumToRegularSuccess() throws Exception {
         RegisterChannelCommand registerChannelCommand = new RegisterChannelCommand("홈쇼핑 고객센터", ChannelType.SUBSCRIBE_UNSUBSCRIBE);
-        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelCommand);
+        RegisteredChannel registeredChannel = registerChannelUseCase.registerChannel(registerChannelCommand);
 
         String phoneNumber = "010-1234-5678";
         SubscriptionStatus previousStatus = SubscriptionStatus.PREMIUM;
-        SubscribeRequest initialSubscribeRequest = new SubscribeRequest(phoneNumber, registeredChannel.id(), previousStatus);
+        SubscribeCommand initialSubscribeCommand = new SubscribeCommand(phoneNumber, registeredChannel.id(), previousStatus);
 
-        subscriptionService.subscribe(initialSubscribeRequest);
+        subscribeUseCase.subscribe(initialSubscribeCommand);
 
-        SubscribeRequest unsubscribeRequest = new SubscribeRequest(phoneNumber, registeredChannel.id(), SubscriptionStatus.REGULAR);
+        SubscribeCommand unsubscribeCommand = new SubscribeCommand(phoneNumber, registeredChannel.id(), SubscriptionStatus.REGULAR);
 
-        performUnsubscribeApi(unsubscribeRequest, registeredChannel, previousStatus);
+        performUnsubscribeApi(unsubscribeCommand, registeredChannel, previousStatus);
 
     }
 
@@ -269,17 +275,17 @@ class SubscriptionControllerTest extends ControllerBaseTest {
     @DisplayName("구독해제(프리미엄 구독 -> 구독 안함), 성공")
     void unsubscribePremiumToNoneSuccess() throws Exception {
         RegisterChannelCommand registerChannelCommand = new RegisterChannelCommand("홈쇼핑 고객센터", ChannelType.SUBSCRIBE_UNSUBSCRIBE);
-        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelCommand);
+        RegisteredChannel registeredChannel = registerChannelUseCase.registerChannel(registerChannelCommand);
 
         String phoneNumber = "010-1234-5678";
         SubscriptionStatus previousStatus = SubscriptionStatus.PREMIUM;
-        SubscribeRequest initialSubscribeRequest = new SubscribeRequest(phoneNumber, registeredChannel.id(), previousStatus);
+        SubscribeCommand initialSubscribeCommand = new SubscribeCommand(phoneNumber, registeredChannel.id(), previousStatus);
 
-        subscriptionService.subscribe(initialSubscribeRequest);
+        subscribeUseCase.subscribe(initialSubscribeCommand);
 
-        SubscribeRequest unsubscribeRequest = new SubscribeRequest(phoneNumber, registeredChannel.id(), SubscriptionStatus.NONE);
+        SubscribeCommand unsubscribeCommand = new SubscribeCommand(phoneNumber, registeredChannel.id(), SubscriptionStatus.NONE);
 
-        performUnsubscribeApi(unsubscribeRequest, registeredChannel, previousStatus);
+        performUnsubscribeApi(unsubscribeCommand, registeredChannel, previousStatus);
 
     }
 
@@ -289,17 +295,17 @@ class SubscriptionControllerTest extends ControllerBaseTest {
     @DisplayName("구독해제(일반 구독 -> 구독 안함), 성공")
     void unsubscribeRegularToNoneSuccess() throws Exception {
         RegisterChannelCommand registerChannelCommand = new RegisterChannelCommand("홈쇼핑 고객센터", ChannelType.SUBSCRIBE_UNSUBSCRIBE);
-        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelCommand);
+        RegisteredChannel registeredChannel = registerChannelUseCase.registerChannel(registerChannelCommand);
 
         String phoneNumber = "010-1234-5678";
         SubscriptionStatus previousStatus = SubscriptionStatus.REGULAR;
-        SubscribeRequest initialSubscribeRequest = new SubscribeRequest(phoneNumber, registeredChannel.id(), previousStatus);
+        SubscribeCommand initialSubscribeCommand = new SubscribeCommand(phoneNumber, registeredChannel.id(), previousStatus);
 
-        subscriptionService.subscribe(initialSubscribeRequest);
+        subscribeUseCase.subscribe(initialSubscribeCommand);
 
-        SubscribeRequest unsubscribeRequest = new SubscribeRequest(phoneNumber, registeredChannel.id(), SubscriptionStatus.NONE);
+        SubscribeCommand unsubscribeCommand = new SubscribeCommand(phoneNumber, registeredChannel.id(), SubscriptionStatus.NONE);
 
-        performUnsubscribeApi(unsubscribeRequest, registeredChannel, previousStatus);
+        performUnsubscribeApi(unsubscribeCommand, registeredChannel, previousStatus);
 
     }
 
@@ -309,14 +315,14 @@ class SubscriptionControllerTest extends ControllerBaseTest {
     @DisplayName("구독해제, 실패 (올바르지 않은 채널 타입)")
     void unsubscribeFailure_invalidChannelType() throws Exception {
         RegisterChannelCommand registerChannelCommand = new RegisterChannelCommand("홈쇼핑 고객센터", ChannelType.SUBSCRIBE_ONLY);
-        RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelCommand);
+        RegisteredChannel registeredChannel = registerChannelUseCase.registerChannel(registerChannelCommand);
 
         String phoneNumber = "010-1234-5678";
-        SubscribeRequest initialSubscribeRequest = new SubscribeRequest(phoneNumber, registeredChannel.id(), SubscriptionStatus.REGULAR);
+        SubscribeCommand initialSubscribeCommand = new SubscribeCommand(phoneNumber, registeredChannel.id(), SubscriptionStatus.REGULAR);
 
-        subscriptionService.subscribe(initialSubscribeRequest);
+        subscribeUseCase.subscribe(initialSubscribeCommand);
 
-        SubscribeRequest unsubscribeRequest = new SubscribeRequest(phoneNumber, registeredChannel.id(), SubscriptionStatus.NONE);
+        SubscribeCommand unsubscribeCommand = new SubscribeCommand(phoneNumber, registeredChannel.id(), SubscriptionStatus.NONE);
 
         FieldDescriptor[] requestDescriptors = new FieldDescriptor[]{
                 fieldWithPath("phone_number").description("전화번호"),
@@ -327,7 +333,7 @@ class SubscriptionControllerTest extends ControllerBaseTest {
         mockMvc.perform(
                         post("/subscriptions/unsubscribe")
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                .content(toJson(unsubscribeRequest))
+                                .content(toJson(unsubscribeCommand))
                 )
                 .andExpectAll(baseAssertion(MessageCode.INVALID_STATUS_TRANSITION))
                 .andDo(
@@ -346,7 +352,7 @@ class SubscriptionControllerTest extends ControllerBaseTest {
 
     }
 
-    public void performUnsubscribeApi(SubscribeRequest unsubscribeRequest, RegisteredChannel registeredChannel, SubscriptionStatus previousStatus) throws Exception {
+    public void performUnsubscribeApi(SubscribeCommand unsubscribeCommand, RegisteredChannel registeredChannel, SubscriptionStatus previousStatus) throws Exception {
         FieldDescriptor[] requestDescriptors = new FieldDescriptor[]{
                 fieldWithPath("phone_number").description("전화번호"),
                 fieldWithPath("channel_id").description("채널 ID"),
@@ -367,13 +373,13 @@ class SubscriptionControllerTest extends ControllerBaseTest {
         mockMvc.perform(
                         post("/subscriptions/unsubscribe")
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                .content(toJson(unsubscribeRequest))
+                                .content(toJson(unsubscribeCommand))
                 )
                 .andExpectAll(baseAssertion(MessageCode.SUCCESS))
                 .andExpect(jsonPath("$.data.subscription_id", notNullValue()))
                 .andExpectAll(
                         jsonPath("$.data.phone_number", notNullValue()),
-                        jsonPath("$.data.phone_number", is(unsubscribeRequest.phoneNumber()))
+                        jsonPath("$.data.phone_number", is(unsubscribeCommand.phoneNumber()))
                 )
                 .andExpectAll(
                         jsonPath("$.data.channel_id", notNullValue()),
@@ -389,7 +395,7 @@ class SubscriptionControllerTest extends ControllerBaseTest {
                 )
                 .andExpectAll(
                         jsonPath("$.data.status", notNullValue()),
-                        jsonPath("$.data.status", is(unsubscribeRequest.operation().name()))
+                        jsonPath("$.data.status", is(unsubscribeCommand.operation().name()))
                 )
                 .andDo(
                         restDocs.document(
@@ -417,14 +423,14 @@ class SubscriptionControllerTest extends ControllerBaseTest {
 
         IntStream.rangeClosed(1, 20).forEach(i -> {
             RegisterChannelCommand registerChannelCommand = new RegisterChannelCommand("ChannelJpaEntity" + i, ChannelType.SUBSCRIBE_UNSUBSCRIBE);
-            RegisteredChannel registeredChannel = channelService.registerChannel(registerChannelCommand);
+            RegisteredChannel registeredChannel = registerChannelUseCase.registerChannel(registerChannelCommand);
 
-            SubscribeRequest subscribeRequest = new SubscribeRequest(phoneNumber, registeredChannel.id(), SubscriptionStatus.REGULAR);
-            subscriptionService.subscribe(subscribeRequest);
+            SubscribeCommand subscribeCommand = new SubscribeCommand(phoneNumber, registeredChannel.id(), SubscriptionStatus.REGULAR);
+            subscribeUseCase.subscribe(subscribeCommand);
             count.addAndGet(1);
 
-            SubscribeRequest unsubscribeRequest = new SubscribeRequest(phoneNumber, registeredChannel.id(), SubscriptionStatus.NONE);
-            subscriptionService.unsubscribe(unsubscribeRequest);
+            SubscribeCommand unsubscribeCommand = new SubscribeCommand(phoneNumber, registeredChannel.id(), SubscriptionStatus.NONE);
+            unsubscribeUseCase.unsubscribe(unsubscribeCommand);
             count.addAndGet(1);
         });
 

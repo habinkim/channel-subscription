@@ -1,4 +1,4 @@
-package com.artinus.channelsubscription.subscription.entity;
+package com.artinus.channelsubscription.subscription.adapter.persistence;
 
 import com.artinus.channelsubscription.common.entity.BaseEntity;
 import com.artinus.channelsubscription.subscription.domain.SubscriptionStatus;
@@ -19,7 +19,7 @@ import org.hibernate.annotations.Comment;
 @Getter
 @Entity
 @Table(name = "account")
-public class Account extends BaseEntity {
+public class AccountJpaEntity extends BaseEntity {
 
     @Column(name = "phone_number", unique = true, nullable = false)
     @Comment("전화번호")

@@ -13,11 +13,22 @@ public class ChannelJpaRepositoryCustomImpl implements ChannelJpaRepositoryCusto
     private static final QChannelJpaEntity CHANNEL = QChannelJpaEntity.channelJpaEntity;
 
     @Override
-    public Boolean existsByName(String name) {
+    public Boolean existsByName(final String name) {
         Integer fetchOne = queryFactory
                 .selectOne()
                 .from(CHANNEL)
-                .where(CHANNEL.name.eq(name))
+                .where(CHANNEL.name.eq(name), CHANNEL.available.isTrue())
+                .fetchFirst();
+
+        return fetchOne != null;
+    }
+
+    @Override
+    public Boolean existsByChannelId(final Long channelId) {
+        Integer fetchOne = queryFactory
+                .selectOne()
+                .from(CHANNEL)
+                .where(CHANNEL.id.eq(channelId), CHANNEL.available.isTrue())
                 .fetchFirst();
 
         return fetchOne != null;

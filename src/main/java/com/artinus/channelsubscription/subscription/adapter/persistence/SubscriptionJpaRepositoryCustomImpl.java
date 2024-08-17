@@ -1,9 +1,7 @@
-package com.artinus.channelsubscription.subscription.repository;
+package com.artinus.channelsubscription.subscription.adapter.persistence;
 
 import com.artinus.channelsubscription.channel.adapter.persistence.QChannelJpaEntity;
 import com.artinus.channelsubscription.subscription.domain.SubscriptionHistory;
-import com.artinus.channelsubscription.subscription.entity.QAccount;
-import com.artinus.channelsubscription.subscription.entity.QSubscription;
 import com.querydsl.core.types.dsl.DateTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -22,13 +20,13 @@ import static com.querydsl.core.types.dsl.Expressions.dateTemplate;
 
 @Repository
 @RequiredArgsConstructor
-public class SubscriptionCustomRepositoryImpl implements SubscriptionCustomRepository {
+public class SubscriptionJpaRepositoryCustomImpl implements SubscriptionJpaRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
-    private static final QSubscription SUBSCRIPTION = QSubscription.subscription;
+    private static final QSubscriptionJpaEntity SUBSCRIPTION = QSubscriptionJpaEntity.subscriptionJpaEntity;
     private static final QChannelJpaEntity CHANNEL = QChannelJpaEntity.channelJpaEntity;
-    private static final QAccount ACCOUNT = QAccount.account;
+    private static final QAccountJpaEntity ACCOUNT = QAccountJpaEntity.accountJpaEntity;
 
     @Override
     public Map<String, List<SubscriptionHistory>> findAllByPhoneNumber(String phoneNumber) {

@@ -2,6 +2,8 @@ package com.artinus.channelsubscription.channel.adapter.persistence;
 
 public interface ChannelJpaRepositoryCustom {
 
-    Boolean existsByName(String name);
+    Boolean existsByName(final String name);
+
+    Boolean existsByChannelId(final Long channelId);
 
 }

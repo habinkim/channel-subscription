@@ -30,10 +30,10 @@ public enum MessageCode {
     CHANNEL_ALREADY_EXISTS(BAD_REQUEST, "1101"),
     CHANNEL_NOT_FOUND(BAD_REQUEST, "1102"),
 
-    // Account
+    // AccountJpaEntity
     ACCOUNT_NOT_FOUND(BAD_REQUEST, "1201"),
 
-    // Subscription
+    // SubscriptionJpaEntity
     INVALID_STATUS_TRANSITION(BAD_REQUEST, "1301"),
     SUBSCRIPTION_TRANSITION_DENIED(BAD_REQUEST, "1302");
 
