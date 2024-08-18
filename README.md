@@ -523,8 +523,96 @@ Spring의 @Transactional 애노테이션을 사용하여 트랜잭션의 격리 
 
 ## 3. 테스트
 
-### 3.1. Mock을 통한 행동 기반 테스트
+### 3.1. Mock을 통한 테스트
+
+Service에서의 예외 상황 테스트는 Mockito를 통해 Mock 기반 테스트로 진행한다.
+
+
+
+Mockito를 사용한 단위 테스트는 다음과 같은 장점을 보여준다.
+
+- **의존성 격리**: Port 등 의존성을 Mock 객체로 대체하여 Service의 로직만을 집중적으로 테스트한다.
+
+- **예외 상황 테스트**: 예를 들어, 채널이 존재하지 않는 경우(channelNotFound), 전화번호가 존재하지 않는 경우(accountNotFound)와 같은 예외 상황을 정확히 테스트할 수 있다.
+
+- **상호작용 검증**: Mock 객체의 메서드 호출 횟수를 검증(verify)하여 로직이 예상대로 동작했는지 확인한다.
 
 
 
 ### 3.2. TestContainers, MockMvc를 통한 API 통합 테스트
+
+Controller의 API 통합 테스트는 TestContainers, MockMvc를 통해 진행한다.
+
+
+
+ TestContainers와 MockMvc를 사용하여 API 통합 테스트를 수행할 때의 이점은 다음과 같다.
+
+
+
+**1. 실제 환경과 유사한 테스트 환경**
+
+- **TestContainers를 통한 실제 데이터베이스 사용**: TestContainers는 실제 Docker 컨테이너에서 실행되는 PostgreSQL과 Redis 인스턴스를 테스트 중에 사용한다. 이를 통해 테스트 환경이 실제 운영 환경과 유사하게 구성되어, 데이터베이스나 Redis와 같은 외부 종속성과의 통합 테스트를 보다 신뢰성 있게 수행할 수 있다. Mock이나 인메모리 데이터베이스를 사용하는 것보다 더 현실적인 테스트 결과를 얻을 수 있다.
+- **데이터의 일관성 보장**: TestContainers를 사용하면 테스트가 시작될 때마다 깨끗한 상태의 데이터베이스를 제공하므로, 데이터의 일관성을 보장할 수 있다. 이는 테스트 간의 의존성을 줄이고, 테스트 재현성을 높여준다.
+
+
+
+**2. 완전한 통합 테스트**
+
+- **MockMvc를 통한 완전한 요청/응답 사이클 테스트**: MockMvc를 사용하여 실제 HTTP 요청을 시뮬레이션하고, Controller 계층을 통해 애플리케이션의 전반적인 흐름을 테스트한다. 이로 인해 실제 애플리케이션이 클라이언트 요청을 처리하는 방식과 동일한 방식으로 테스트할 수 있다. 이는 단위 테스트와는 달리, 애플리케이션의 여러 계층(컨트롤러, 서비스, 리포지토리 등)이 상호작용하는 방식을 검증할 수 있는 이점이 있다.
+- **API 문서화의 용이성**: RestDocs와 연계하여 API 문서를 자동으로 생성할 수 있다. MockMvc를 통해 실제 API 요청/응답을 캡처하고 이를 기반으로 API 문서를 생성하기 때문에, 문서와 실제 API의 일관성을 유지할 수 있다.
+
+
+
+**3. 테스트의 신뢰성 및 재현성**
+
+- **포괄적인 테스트 케이스 처리**: 실제 데이터베이스와의 상호작용을 테스트하므로, SQL 쿼리, 데이터 무결성 제약 조건, 트랜잭션 처리 등 모든 측면에서 포괄적인 테스트가 가능하다. 이는 단순한 Mock 객체로는 테스트하기 어려운 다양한 시나리오를 검증할 수 있게 한다.
+- **테스트 환경의 독립성**: TestContainers는 테스트 환경에서 독립적인 데이터베이스 인스턴스를 사용하기 때문에, 다른 테스트나 실제 운영 환경과의 충돌 없이 안전하게 테스트를 수행할 수 있다.
+
+
+
+**4. 실제 운영 환경에서 발생할 수 있는 문제 사전 검출**
+
+- **운영 환경과의 유사성**: TestContainers를 통해 실제 운영 환경과 유사한 조건에서 테스트를 수행하므로, 운영 환경에서 발생할 수 있는 문제를 사전에 발견할 수 있습니다. 예를 들어, PostgreSQL의 특정 버전에서 발생할 수 있는 SQL 쿼리 오류나 Redis와의 연결 문제 등을 미리 발견하고 해결할 수 있다.
+- **네트워크 및 I/O 관련 문제 검출**: Docker 컨테이너를 사용함으로써 네트워크 및 I/O와 관련된 문제를 테스트할 수 있습니다. 예를 들어, 데이터베이스 연결 지연, 네트워크 장애 등 실제 운영에서 발생할 수 있는 문제를 시뮬레이션할 수 있다.
+
+
+
+**5. 자동화된 API 문서 생성**
+
+- **RestDocs 통합**: MockMvc와 RestDocs를 함께 사용하여, API 테스트와 문서화를 동시에 처리할 수 있다. API 테스트를 수행하는 동안 요청과 응답에 대한 정보를 자동으로 캡처하여, 정확한 API 문서를 생성할 수 있다. 이는 API 문서와 실제 구현 간의 불일치를 줄이는 데 매우 유용하다.
+
+
+
+
+
+## 4. 실행
+
+#### 4.1. 실행 방법
+
+Terminal에서 ./gradlew bootRun
+
+혹은
+
+IntelliJ IDEA Ultimate에서 SpringBoot Application Run
+
+
+
+사전에 작성된 Docker Compose Script를 통하여 Spring Boot Application Context가 MySQL Container를 실행합니다.
+
+
+
+#### 4.2. 빌드 방법
+
+Terminal에서 ./gradlew compileJava 실행 후, IntelliJ IDEA Ultimate에서 Build Project(CMD + F9)
+
+빌드가 완료되면 Annotation Processor에 의해 QueryDSL Q-Entity와 Mapstruct Mapper 구현체가 생성됩니다.
+
+
+
+#### 4.3. 테스트 방법
+
+Terminal에서 ./gradlew test
+
+혹은
+
+IntelliJ IDEA Ultimate에서 JUnit Test 직접 실행

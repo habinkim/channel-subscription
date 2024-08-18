@@ -15,6 +15,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.statemachine.StateMachineEventResult;
 import org.springframework.statemachine.service.StateMachineService;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -69,7 +70,15 @@ public class SubscriptionService implements SubscribeUseCase, UnsubscribeUseCase
 
         AttemptTransitionSubscriptionStatus transitionBehavior = new AttemptTransitionSubscriptionStatus(account.id(),
                 account.phoneNumber(), channel.type(), subscriptionEvent, SubscribeOperation.SUBSCRIBE);
-        attemptTransitionPort.transitionSubscriptionStatus(transitionBehavior);
+        StateMachineEventResult<SubscriptionStatus, SubscriptionEvent> stateMachineEventResult =
+                attemptTransitionPort.transitionSubscriptionStatus(transitionBehavior);
+
+        assert stateMachineEventResult != null;
+        StateMachineEventResult.ResultType resultType = stateMachineEventResult.getResultType();
+
+        // State Machine에서 거부되면 예외 발생
+        if (StateMachineEventResult.ResultType.DENIED.equals(resultType))
+            throw CommonApplicationException.SUBSCRIPTION_TRANSITION_DENIED;
 
         // State Machine에서 성공하면 DB에 구독 정보 저장
         SaveSubscription behavior = new SaveSubscription(account.phoneNumber(), channel.id(),
@@ -97,7 +106,15 @@ public class SubscriptionService implements SubscribeUseCase, UnsubscribeUseCase
 
         AttemptTransitionSubscriptionStatus transitionBehavior = new AttemptTransitionSubscriptionStatus(account.id(),
                 account.phoneNumber(), channel.type(), subscriptionEvent, SubscribeOperation.UNSUBSCRIBE);
-        attemptTransitionPort.transitionSubscriptionStatus(transitionBehavior);
+        StateMachineEventResult<SubscriptionStatus, SubscriptionEvent> stateMachineEventResult =
+                attemptTransitionPort.transitionSubscriptionStatus(transitionBehavior);
+
+        assert stateMachineEventResult != null;
+        StateMachineEventResult.ResultType resultType = stateMachineEventResult.getResultType();
+
+        // State Machine에서 거부되면 예외 발생
+        if (StateMachineEventResult.ResultType.DENIED.equals(resultType))
+            throw CommonApplicationException.SUBSCRIPTION_TRANSITION_DENIED;
 
         // State Machine에서 성공하면 DB에 구독 정보 저장
         SaveSubscription behavior = new SaveSubscription(account.phoneNumber(), channel.id(),
