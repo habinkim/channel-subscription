@@ -648,7 +648,7 @@ IntelliJ IDEA Ultimate에서 SpringBoot Application Run
 
 
 
-사전에 작성된 Docker Compose Script를 통하여 Spring Boot Application Context가 MySQL Container를 실행합니다.
+사전에 작성된 Docker Compose Script를 통하여 Spring Boot Application Context가 PostgreSQL, Redis Container를 실행합니다.
 
 
 
